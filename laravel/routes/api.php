@@ -51,3 +51,7 @@ Route::get('/jeux', [GameController::class, 'jeux']);
 Route::get('/jeux/{id}', [GameController::class, 'jeu']);
 
 Route::get('/jeux/{id}/favori', [GameController::class, 'jeuFavori']);
+
+Route::post('/jeux/{id}/note', [GameController::class, 'jeuNoter']);
+
+Route::post('/jeux/{id}/note', [GameController::class, 'jeuNoter']);
