@@ -48,10 +48,28 @@ Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
 
 Route::get('/jeux', [GameController::class, 'jeux']);
 
-Route::get('/jeux/{id}', [GameController::class, 'jeu']);
+Route::get('/jeux/{id}', [GameController::class, 'jeuInfo']);
 
 Route::get('/jeux/{id}/favori', [GameController::class, 'jeuFavori']);
 
 Route::post('/jeux/{id}/note', [GameController::class, 'jeuNoter']);
 
-Route::post('/jeux/{id}/note', [GameController::class, 'jeuNoter']);
+Route::post('/jeux/{id}/possede', [GameController::class, 'jeuPossede']);
+
+Route::post('/jeux/{id}/actif', [GameController::class, 'jeuActif']);
+
+// Section succès
+
+Route::get('/succes', [SuccesController::class, 'succes']);
+
+Route::get('/succes/{id}', [SuccesController::class, 'succesInfo']);
+
+Route::post('/succes/{id}', [SuccesController::class, 'succesAdd']);
+
+Route::delete('/succes/{id}', [SuccesController::class, 'succesDelete']);
+
+Route::post('/succes/{id}/note', [SuccesController::class, 'succesNoter']);
+
+// Section commentaires
+
+Route::post('/succes/{id}/comment', [CommentController])
