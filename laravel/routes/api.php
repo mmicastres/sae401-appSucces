@@ -72,4 +72,4 @@ Route::post('/succes/{id}/note', [SuccesController::class, 'succesNoter']);
 
 // Section commentaires
 
-Route::post('/succes/{id}/comment', [CommentController])
+//Route::post('/succes/{id}/comment', [CommentController])
