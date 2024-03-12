@@ -14,4 +14,5 @@ class Participe extends Model
     public function conversation(){
         return $this->belongsTo(Conversation::class);
     }
+    protected $table = 'Participe';
 }

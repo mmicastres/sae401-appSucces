@@ -8,6 +8,7 @@ use App\Models\NoteDifficulte;
 use App\Models\Commentaire;
 use App\Models\Vote;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SuccesController extends Controller
 {

@@ -17,4 +17,5 @@ class Joueur extends Model
     public function jeu(){
         return $this->belongsTo(Jeu::class);
     }
+    protected $table = 'Joueur';
 }

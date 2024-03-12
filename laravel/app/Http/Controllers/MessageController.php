@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Conversation;
 use App\Models\Participe;
 use App\Models\Message;
@@ -13,8 +14,8 @@ class MessageController extends Controller
 {
     public function listConv(Request $request)
     {
-        $pseudo = Auth::user()->pseudo;
-        $conversations = Conversation::with('users')->find($pseudo)
+        // $pseudo = Auth::user()->pseudo;
+        $conversations = Conversation::with('users')->get();
         return response()->json(["message" => "OK", "conversations" => $conversations]);
     }
 

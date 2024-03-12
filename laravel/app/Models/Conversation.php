@@ -16,4 +16,5 @@ class Conversation extends Model
     {
         return $this->hasMany(Message::class);
     }
+    protected $table = 'Conversation';
 }

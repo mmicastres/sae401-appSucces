@@ -14,4 +14,5 @@ class Obtient extends Model
     public function succes(){
         return $this->belongsTo(Succes::class);
     }
+    protected $table = 'Obtient';
 }

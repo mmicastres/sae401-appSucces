@@ -15,4 +15,5 @@ class Commentaire extends Model
     public function succes(){
         return this->belongsTo(Succes::class);
     }
+    protected $table = 'Commentaire';
 }
