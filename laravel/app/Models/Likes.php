@@ -13,6 +13,6 @@ class Likes extends Model
         return $this->belongsTo(Message::class);
     }
     public function user(){
-        return $this->belongsTo(Utilisateur::class);
+        return $this->belongsTo(User::class);
     }
 }
