@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\JeuController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,19 +45,20 @@ Route::put('/account/modifier', [UserController::class, 'modif']);
 Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
 
 // Section jeux
+Route::prefix("/jeux")->group(function () {
 
-Route::get('/jeux', [GameController::class, 'jeux']);
+    Route::get('/', [JeuController::class, 'jeux']);
 
-Route::get('/jeux/{id}', [GameController::class, 'jeuInfo']);
+    Route::get('/{id}', [JeuController::class, 'jeuInfo']);
 
-Route::get('/jeux/{id}/favori', [GameController::class, 'jeuFavori']);
+    Route::get('/{id}/favori', [JeuController::class, 'jeuFavori']);
 
-Route::post('/jeux/{id}/note', [GameController::class, 'jeuNoter']);
+    Route::post('/{id}/note', [JeuController::class, 'jeuNoter']);
 
-Route::post('/jeux/{id}/possede', [GameController::class, 'jeuPossede']);
+    Route::post('/{id}/possede', [JeuController::class, 'jeuPossede']);
 
-Route::post('/jeux/{id}/actif', [GameController::class, 'jeuActif']);
-
+    Route::post('/{id}/actif', [JeuController::class, 'jeuActif']);
+});
 // Section succès
 
 Route::get('/succes', [SuccesController::class, 'succes']);

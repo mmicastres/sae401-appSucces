@@ -18,7 +18,7 @@ class Succes extends Model
     }
 
     public function detenteurs(){
-        return $this->hasMany(Obtient::class);
+        return $this->hasMany(Obtient::class,);
     }
 
 
@@ -28,4 +28,7 @@ class Succes extends Model
         "description",
         "idJeu"
     ];
+
+    protected $table ="Succes";
+    protected $primaryKey = "idSucces";
 }

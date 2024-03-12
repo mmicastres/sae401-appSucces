@@ -10,6 +10,9 @@ class Jeu extends Model
     use HasFactory;
 
     public function succes(){
-        return $this->hasMany(Succes::class);
+        return $this->hasMany(Succes::class,"idJeu");
     }
+    protected $table = "Jeu";
+    protected $primaryKey = "idJeu";
+
 }
