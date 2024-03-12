@@ -65,17 +65,17 @@ Route::prefix("/succes")->group(function () {
 
     Route::get('/{id}', [SuccesController::class, 'succesInfo']);
 
-    Route::post('/{id}', [SuccesController::class, 'succesComplette']);
+    Route::post('/{id}', [SuccesController::class, 'succesComplete']);
 
-    Route::delete('/{id}', [SuccesController::class, 'succesUnComplete']);
+    Route::delete('/{id}', [SuccesController::class, 'succesUncomplete']);
 
     Route::post('/{id}/note', [SuccesController::class, 'succesNoter']);
     Route::prefix("/succes/{id}/comment")->group(function (){
         Route::post('/', [SuccesController::class],"addComment");
         Route::put('/', [SuccesController::class],"modComment");
         Route::delete('/', [SuccesController::class],"deleteComment");
-        Route::post('/like', [SuccesController::class],"likeCommant");
-        Route::delete('/like', [SuccesController::class],"likeCommant");
+        Route::post('/like', [SuccesController::class],"likeComment");
+        Route::delete('/like', [SuccesController::class],"likeComment");
     });
 });
 // Section commentaires
