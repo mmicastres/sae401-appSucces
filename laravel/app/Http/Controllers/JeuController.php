@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Jeu;
 use App\Models\Joueur;
-use App\Models\Succes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class JeuController extends Controller
 {
-    //
+
     function jeux(Request $request) // testée et fonctionnelle
     {
         $jeux = Jeu::get();
@@ -19,14 +18,8 @@ class JeuController extends Controller
 
     function jeuInfo(Request $request, $id) // testée et fonctionnelle
     {
-        $jeux = Jeu::with("succes")->find($id);
-        return response()->json(["message" => "OK", "jeu" => $jeux]);
-    }
-
-    function jeuSucces(Request $request, $id) // testée et fonctionnelle
-    {
-        $succes = Succes::where('idJeu', '=', $id)->get();
-        return response()->json(["message" => "OK", "succes" => $succes]);
+        $jeu = Jeu::with("succes")->find($id);
+        return response()->json(["message" => "OK", "jeu" => $jeu]);
     }
 
     function jeuFavori(Request $request, $id)
@@ -56,7 +49,7 @@ class JeuController extends Controller
     {
         $pseudo = Auth::user()->pseudo;
         $joueur = Joueur::where('pseudo', $pseudo)->where('idJeu', $id)->get();
-        if ($joueur === null) {
+        if ($joueur == null) {
             $joueur = new Joueur;
             $joueur->pseudo = $pseudo;
             $joueur->idJeu = $id;
@@ -77,7 +70,7 @@ class JeuController extends Controller
     {
         $pseudo = Auth::user()->pseudo;
         $joueur = Joueur::where('pseudo', $pseudo)->where('idJeu', $id)->get();
-        if ($joueur === null) {
+        if ($joueur == null) {
             $joueur = new Joueur;
             $joueur->pseudo = $pseudo;
             $joueur->idJeu = $id;
@@ -100,7 +93,7 @@ class JeuController extends Controller
     {
         $pseudo = Auth::user()->pseudo;
         $joueur = Joueur::where('pseudo', $pseudo)->where('idJeu', $id)->get();
-        if ($joueur === null) {
+        if ($joueur == null) {
             $joueur = new Joueur;
             $joueur->pseudo = $pseudo;
             $joueur->idJeu = $id;
