@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JeuController;
 use App\Http\Controllers\SuccesController;
+use App\Http\Controllers\MessageController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,13 +46,12 @@ Route::put('/account/modifier', [UserController::class, 'modif']);
 Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
 
 // Section jeux
+
 Route::prefix("/jeux")->group(function () {
 
     Route::get('/', [JeuController::class, 'jeux']);
 
     Route::get('/{id}', [JeuController::class, 'jeuInfo']);
-
-    Route::get('/{id}/succes', [JeuController::class, 'jeuSucces']);
 
     Route::post('/{id}/favori', [JeuController::class, 'jeuFavori']);
 
@@ -60,24 +61,48 @@ Route::prefix("/jeux")->group(function () {
 
     Route::post('/{id}/actif', [JeuController::class, 'jeuActif']);
 });
+
 // Section succès
+
 Route::prefix("/succes")->group(function () {
 
     Route::get('/{id}', [SuccesController::class, 'succesInfo']);
 
-    Route::post('/{id}', [SuccesController::class, 'succesComplette']);
+    Route::post('/{id}', [SuccesController::class, 'succesComplete']);
 
-    Route::delete('/{id}', [SuccesController::class, 'succesUnComplete']);
+    Route::delete('/{id}', [SuccesController::class, 'succesUncomplete']);
 
     Route::post('/{id}/note', [SuccesController::class, 'succesNoter']);
-    Route::prefix("/succes/{id}/comment")->group(function (){
+
+    Route::prefix("/succes/{idsucces}/comment")->group(function (){
+
         Route::post('/', [SuccesController::class],"addComment");
-        Route::put('/', [SuccesController::class],"modComment");
-        Route::delete('/', [SuccesController::class],"deleteComment");
-        Route::post('/like', [SuccesController::class],"likeCommant");
-        Route::delete('/like', [SuccesController::class],"likeCommant");
+
+        Route::put('/{idcomment}', [SuccesController::class],"modComment");
+
+        Route::delete('/{idcomment}', [SuccesController::class],"deleteComment");
+
+        Route::put('{idcomment}/like', [SuccesController::class],"likeComment");
     });
 });
-// Section commentaires
 
-//
+// Section conversation
+
+Route::prefix("/conv")->group(function () {
+    
+    Route::get('/', [MessageController::class, 'listConv']);
+
+    Route::post('/', [MessageController::class, 'newConv']);
+
+    Route::get('/{id}', [MessageController::class, 'convContenu']);
+
+    Route::put('/{id]', [MessageController::class, 'modifConv']);
+
+    Route::delete('/{id}', [MessageController::class, 'deleteConv']);
+
+    Route::post('/{id}', [MessageController::class, 'addMsg']);
+
+    Route::delete('/{id}/{idmessage)', [MessageController::class, 'deleteMsg']);
+
+    Route::post('/{id}/{idmessage)', [MessageController::class, 'likeMsg']);
+});

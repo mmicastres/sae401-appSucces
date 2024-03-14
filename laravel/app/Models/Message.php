@@ -18,4 +18,5 @@ class Message extends Model
     public function likes(){
         return $this->hasMany(Likes::class);
     }
+    protected $table = 'Message';
 }
