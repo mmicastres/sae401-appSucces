@@ -31,8 +31,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password_hash',
+        'password',
         'remember_token',
+        'email_verified_at'
     ];
 
 
@@ -45,6 +46,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    protected $table = 'users';
-    protected $primaryKey = 'pseudo';
 }
