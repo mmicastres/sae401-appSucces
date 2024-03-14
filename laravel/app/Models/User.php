@@ -12,6 +12,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public function succes(){
+        return $this->belongsToMany(Succes::class, 'Obtient','idUser','idSucces');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

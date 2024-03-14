@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JeuController;
@@ -89,7 +90,7 @@ Route::prefix("/succes")->group(function () {
 // Section conversation
 
 Route::prefix("/conv")->group(function () {
-    
+
     Route::get('/', [MessageController::class, 'listConv']);
 
     Route::post('/', [MessageController::class, 'newConv']);
