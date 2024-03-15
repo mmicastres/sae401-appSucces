@@ -7,6 +7,7 @@ import {BrowserRouter, Route, Routes, useLocation, useNavigate} from "react-rout
 import {Profile} from "./composents/Profile";
 import {Home} from "./composents/Home";
 import {Logout} from "./composents/auth/Logout";
+import {Jeu} from "./composents/Jeu";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
@@ -55,7 +56,6 @@ function App() {
            setLoading(false)
        })
     }, []);
-    console.log("user",user)
   return (
 
           <Routes >
@@ -68,11 +68,10 @@ function App() {
                   </>:<></>}
                   <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile user={user} setUser={setUser} />}/>}/>
                   <Route path={"/logout"} element={<AuthVerif user={user} elem={<Logout user={user}/>}/>}/>
-
+            <Route path={"/jeu/:id"} element={<Jeu user={user}/>}/>
               <Route index path="/" element={
                   <>
-                    <Home/>
-                    {user ? <h1>Connected as {user.nom}</h1>:<h1>Not connected</h1>}
+                    <Home user={user}/>
                   </>
               }/>
           </Routes>

@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 export function Profile({user}){
     const [success,setSuccess] = useState([]);
@@ -13,6 +14,7 @@ export function Profile({user}){
     }, [user]);
 
     return <>
+        <Link to={"/"}>{"<"} Home</Link>
         <h1>Profile</h1>
         <h2>Informations</h2>
         <p>Nom: {user.nom}</p>
