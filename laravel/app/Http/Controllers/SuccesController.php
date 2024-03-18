@@ -17,10 +17,9 @@ class SuccesController extends Controller
     {
 
     }
-    public function succesInfo(Request $request, $id)
-    {
-        $succes = Succes::find($id);
-        return response()->json(["message" => "OK", "succes" => $succes]);
+    public function succesInfo(Request $request, $id){
+        $succes = Succes::with("jeu")->find($id);
+        return response()->json(["Message"=>"OK","succes" => $succes]);
     }
     public function succesComplete(Request $request, $id)
     {

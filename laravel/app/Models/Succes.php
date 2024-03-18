@@ -10,7 +10,7 @@ class Succes extends Model
     use HasFactory;
 
     public function jeu(){
-        return $this->belongsTo(Jeu::class);
+        return $this->belongsTo(Jeu::class,"idJeu", "idJeu");
     }
     public function commentaires()
     {
