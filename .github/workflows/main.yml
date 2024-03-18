@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: téléversement SFTP
+      - name: téléversement SFTP de laravel
         uses: milanmk/actions-file-deployer@master
         with:
           remote-protocol: sftp
@@ -27,3 +27,17 @@ jobs:
           remote-password: ${{secrets.password}}
           remote-path: /var/www/succes
           local-path: ./laravel
+      - name: build react
+        run: |
+          cd front
+          npm install
+          npm run build
+      - name: téléversement SFTP du react
+        uses: milanmk/actions-file-deployer@master
+        with:
+          remote-protocol: sftp
+          remote-host: kiliangui.fr
+          remote-user: ${{secrets.user}}
+          remote-password: ${{secrets.password}}
+          remote-path: /var/www/front
+          local-path: ./build
