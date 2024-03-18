@@ -12,11 +12,30 @@ jobs:
   react:
     runs-on: ubuntu-latest
     steps:
-      - name: build react
-        run: |
-          cd front
-          npm install
-          npm run build
+      # checkout the repository content to github runner
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "18.16.1"
+
+      # cache the dependencies to speed up the build
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # install dependencies
+      - name: Install dependencies
+        run:  ls && cd ./front && npm install
+
+      # build the react app
+      - name: Build
+        run: cd ./front && npm run build
       - name: téléversement SFTP du react
         uses: milanmk/actions-file-deployer@master
         with:
@@ -25,4 +44,4 @@ jobs:
           remote-user: ${{secrets.user}}
           remote-password: ${{secrets.password}}
           remote-path: /var/www/front
-          local-path: ./build
+          local-path: ./front/build
