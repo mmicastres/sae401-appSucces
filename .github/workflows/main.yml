@@ -40,7 +40,7 @@ jobs:
         with:
           remote-protocol: sftp
           remote-host: kiliangui.fr
-          remote-user: ${{secrets.USERNAME}}
-          remote-password: ${{secrets.PASSWORD}}
+          remote-user: succes
+          remote-password: azertyuiop
           remote-path: /var/www/front
           local-path: ./build
