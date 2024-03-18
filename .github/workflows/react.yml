@@ -28,11 +28,11 @@ jobs:
 
       # install dependencies
       - name: Install dependencies
-        run: cd front && npm install
+        run:  ls && cd ./front && npm install
 
       # build the react app
       - name: Build
-        run: cd front && npm run build
+        run: cd ./front && npm run build
       - name: téléversement SFTP du react
         uses: milanmk/actions-file-deployer@master
         with:
