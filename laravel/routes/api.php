@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JeuController;
 use App\Http\Controllers\SuccesController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,23 +31,19 @@ Route::get('/', [Controller::class, 'homepage']);
 
 // Section connexion et utilisateurs
 
-//Route::get('/login', [UserController::class, 'formLogin']);
-//
-//Route::post('/login', [UserController::class, 'login']);
-//
-//Route::get('/register', [UserController::class, 'formRegister']);
-//
-//Route::post('/register', [UserController::class, 'register']);
-
 Route::get('/user/{id}', [UserController::class, 'userInfo']); // retourne aussi les succes
 
 Route::post('/user/{id}/friend', [UserController::class, 'friendRequest']);
 
+Route::post('/user/{id}/accept', [UserController::class, 'friendAccept']);
+
 Route::post('/user/{id}/unfriend', [UserController::class, 'friendDelete']);
 
-Route::put('/account/modifier', [UserController::class, 'modif']);
+Route::get('/account/modifier', [ProfileController::class, 'edit']);
 
-Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
+Route::put('/account/modifier', [ProfileController::class, 'update']);
+
+Route::delete('/account/delete', [ProfileController::class, 'destroy']);
 
 // Section jeux
 
