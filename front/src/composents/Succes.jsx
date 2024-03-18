@@ -6,7 +6,7 @@ export function Succes(){
     let {id} = useParams();
     const [succes,setSucces] = useState({"jeu":{nom:""}});
     useEffect(() => {
-        axios.get("http://localhost:8000/api/succes/"+id).then((response) => {
+        axios.get(process.env.REACT_APP_API_URL+"/api/succes/"+id).then((response) => {
             setSucces(response.data.succes);
             console.log("response",response.data);
         });

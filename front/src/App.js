@@ -16,8 +16,8 @@ function App() {
   const [user, setUser] = useState(false)
     const [loading,setLoading] = useState(true)
   const onRegister = async () => {
-    await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-    await axios.post("http://localhost:8000/register", {
+    await axios.get(process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
+    await axios.post(process.env.REACT_APP_API_URL+"/register", {
       nom: "test",
       prenom: "test",
       pseudo:"jpm",
@@ -33,7 +33,7 @@ function App() {
 
 
     const onLogout = async () => {
-        await axios.post("http://localhost:8000/logout", {
+        await axios.post(process.env.REACT_APP_API_URL+"/logout", {
         }, {
         headers: {
             "Accept": "application/json",
@@ -45,7 +45,7 @@ function App() {
     const navigate = useNavigate();
     useEffect(() => {
 
-       axios.get("http://localhost:8000/api/me").then((res)=> {
+       axios.get(process.env.REACT_APP_API_URL+"/api/me").then((res)=> {
            if (res.status >= 200 && res.status < 300) {
                setUser(res.data)
                if (["/login","/register"].includes(location.pathname)){

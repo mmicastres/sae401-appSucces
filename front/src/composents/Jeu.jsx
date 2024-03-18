@@ -4,13 +4,47 @@ import axios from "axios";
 
 export function Jeu(){
     let {id} = useParams();
-    const [jeu,setJeu] = useState({succes:[]});
+    const [jeu,setJeu] = useState({succes:[],joueur:false});
+
     useEffect(() => {
-        axios.get("http://localhost:8000/api/jeux/"+id).then((response) => {
+        axios.get(process.env.REACT_APP_API_URL+"/api/jeux/"+id).then((response) => {
             setJeu(response.data.jeu);
             console.log("response",response.data);
         });
     }, [id]);
+
+    function handleClick(action){
+        // changement du visuel
+        let joueur = jeu.joueur;
+        switch (action) {
+            case "actif":
+                joueur.actif = jeu.joueur.actif == 1 ? 0 : 1
+                break;
+            case "favori":
+                joueur.favori = jeu.joueur.favori == 1 ? 0 : 1
+                break;
+            case "possede":
+                joueur.possede = jeu.joueur.possede == 1 ? 0 : 1
+                break;
+        }
+
+        setJeu({...jeu,joueur:joueur})
+        // changemet en base
+        axios.post(process.env.REACT_APP_API_URL+"/api/jeux/"+id+"/"+action, {
+            actif:joueur.actif,
+            favori:joueur.favori,
+            possede:joueur.possede
+        }, {
+            headers: {
+                "Accept": "application/json",
+            }
+        }).then((response) => {
+            if (response.status >= 200 && response.status < 300 && response.data.joueur){
+                // correction du visuel
+                setJeu({...jeu,joueur:response.data.joueur});
+            }
+        });
+    }
     return <>
         <Link to={"/"}>{"<"} Home</Link>
 
@@ -19,6 +53,36 @@ export function Jeu(){
         <p>Nom: {jeu.nom}</p>
         <p>Description: {jeu.description}</p>
         <p>Nombre de succès: {jeu.succes.length}</p>
+        {jeu.joueur != false ? <div style={{backgroundColor:"lightgray"}}>
+            <h2>Informations joueur</h2>
+                <div>
+                    <p>Actif: {jeu.joueur.actif == 1 ? "Oui" : "Non"}</p>
+        <button onClick={()=>{
+            handleClick("actif")
+        }}>Changer</button>
+                </div>
+            <div>
+                <p>Favorie: {jeu.joueur.favori == 1 ? "Oui" : "Non"} </p>
+                <button onClick={()=>{
+                    handleClick("favori")
+                }}>Changer</button>
+            </div>
+            <div>
+                <p>Possede: {jeu.joueur.possede == 1 ? "Oui" : "Non"} </p>
+                <button onClick={()=>{
+                    handleClick("possede")
+                }}>Changer</button>
+            </div>
+
+
+                {/*  <p>Favorie: {jeu.joueur.favorie == 1 ? "Oui" : "Non"} </p>
+                <p>Note: {jeu.joueur.note ?? 0}</p>
+                <p>Possede: {jeu.joueur.possede == 1 ? "Oui" : "Non"} </p>
+            */}
+              </div>
+
+
+            : <></>}
         <h2>Success</h2>
         <ul>
             {jeu.succes.map((item) => (

@@ -6,7 +6,7 @@ export function Profile({user}){
     const [success,setSuccess] = useState([]);
     useEffect(() => {
         if (!user) return;
-        axios.get("http://localhost:8000/api/user/"+user.id).then((response) => {
+        axios.get(process.env.REACT_APP_API_URL+"/api/user/"+user.id).then((response) => {
             setSuccess(response.data.succes);
             console.log("response",response.data.succes);
         });

@@ -5,7 +5,7 @@ import axios from "axios";
 export function Home({user}){
     const [jeux,setJeux] = useState([]);
     useEffect(() => {
-        axios.get("http://localhost:8000/api/jeux").then((response) => {
+        axios.get(process.env.REACT_APP_API_URL+"/api/jeux").then((response) => {
             setJeux(response.data.jeux);
             console.log("response",response.data);
         });

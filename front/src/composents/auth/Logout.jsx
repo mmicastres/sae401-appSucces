@@ -6,7 +6,7 @@ export function Logout(){
 
     const navigate = useNavigate();
     useEffect(() => {
-        axios.get("https://localhost:8000/logout").then(() => {
+        axios.get(process.env.REACT_APP_API_URL+"/logout").then(() => {
             window.location = "/";
             navigate("/");
         });
