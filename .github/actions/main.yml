@@ -1,0 +1,29 @@
+name: nomworkflow
+# Contrôle quand le workflow démarre :
+on:
+  # sera lancé manuellement :
+  workflow_dispatch:
+  # l'action choisie nécessite le paramètre sync :
+    inputs:
+      sync:
+      # delta pour les modifications seulement
+        default: delta
+  # un workflow est une liste de tâches :
+jobs:
+  nomtravail:
+    runs-on: ubuntu-latest
+    steps:
+      # une tâche de vérification est systématiquement nécessaire
+      - name: vérification
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: téléversement SFTP
+        uses: milanmk/actions-file-deployer@master
+        with:
+          remote-protocol: sftp
+          remote-host: kiliangui.fr
+          remote-user: succes
+          remote-password: abcJOEY123
+          remote-path: /var/www/succes
+          local-path: ./laravel
