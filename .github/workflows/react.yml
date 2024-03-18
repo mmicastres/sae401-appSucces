@@ -44,4 +44,4 @@ jobs:
           remote-user: succes
           remote-password: azertyuiop
           remote-path: /var/www/front
-          local-path: ./front
+          local-path: ./front/build
