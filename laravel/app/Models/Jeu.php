@@ -14,5 +14,6 @@ class Jeu extends Model
     }
     protected $table = "Jeu";
     protected $primaryKey = "idJeu";
+    public $timestamps = false;
 
 }

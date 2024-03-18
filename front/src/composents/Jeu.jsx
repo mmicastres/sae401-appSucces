@@ -2,12 +2,15 @@ import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-export function Jeu(){
+export function Jeu({user}){
     let {id} = useParams();
     const [jeu,setJeu] = useState({succes:[],joueur:false});
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL+"/api/jeux/"+id).then((response) => {
+            if (response.data.jeu.joueur == null){
+                response.data.jeu.joueur = false;
+            }
             setJeu(response.data.jeu);
             console.log("response",response.data);
         });
