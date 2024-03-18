@@ -56,7 +56,7 @@ function App() {
        }).catch((e)=>{
            setLoading(false)
        })
-    }, []);
+    }, [location.pathname,navigate]);
   return (
 
           <Routes >
