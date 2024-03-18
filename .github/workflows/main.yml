@@ -23,7 +23,7 @@ jobs:
         with:
           remote-protocol: sftp
           remote-host: kiliangui.fr
-          remote-user: succes
-          remote-password: abcJOEY123
+          remote-user: ${{env.user}}
+          remote-password: ${{env.password}}
           remote-path: /var/www/succes
           local-path: ./laravel
