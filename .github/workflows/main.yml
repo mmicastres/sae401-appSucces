@@ -10,7 +10,7 @@ on:
         default: delta
   # un workflow est une liste de tâches :
 jobs:
-  nomtravail:
+  laravel:
     runs-on: ubuntu-latest
     steps:
       # une tâche de vérification est systématiquement nécessaire
@@ -27,6 +27,9 @@ jobs:
           remote-password: ${{secrets.password}}
           remote-path: /var/www/succes
           local-path: ./laravel
+  react:
+    runs-on: ubuntu-latest
+    steps:
       - name: build react
         run: |
           cd front
