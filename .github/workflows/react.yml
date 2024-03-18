@@ -28,11 +28,11 @@ jobs:
 
       # install dependencies
       - name: Install dependencies
-        run: npm i
+        run: cd front && npm install
 
       # build the react app
       - name: Build
-        run: npm run build
+        run: cd front && npm run build
       - name: téléversement SFTP du react
         uses: milanmk/actions-file-deployer@master
         with:
@@ -41,4 +41,4 @@ jobs:
           remote-user: ${{secrets.user}}
           remote-password: ${{secrets.password}}
           remote-path: /var/www/front
-          local-path: ./build
+          local-path: ./front/build
