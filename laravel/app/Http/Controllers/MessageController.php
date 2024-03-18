@@ -9,6 +9,7 @@ use App\Models\Participe;
 use App\Models\Message;
 use App\Models\Likes;
 use DB;
+use Carbon\Carbon;
 
 class MessageController extends Controller
 {
@@ -93,7 +94,7 @@ class MessageController extends Controller
     {
         $msg = new Message;
         $msg->content = $request->content;
-        // $msg->dateTime = ;
+        $msg->dateTime = Carbon::now();
         $msg->pseudo = Auth::user()->pseudo;
         $msg->idConversation = $request->idConversation;
         $ok = $msg->save();
