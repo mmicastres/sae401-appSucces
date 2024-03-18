@@ -15,7 +15,7 @@ class MessageController extends Controller
 {
     public function listConv(Request $request)
     {
-        // $pseudo = Auth::user()->pseudo;
+        $participe = DB::where('pseudo', Auth::user()->pseudo)->get();
         $conversations = Conversation::with('users')->get();
         return response()->json(["message" => "OK", "conversations" => $conversations]);
     }
