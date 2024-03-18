@@ -12,11 +12,27 @@ jobs:
   react:
     runs-on: ubuntu-latest
     steps:
-      - name: build react
-        run: |
-          cd front
-          npm install
-          npm run build
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "18.16.1"
+
+      # cache the dependencies to speed up the build
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # install dependencies
+      - name: Install dependencies
+        run: npm i
+
+      # build the react app
+      - name: Build
+        run: npm run build
       - name: téléversement SFTP du react
         uses: milanmk/actions-file-deployer@master
         with:
