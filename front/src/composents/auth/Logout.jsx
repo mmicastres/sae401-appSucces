@@ -11,6 +11,6 @@ export function Logout(){
             navigate("/");
         });
 
-    }, []);
+    }, [navigate]);
     return <h1>Logout</h1>
 }
