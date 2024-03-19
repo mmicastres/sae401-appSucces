@@ -67,7 +67,7 @@ class SuccesController extends Controller
     public function addComment(Request $request, $idsucces){
         $commentaire = new Commentaire;
         $commentaire->titre = $request->titre;
-        $commentaire->content = $request->content;
+        $commentaire->content = $request->get('content');
         $commentaire->idSucces = $idsucces;
         $commentaire->pseudo = Auth::user()->pseudo;
         $ok = $commentaire->save();
@@ -81,7 +81,7 @@ class SuccesController extends Controller
     public function modComment(Request $request, $idcomment){
         $commentaire = Commentaire::find($idcomment);
         $commentaire->titre = $request->titre;
-        $commentaire->content = $request->content;
+        $commentaire->content = $request->get('content');
         $ok = $commentaire->save();
         if ($ok) {
             return response()->json(["status" => 1, "message" => "Le commentaire a été modifié"], 201);
