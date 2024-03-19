@@ -13,9 +13,13 @@ class JeuController extends Controller
 
     function jeux(Request $request) // testée et fonctionnelle
     {
-        $page = $request->page || 0;
+        $search = "";
+        if ( isset($request->search)){
+            $search = $request->search;
+        }
+        $page = $request->page-1 || 0;
         $step= 80;
-        $jeux = Jeu::skip($step*$page)->take($step)->get();
+        $jeux = Jeu::where("nom","like","%".$search."%")->skip($step*$page)->take($step)->get();
         return response()->json(["message" => "OK", "jeux" => $jeux]);
     }
 
@@ -41,9 +45,9 @@ class JeuController extends Controller
             }
 
         }
-        $steamkey = env('STEAM_ACCESSTOKEN');
+        $achievementkey = env('ACHIEVEMENTSTAT_ACCESSTOKEN');
         if (count($jeu->succes ) == 0 && !$jeu->noSuccess) {
-            $url="https://api.achievementstats.com/games/".$jeu->steamId."/achievements/?key=".$steamkey;
+            $url="https://api.achievementstats.com/games/".$jeu->steamId."/achievements/?key=".$achievementkey;
             $response = file_get_contents($url);
             $data = json_decode($response, true);
             if (count($data) > 0) {

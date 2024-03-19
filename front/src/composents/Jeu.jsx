@@ -87,6 +87,7 @@ export function Jeu({user}){
 
             : <></>}
         <h2>Success</h2>
+        {jeu.noSuccess ? <h3>Pas de succes</h3> :
         <ul>
             {jeu.succes.map((item) => (
                 <li key={item.idSucces}>
@@ -101,6 +102,6 @@ export function Jeu({user}){
                 </li>
             ))
             }
-        </ul>
+        </ul>}
         </>
 }
