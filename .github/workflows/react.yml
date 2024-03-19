@@ -6,6 +6,7 @@ on:
     # l'action choisie nécessite le paramètre sync :
     inputs:
       sync:
+        description: 'sync'
         default: delta
   push:
     branches:
