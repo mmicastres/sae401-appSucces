@@ -15,8 +15,8 @@ on:
 jobs:
   react:
     runs-on: ubuntu-latest
-    environment:
-        name: REACT_APP_API_URL
+    env:
+      REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
     steps:
       # checkout the repository content to github runner
       - name: Checkout
@@ -49,7 +49,7 @@ jobs:
         with:
           remote-protocol: sftp
           remote-host: kiliangui.fr
-          remote-user: succes
-          remote-password: azertyuiop
+          remote-user: ${{ secrets.user }}
+          remote-password: ${{ secrets.password }}
           remote-path: /var/www/front
           local-path: ./front/build
