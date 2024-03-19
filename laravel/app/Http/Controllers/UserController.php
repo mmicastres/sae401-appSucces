@@ -10,7 +10,13 @@ class UserController extends Controller
 {
     public function userInfo($id)
     {
-        $user = User::with("succes")->find($id);
+        $user = User::with("succes")->
+        with("friends1")->
+        with("friends2")->
+        with("friendRequests")->
+        with("friendRequestsSent")->find($id);
+        $user->friends = $user->friends1->merge($user->friends2);
+        unset($user->friends1);unset($user->friends2);
         return $user;
     }
 

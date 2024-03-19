@@ -15,6 +15,22 @@ class User extends Authenticatable
     public function succes(){
         return $this->belongsToMany(Succes::class, 'Obtient','idUser','idSucces');
     }
+    public function friends1() {
+        return $this->belongsToMany(User::class, 'FriendTable', 'destinataire', 'demandeur')->where("accepter",1);
+    }
+    public function friends2() {
+        return $this->belongsToMany(User::class, 'FriendTable', 'demandeur', 'destinataire')->where("accepter",1);
+    }
+
+    public function friendRequests() {
+        // get the Users that have sent a friend request to the current User
+        return $this->belongsToMany(User::class, 'FriendTable', 'destinataire', 'demandeur')->where("accepter",0);
+
+    }
+    public function friendRequestsSent() {
+        // get the Users that the current User has sent a friend request to
+        return $this->belongsToMany(User::class, 'FriendTable', 'demandeur', 'destinataire')->where("accepter",0);
+    }
 
     /**
      * The attributes that are mass assignable.

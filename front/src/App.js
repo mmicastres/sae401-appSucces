@@ -9,6 +9,7 @@ import {Home} from "./composents/Home";
 import {Logout} from "./composents/auth/Logout";
 import {Jeu} from "./composents/Jeu";
 import {Succes} from "./composents/Succes";
+import {ConvPage} from "./composents/ConvPage";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
@@ -70,6 +71,8 @@ function App() {
                   </>:<></>}
                   <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile user={user} setUser={setUser} />}/>}/>
                   <Route path={"/logout"} element={<AuthVerif user={user} elem={<Logout user={user}/>}/>}/>
+                  <Route path={"/conv"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
+                  <Route path={"/conv/:id"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
             <Route path={"/jeu/:id"} element={<Jeu user={user}/>}/>
               <Route path={"/succes/:id"} element={<Succes user={user}/>}/>
               <Route index path="/" element={
