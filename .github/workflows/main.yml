@@ -7,6 +7,7 @@ on:
     inputs:
       sync:
       # delta pour les modifications seulement
+        description: 'sync'
         default: delta
   # un workflow est une liste de tâches :
 jobs:
@@ -23,24 +24,7 @@ jobs:
         with:
           remote-protocol: sftp
           remote-host: kiliangui.fr
-          remote-user: ${{secrets.user}}
-          remote-password: ${{secrets.password}}
+          remote-user: ${{secrets.USERNAME}}
+          remote-password: ${{secrets.PASSWORD}}
           remote-path: /var/www/succes
           local-path: ./laravel
-  react:
-    runs-on: ubuntu-latest
-    steps:
-      - name: build react
-        run: |
-          cd front
-          npm install
-          npm run build
-      - name: téléversement SFTP du react
-        uses: milanmk/actions-file-deployer@master
-        with:
-          remote-protocol: sftp
-          remote-host: kiliangui.fr
-          remote-user: succes
-          remote-password: azertyuiop
-          remote-path: /var/www/front
-          local-path: ./build
