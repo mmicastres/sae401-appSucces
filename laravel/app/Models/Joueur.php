@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Thiagoprz\CompositeKey\HasCompositeKey;
 
 class Joueur extends Model
 {
     use HasFactory;
-    use HasCompositeKey;
 
     public function user(){
         return $this->belongsTo(User::class);

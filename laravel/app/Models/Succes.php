@@ -22,12 +22,25 @@ class Succes extends Model
     }
 
 
-    protected $attributes=[
-        "idSucces",
+    //protected $attributes = [
+    //    "iconLocked" => "defaultIconLocked",
+    //    "iconUnlocked" => "defaultIconUnlocked"
+    //];
+
+    protected $fillable = [
         "nom",
         "description",
+        "iconLocked",
+        "iconUnlocked",
         "idJeu"
     ];
+    public $timestamps = false;
+
+    // prevent laravel from using 0,1,2,3
+    protected $keyType = "string";
+
+
+
 
     protected $table ="Succes";
     protected $primaryKey = "idSucces";

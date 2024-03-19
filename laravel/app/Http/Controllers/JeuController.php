@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jeu;
 use App\Models\Joueur;
+use App\Models\Succes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,9 @@ class JeuController extends Controller
 
     function jeux(Request $request) // testée et fonctionnelle
     {
-        $jeux = Jeu::get();
+        $page = $request->page || 0;
+        $step= 80;
+        $jeux = Jeu::skip($step*$page)->take($step)->get();
         return response()->json(["message" => "OK", "jeux" => $jeux]);
     }
 
@@ -20,6 +23,46 @@ class JeuController extends Controller
     {
         $jeu = Jeu::with("succes")->find($id);
         $user = Auth::user();
+        if ($jeu->annee == null || $jeu->description == null){
+            $url = "https://store.steampowered.com/api/appdetails?appids=";
+            $url .= $jeu->steamId;
+            $response = file_get_contents($url);
+            $data = json_decode($response, true);
+            if ($data[$jeu->steamId]["success"]) {
+                $data = $data[$jeu->steamId]["data"];
+                $jeu->annee = explode(" ", $data["release_date"]["date"])[2];
+                $jeu->description = $data["detailed_description"];
+                $jeu->image = $data["header_image"];
+                $jeu->capsule = $data["capsule_image"];
+                $jeu->priceInitial = isset($data["is_free"]) ? 0 : $data["price_overview"]["initial"];
+                $jeu->priceFinal = isset($data["is_free"]) ? 0 : $data["price_overview"]["final"];
+                $jeu->dev = $data["developers"][0];
+                $jeu->save();
+            }
+
+        }
+        $steamkey = env('STEAM_ACCESSTOKEN');
+        if (count($jeu->succes ) == 0 && !$jeu->noSuccess) {
+            $url="https://api.achievementstats.com/games/".$jeu->steamId."/achievements/?key=".$steamkey;
+            $response = file_get_contents($url);
+            $data = json_decode($response, true);
+            if (count($data) > 0) {
+                foreach ($data as $succesdata) {
+                    $succesdata = (object) $succesdata;
+                    $succes = new Succes;
+                    $succes->idJeu = $jeu->idJeu;
+                    $succes->nom = $succesdata->name;
+                    $succes->description = $succesdata->description;
+                    $succes->iconLocked = $succesdata->iconLocked;
+                    $succes->iconUnlocked = $succesdata->iconUnlocked;
+                    $succes->save();
+
+                }
+            }else{
+                $jeu->noSuccess = 1;
+                $jeu->save();
+            }
+        }
         if ($user) {
             $joueur = Joueur::where('idJeu', $id)->where('idUser', $user->id)->first();
             if ($joueur == null) {

@@ -37,7 +37,7 @@ class getGameList extends Command
         $le = 0;
         echo "Max id: " . $max . "\n";
         // get the STEAM_ACCESSTOKEN from the .env file
-        $accessToken = env('STEAM_ACCESSTOKEN');
+        $accessToken = env('STEAMDB_ACCESSTOKEN');
         $url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?access_token=" . $accessToken . "&include_games=true&include_dlc=false&include_software=false&include_videos=false&include_hardware=false";
         if ($max != null) {
             echo "running with maxapp id to : ".$max."\n";
@@ -45,18 +45,34 @@ class getGameList extends Command
         }
         $response = file_get_contents($url);
         $data = json_decode($response, true);
-        while ($data['response']["have_more_results"] == true) {
+        var_dump($data["response"]);
+        while (isset($data["response"]["apps"]) && count($data['response']['apps']) > 0) {
 
-        }
-        foreach ($data['response']['apps'] as $game) {
-            if ($game['appid'] > $max) {
-                $jeu = new Jeu();
-                $jeu->steamId = $game['appid'];
-                $jeu->nom = $game['name'];
-                $ok = $jeu->save();
-                if ($ok) $ln++;
-                else $le++;
+            foreach ($data['response']['apps'] as $game) {
+                if ($game['appid'] > $max) {
+                    $jeu = new Jeu();
+                    $jeu->steamId = $game['appid'];
+                    $jeu->nom = $game['name'];
+                    $ok = $jeu->save();
+                    if ($ok) $ln++;
+                    else $le++;
+                    if (!$ok) echo "Failed to add game " . $game['appid'] . " : " . $game['name'] . "\n";
+                }
             }
+            $jeu = Jeu::max('idJeu');
+            if ($jeu != null) {
+                $jeu = Jeu::find($jeu);
+                $max = $jeu->steamId;
+            }
+            $url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?access_token=" . $accessToken . "&include_games=true&include_dlc=false&include_software=false&include_videos=false&include_hardware=false";
+            if ($max != null) {
+                echo "running with maxapp id to : ".$max."\n";
+                $url .= "&last_appid=" . $max;
+            }
+            $response = file_get_contents($url);
+            $data = json_decode($response, true);
+
+
         }
         echo "Added " . $ln . " games\n";
         if ($ln == 0) {
