@@ -90,9 +90,13 @@ export function Jeu({user}){
         <ul>
             {jeu.succes.map((item) => (
                 <li key={item.idSucces}>
-                    <Link to={"/succes/"+item.idSucces}>
-                    <h2>{item.nom}</h2>
-                    <p>{item.description}</p>
+                    <Link to={"/succes/"+item.idSucces} className={"flex"}>
+
+                        <img src={"https://achievementstats.com/"+item.iconUnlocked} alt={item.nom} />
+                        <div>
+                            <h2>{item.nom}</h2>
+                            <p>{item.description}</p>
+                        </div>
                     </Link>
                 </li>
             ))
