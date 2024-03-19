@@ -17,12 +17,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+
     steps:
       # checkout the repository content to github runner
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Reading .env file
+        run: echo "REACT_APP_API_URL=${{ vars.REACT_APP_API_URL }}" > ./front/.env
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
         with:
@@ -49,7 +52,7 @@ jobs:
         with:
           remote-protocol: sftp
           remote-host: kiliangui.fr
-          remote-user: ${{ secrets.user }}
-          remote-password: ${{ secrets.password }}
+          remote-user: ${{ secrets.USERNAME }}
+          remote-password: ${{ secrets.PASSWORD }}
           remote-path: /var/www/front
           local-path: ./front/build
