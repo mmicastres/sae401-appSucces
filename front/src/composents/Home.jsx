@@ -27,6 +27,7 @@ export function Home({user}){
             }
         </ul>
         {user ? <h1>Connected as {user.nom}</h1>:<h1>Not connected</h1>}
+        {process.env.REACT_APP_API_URL}
 
         </>
 }
