@@ -12,8 +12,8 @@ export function Login() {
     e.preventDefault();
     setError(null);
     try {
-        await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-        const res = await axios.post("http://localhost:8000/login", {
+        await axios.get( process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
+        const res = await axios.post(process.env.REACT_APP_API_URL+"/login", {
             email: email,
             password: password,
         }, {
