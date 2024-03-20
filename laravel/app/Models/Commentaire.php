@@ -13,7 +13,9 @@ class Commentaire extends Model
         return $this->belongsTo(User::class);
     }
     public function succes(){
-        return this->belongsTo(Succes::class);
+        return $this->belongsTo(Succes::class);
     }
     protected $table = 'Commentaire';
+
+    protected $primaryKey = 'idCommentaire';
 }

@@ -42,7 +42,7 @@ export function Profile({user}){
         <h2>Friends</h2>
         <ul>
             {friends.map((item) => (
-                <User key={item.id} user={item}/>
+                <User friend={true} key={item.id} user={item}/>
             ))
             }
         </ul>

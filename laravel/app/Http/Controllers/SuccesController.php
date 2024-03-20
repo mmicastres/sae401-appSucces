@@ -9,6 +9,7 @@ use App\Models\NoteDifficulte;
 use App\Models\Commentaire;
 use App\Models\Vote;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SuccesController extends Controller
 {
@@ -18,7 +19,10 @@ class SuccesController extends Controller
 
     }
     public function succesInfo(Request $request, $id){
-        $succes = Succes::with("jeu")->find($id);
+        //$succes = Succes::with("jeu")->with("commentaires")->find($id);
+        // Order commentaires by date
+        $succes = Succes::with("jeu")->with("commentaires")->find($id);
+        $succes->commentaires = $succes->commentaires->sortByDesc('idCommentaire');
         return response()->json(["Message"=>"OK","succes" => $succes]);
     }
     public function succesComplete(Request $request, $id)
@@ -64,15 +68,17 @@ class SuccesController extends Controller
         }
     }
 
-    public function addComment(Request $request, $idsucces){
+    public function addComment(Request $request, $id){
         $commentaire = new Commentaire;
         $commentaire->titre = $request->titre;
         $commentaire->content = $request->get('content');
-        $commentaire->idSucces = $idsucces;
-        $commentaire->pseudo = Auth::user()->pseudo;
+        $commentaire->idSucces = $id;
+        $commentaire->idUser = Auth::user()->id;
         $ok = $commentaire->save();
+        // Get the id
+        $commentaire = Commentaire::where('titre', $request->titre)->where('content', $request->get('content'))->where('idSucces', $id)->where('idUser', Auth::user()->id)->first();
         if ($ok) {
-            return response()->json(["status" => 1, "message" => "Le commentaire a été ajouté"], 201);
+            return response()->json(["status" => 1, "message" => "Le commentaire a été ajouté","commentaire"=>$commentaire], 201);
         } else {
             return response()->json(["status" => 0, "message" => "pb lors de la modification"], 400);
         }
@@ -90,8 +96,12 @@ class SuccesController extends Controller
         }
     }
 
-    public function deleteComment(Request $request, $idcomment){
+    public function deleteComment(Request $request,$id, $idcomment){
         $commentaire = Commentaire::find($idcomment);
+        if (!isset($commentaire)) return response()->json(["status" => 0, "message" => "Le commentaire n'existe pas","idCommentaire"=>$idcomment], 400);
+        if ($commentaire->idUser != Auth::user()->id) {
+            return response()->json(["status" => 0, "message" => "Vous n'avez pas les droits pour supprimer ce commentaire"], 400);
+        }
         $ok = $commentaire->delete();
         if ($ok) {
             return response()->json(["status" => 1, "message" => "Le commentaire a été supprimé"], 201);

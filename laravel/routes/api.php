@@ -72,15 +72,15 @@ Route::prefix("/succes")->group(function () {
 
     Route::post('/{id}/note', [SuccesController::class, 'succesNoter']);
 
-    Route::prefix("/succes/{idsucces}/comment")->group(function (){
+    Route::prefix("/{id}/comment")->group(function (){
 
-        Route::post('/', [SuccesController::class],"addComment");
+        Route::post('/', [SuccesController::class,"addComment"]);
 
-        Route::put('/{idcomment}', [SuccesController::class],"modComment");
+        Route::put('/{idcomment}', [SuccesController::class,"modComment"]);
 
-        Route::delete('/{idcomment}', [SuccesController::class],"deleteComment");
+        Route::delete('/{idcomment}', [SuccesController::class,"deleteComment"]);
 
-        Route::put('{idcomment}/like', [SuccesController::class],"likeComment");
+        Route::put('{idcomment}/like', [SuccesController::class,"likeComment"]);
     });
 });
 

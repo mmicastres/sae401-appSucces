@@ -14,7 +14,7 @@ class Succes extends Model
     }
     public function commentaires()
     {
-        return $this->hasMany(Commentaire::class);
+        return $this->hasMany(Commentaire::class,"idSucces");
     }
 
     public function detenteurs(){
