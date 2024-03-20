@@ -1,7 +1,7 @@
 import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
-
+import * as sanitizeHtml from 'sanitize-html'
 export function Jeu({user}){
     let {id} = useParams();
     const [jeu,setJeu] = useState({succes:[],joueur:false});
@@ -54,7 +54,8 @@ export function Jeu({user}){
         <h1>Jeu {id}</h1>
         <h2>Informations</h2>
         <p>Nom: {jeu.nom}</p>
-        <p>Description: {jeu.description}</p>
+        <p>Description: </p>
+        <div dangerouslySetInnerHTML={{__html:sanitizeHtml(jeu.description)}} ></div>
         <p>Nombre de succès: {jeu.succes.length}</p>
         {jeu.joueur != false ? <div style={{backgroundColor:"lightgray"}}>
             <h2>Informations joueur</h2>

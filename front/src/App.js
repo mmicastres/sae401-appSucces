@@ -14,7 +14,9 @@ import {ConvPage} from "./composents/ConvPage";
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 function App() {
-  const [user, setUser] = useState(false)
+
+    console.log("LOCALSTORE = ", localStorage.getItem("user"))
+  const [user, setUser] = useState( false)
     const [loading,setLoading] = useState(true)
   const onRegister = async () => {
     await axios.get(process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
@@ -49,9 +51,14 @@ function App() {
        axios.get(process.env.REACT_APP_API_URL+"/api/me").then((res)=> {
            if (res.status >= 200 && res.status < 300) {
                setUser(res.data)
+               // store the user as json
+                localStorage.setItem("user", JSON.stringify(res.data))
                if (["/login","/register"].includes(location.pathname)){
                    navigate("/")
                }
+           }else{
+                setUser(false)
+                localStorage.removeItem("user")
            }
            setLoading(false)
        }).catch((e)=>{
