@@ -32,6 +32,10 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'FriendTable', 'demandeur', 'destinataire')->where("accepter",0);
     }
 
+    public function joueur(){
+        return $this->hasMany(Joueur::class,"idUser","id");
+    }
+
     /**
      * The attributes that are mass assignable.
      *

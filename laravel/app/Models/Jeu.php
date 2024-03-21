@@ -12,6 +12,10 @@ class Jeu extends Model
     public function succes(){
         return $this->hasMany(Succes::class,"idJeu");
     }
+
+    public function joueur(){
+        return $this->hasMany(Joueur::class);
+    }
     protected $table = "Jeu";
     protected $primaryKey = "idJeu";
     public $timestamps = false;

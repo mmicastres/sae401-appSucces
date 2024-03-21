@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {User} from "./User";
 
 export function Profile({user}){
+    const [joueur, setJoueur] = useState([]);
     const [success,setSuccess] = useState([]);
     const [friends,setFriends] = useState([]);
     const [friendsRequests,setFriendsRequests] = useState([]);
@@ -17,6 +18,7 @@ export function Profile({user}){
             setFriends(response.data.friends);
             setFriendsRequests(response.data.friend_requests);
             setFriendsRequestsSent(response.data.friend_requests_sent);
+            setJoueur(response.data.joueur);
             console.log("response",response.data.succes);
         });
 
@@ -28,6 +30,16 @@ export function Profile({user}){
         <h2>Informations</h2>
         <p>Nom: {user.nom}</p>
         <p>Email: {user.email}</p>
+        <p>Jeux possédés :</p>
+        {joueur.map((item) => (
+                <li key={item.idJeu}>
+                    <p>{item.idJeu}</p>
+                    <p>{item.actif}</p>
+                    <p>{item.possede}</p>
+                    <p>{item.favori}</p>
+                </li>
+            ))
+            }
         <p>Nombre de succès: {success.length}</p>
         <h2>Success</h2>
         <ul>
