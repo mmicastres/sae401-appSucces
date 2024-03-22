@@ -14,7 +14,7 @@ class Joueur extends Model
     }
 
     public function jeu(){
-        return $this->belongsTo(Jeu::class);
+        return $this->belongsTo(Jeu::class, 'idJeu', 'idJeu');
     }
     protected $table = 'Joueur';
     // primary key is the idJeu and idUser columns

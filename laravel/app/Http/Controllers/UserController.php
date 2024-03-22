@@ -14,7 +14,13 @@ class UserController extends Controller
         with("friends1")->
         with("friends2")->
         with("friendRequests")->
-        with("friendRequestsSent")->find($id);
+        with("friendRequestsSent")->
+        with(["joueur" => function($query) {
+            $query->where('favori', 1)->
+            orWhere('possede', 1)->
+            orWhere('actif',1)->
+            with('jeu');
+        }])->find($id);
         $user->friends = $user->friends1->merge($user->friends2);
         unset($user->friends1);unset($user->friends2);
         return $user;
