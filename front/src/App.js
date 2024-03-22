@@ -9,14 +9,14 @@ import {Home} from "./composents/Home";
 import {Logout} from "./composents/auth/Logout";
 import {Jeu} from "./composents/Jeu";
 import {Succes} from "./composents/Succes";
-import {ConvPage} from "./composents/ConvPage";
+import {ConvPage} from "./composents/conv/ConvPage";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 function App() {
 
     console.log("LOCALSTORE = ", localStorage.getItem("user"))
-  const [user, setUser] = useState( false)
+  const [user, setUser] = useState( localStorage.getItem("user"))
     const [loading,setLoading] = useState(true)
   const onRegister = async () => {
     await axios.get(process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
@@ -49,7 +49,7 @@ function App() {
     useEffect(() => {
 
        axios.get(process.env.REACT_APP_API_URL+"/api/me").then((res)=> {
-           if (res.status >= 200 && res.status < 300) {
+           if (res.status >= 200 && res.status < 300 && res.status !== 204) {
                setUser(res.data)
                // store the user as json
                 localStorage.setItem("user", JSON.stringify(res.data))
@@ -62,6 +62,12 @@ function App() {
            }
            setLoading(false)
        }).catch((e)=>{
+           if (e.response && e.response.status === 401){
+                setUser(false)
+                localStorage.removeItem("user")
+
+           }
+
            setLoading(false)
        })
     }, [navigate]);
@@ -79,7 +85,7 @@ function App() {
                   <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile user={user} setUser={setUser} />}/>}/>
                   <Route path={"/logout"} element={<AuthVerif user={user} elem={<Logout user={user}/>}/>}/>
                   <Route path={"/conv"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
-                  <Route path={"/conv/:id"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
+                  <Route path={"/conv/:current"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
             <Route path={"/jeu/:id"} element={<Jeu user={user}/>}/>
               <Route path={"/succes/:id"} element={<Succes user={user}/>}/>
               <Route index path="/" element={

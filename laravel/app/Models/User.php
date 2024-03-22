@@ -32,6 +32,11 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'FriendTable', 'demandeur', 'destinataire')->where("accepter",0);
     }
 
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'Participe', 'userId', 'idConv');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

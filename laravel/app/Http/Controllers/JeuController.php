@@ -19,7 +19,7 @@ class JeuController extends Controller
         }
         $page = $request->page-1 || 0;
         $step= 80;
-        $jeux = Jeu::where("nom","like","%".$search."%")->skip($step*$page)->take($step)->get();
+        $jeux = Jeu::where("nom","like","%".$search."%")->skip($step*$page)->take($step)->orderByRaw('ISNULL(mostPlayed), mostPlayed ASC')->get();
         return response()->json(["message" => "OK", "jeux" => $jeux]);
     }
 
