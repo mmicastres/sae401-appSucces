@@ -46,7 +46,7 @@ class JeuController extends Controller
 
         }
         $achievementkey = env('ACHIEVEMENTSTAT_ACCESSTOKEN');
-        if (count($jeu->succes ) == 0 && !$jeu->noSuccess) {
+        if (count($jeu->succes) == 0 && !$jeu->noSuccess) {
             $url="https://api.achievementstats.com/games/".$jeu->steamId."/achievements/?key=".$achievementkey;
             $response = file_get_contents($url);
             $data = json_decode($response, true);
