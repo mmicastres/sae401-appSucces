@@ -36,6 +36,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Conversation::class, 'Participe', 'userId', 'idConv');
     }
+    public function joueur(){
+        return $this->hasMany(Joueur::class,"idUser","id");
+    }
 
     /**
      * The attributes that are mass assignable.
