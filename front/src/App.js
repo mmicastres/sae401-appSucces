@@ -16,7 +16,7 @@ axios.defaults.withXSRFToken = true;
 function App() {
 
     console.log("LOCALSTORE = ", localStorage.getItem("user"))
-  const [user, setUser] = useState( localStorage.getItem("user"))
+  const [user, setUser] = useState( JSON.parse(localStorage.getItem("user")))
     const [loading,setLoading] = useState(true)
   const onRegister = async () => {
     await axios.get(process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
@@ -71,6 +71,8 @@ function App() {
            setLoading(false)
        })
     }, [navigate]);
+
+    console.log(user.id,user["id"],user)
   return (
 
           <Routes >
