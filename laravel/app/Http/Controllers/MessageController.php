@@ -95,13 +95,12 @@ class MessageController extends Controller
     public function addMsg(Request $request, $id)
     {
         $msg = new Message;
-        $msg->content = $request->content;
-        $msg->dateTime = Carbon::now();
-        $msg->pseudo = Auth::user()->pseudo;
-        $msg->idConversation = $request->idConversation;
+        $msg->content = $request->get("content");
+        $msg->userId = Auth::user()->id;
+        $msg->idConversation = $id;
         $ok = $msg->save();
         if ($ok) {
-            return response()->json(["status" => 1, "message" => "Le message a été envoyé"], 201);
+            return response()->json(["status" => 1, "message" => "Le message a été envoyé","newMessage"=>$msg], 201);
         } else {
             return response()->json(["status" => 0, "message" => "Erreur"], 400);
         }
@@ -109,10 +108,12 @@ class MessageController extends Controller
 
     public function deleteMsg(Request $request, $id, $idmessage)
     {
-        $msg = Message::find($idmessage);
-        $like = Likes::where('idMessage', $idmessage)->get();
-        if ($like) {
-            $like->delete();
+        $msg = Message::with("likes")->find($idmessage);
+        $likes = $msg->likes;
+        if ($likes) {
+            foreach ($likes as $like) {
+                $like->delete();
+            }
         }
         $ok = $msg->delete();
         if ($ok) {

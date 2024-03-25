@@ -72,7 +72,6 @@ function App() {
        })
     }, [navigate]);
 
-    console.log(user.id,user["id"],user)
   return (
 
           <Routes >

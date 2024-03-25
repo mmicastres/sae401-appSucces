@@ -100,7 +100,7 @@ Route::prefix("/conv")->group(function () {
 
     Route::post('/{id}', [MessageController::class, 'addMsg']);
 
-    Route::delete('/{id}/{idmessage)', [MessageController::class, 'deleteMsg']);
+    Route::delete('/{id}/{idmessage}', [MessageController::class, 'deleteMsg']);
 
-    Route::post('/{id}/{idmessage)', [MessageController::class, 'likeMsg']);
+    Route::post('/{id}/{idmessage}', [MessageController::class, 'likeMsg']);
 });

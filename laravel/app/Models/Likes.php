@@ -10,9 +10,11 @@ class Likes extends Model
     use HasFactory;
 
     public function message(){
-        return $this->belongsTo(Message::class);
+        return $this->belongsTo(Message::class,"idMessage","idMessage");
     }
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,"userId","id");
     }
+    protected $primaryKey = "idMessage";
+    protected $table = 'LikeMsg';
 }

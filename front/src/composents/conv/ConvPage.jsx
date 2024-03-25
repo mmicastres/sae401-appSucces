@@ -15,9 +15,9 @@ export function ConvPage({user}){
             setConv(response.data["conversations"]);
         })
     }, []);
-    return <div style={{display:"flex", justifyContent:"space-evenly"}}>
+    return <div style={{display:"flex", justifyContent:"space-evenly",gap:16}}>
         <ConvList conv={conv}/>
-        <ConvMessage current={current}/>
+        <ConvMessage current={current} user={user}/>
 
     </div>
 }

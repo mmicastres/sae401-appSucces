@@ -16,7 +16,8 @@ class Message extends Model
         return $this->belongsTo(Conversation::class);
     }
     public function likes(){
-        return $this->hasMany(Likes::class);
+        return $this->hasMany(Likes::class,"idMessage","idMessage");
     }
     protected $table = 'Message';
+    protected $primaryKey = "idMessage";
 }
