@@ -19,6 +19,7 @@ export function Profile({ user }) {
             setFriendsRequests(response.data.friend_requests);
             setFriendsRequestsSent(response.data.friend_requests_sent);
             setJoueur(response.data.joueur);
+
             console.log("response", response.data.succes);
         });
 
@@ -34,9 +35,10 @@ export function Profile({ user }) {
         <ul>
             {joueur.filter(item => item.favori === 1).map(item => (
                 <li key={item.idJeu}>
+                    {console.log(item)}
                     <Link to={"/jeu/" + item.idJeu}>
-                        <img src={"https://cdn.cloudflare.steamstatic.com/steam/apps/" + item.steamId + "/header.jpg"}
-                            alt={"couverture de " + item.nom} />
+                        <img src={item.jeu.image}
+                            alt={"couverture de " + item.jeu.nom} />
                         <h3>{item.nom}</h3>
                     </Link>
                 </li>
@@ -46,7 +48,11 @@ export function Profile({ user }) {
         <ul>
             {joueur.filter(item => item.actif === 1).map(item => (
                 <li key={item.idJeu}>
-                    <p>{item.idJeu}</p>
+                    <Link to={"/jeu/" + item.idJeu}>
+                        <img src={item.jeu.image}
+                            alt={"couverture de " + item.jeu.nom} />
+                        <h3>{item.nom}</h3>
+                    </Link>
                 </li>
             ))}
         </ul>
@@ -54,7 +60,11 @@ export function Profile({ user }) {
         <ul>
             {joueur.filter(item => item.possede === 1).map(item => (
                 <li key={item.idJeu}>
-                    <p>{item.idJeu}</p>
+                    <Link to={"/jeu/" + item.idJeu}>
+                        <img src={item.jeu.image}
+                            alt={"couverture de " + item.jeu.nom} />
+                        <h3>{item.nom}</h3>
+                    </Link>
                 </li>
             ))}
         </ul>
