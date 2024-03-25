@@ -12,7 +12,8 @@ export function Profile({ user }) {
 
 
     useEffect(() => {
-        if (!user) return;
+        if (!user || !user.id) return;
+        console.log("USER ID",user["id"])
         axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
             setSuccess(response.data.succes);
             setFriends(response.data.friends);
