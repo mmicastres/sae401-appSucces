@@ -1,7 +1,7 @@
 import {ConvList} from "./ConvList";
 import {ConvMessage} from "./ConvMessage";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 
 
@@ -15,9 +15,11 @@ export function ConvPage({user}){
             setConv(response.data["conversations"]);
         })
     }, []);
-    return <div style={{display:"flex", justifyContent:"space-evenly",gap:16}}>
+    return <>
+        <Link to={"/"}>Back</Link>
+        <div style={{display:"flex", justifyContent:"space-evenly",gap:16}}>
         <ConvList conv={conv}/>
-        <ConvMessage current={current} user={user}/>
+            {current && <ConvMessage current={current} user={user}/> }
 
-    </div>
+    </div></>
 }
