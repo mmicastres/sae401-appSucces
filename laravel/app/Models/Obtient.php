@@ -15,4 +15,6 @@ class Obtient extends Model
         return $this->belongsTo(Succes::class);
     }
     protected $table = 'Obtient';
+    const UPDATED_AT = null;
+
 }

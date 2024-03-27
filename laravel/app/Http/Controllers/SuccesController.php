@@ -28,9 +28,8 @@ class SuccesController extends Controller
     public function succesComplete(Request $request, $id)
     {
         $obtient = new Obtient;
-        $obtient->pseudo = Auth::user()->pseudo;
+        $obtient->idUser = Auth::user()->id;
         $obtient->idSucces = $id;
-        $obtient->dateTime = Carbon::now();
         $ok = $obtient->save();
         if ($ok) {
             return response()->json(["status" => 1, "message" => "Le succès a été enregistré"], 201);
@@ -41,9 +40,11 @@ class SuccesController extends Controller
 
     public function succesUnComplete(Request $request, $id)
     {
-        $pseudo = Auth::user()->pseudo;
-        $succes = Obtient::where('pseudo', $pseudo)->where('idSucces', $id)->get();
-        $ok = $succes->delete();
+        $idUser = Auth::user()->id;
+        $obtient = Obtient::where('idUser', $idUser)->where('idSucces', $id)->first();
+        if (!$obtient) return response()->json(["Message"=>"Element non trouver", "idUser"=>$idUser, "idSucces"=>$id],404);
+        //return  response()->json(["Message"=>$obtient]);
+        $ok = $obtient->delete();
         if ($ok) {
             return response()->json(["status" => 1, "message" => "Le succès n'est plus comptabilisé"], 201);
         } else {

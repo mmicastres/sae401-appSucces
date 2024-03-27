@@ -13,7 +13,7 @@ export function Profile({ user }) {
 
     useEffect(() => {
         if (!user || !user.id) return;
-        console.log("USER ID",user["id"])
+        console.log("USER ID", user["id"])
         axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
             setSuccess(response.data.succes);
             setFriends(response.data.friends);
@@ -74,8 +74,10 @@ export function Profile({ user }) {
         <ul>
             {success.map((item) => (
                 <li key={item.idSucces}>
-                    <h2>{item.nom}</h2>
-                    <p>{item.description}</p>
+                    <Link to={"/succes/" + item.idSucces}>
+                        <h2>{item.nom}</h2>
+                        <p>{item.description}</p>
+                    </Link>
                 </li>
             ))
             }

@@ -30,7 +30,7 @@ export function Succes({ user }) {
                         "Accept": "application/json",
                     }
                 }).then((response) => {
-                    setObtenu = 1
+                    setObtenu(1)
                 });
             } else {
                 axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
@@ -38,7 +38,7 @@ export function Succes({ user }) {
                         "Accept": "application/json",
                     }
                 }).then((response) => {
-                    setObtenu = 0
+                    setObtenu(0)
                 });
             }
         }
