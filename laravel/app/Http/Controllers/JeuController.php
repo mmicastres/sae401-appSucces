@@ -25,7 +25,7 @@ class JeuController extends Controller
 
     function jeuInfo(Request $request, $id) // testée et fonctionnelle
     {
-        $jeu = Jeu::with("succes")->find($id);
+        $jeu = Jeu::with(["succes"=>function($q){$q->with("detenteurs");}])->find($id);
         $user = Auth::user();
         if ($jeu->annee == null || $jeu->description == null){
             $url = "https://store.steampowered.com/api/appdetails?appids=";

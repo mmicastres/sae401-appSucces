@@ -18,7 +18,7 @@ class Succes extends Model
     }
 
     public function detenteurs(){
-        return $this->hasMany(Obtient::class,);
+        return $this->hasMany(Obtient::class,"idSucces");
     }
 
 

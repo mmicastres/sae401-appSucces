@@ -45,7 +45,7 @@ export function Home({user}){
                 setPage(page+1)
             }}>Next</button>
         </div>
-        {user ? <h1>Connected as {user.nom}</h1> : <h1>Not connected</h1>}
+        {user ? <h1>Connected as {user.pseudo}</h1> : <h1>Not connected</h1>}
         <p>env : {process.env.REACT_APP_API_URL}</p>
 
     </>

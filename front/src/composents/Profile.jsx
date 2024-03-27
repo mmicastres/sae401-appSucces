@@ -85,14 +85,17 @@ export function Profile({ user }) {
                 </li>
             ))}
         </ul>
-        <p>Nombre de succès: {success.length}</p>
         <h2>Success</h2>
+        <p>Nombre de succès: {success.length}</p>
         <ul>
             {success.map((item) => (
                 <li key={item.idSucces}>
-                    <Link to={"/succes/" + item.idSucces}>
-                        <h2>{item.nom}</h2>
-                        <p>{item.description}</p>
+                    <Link to={"/succes/" + item.idSucces} className={"flex"}>
+                        <img src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
+                        <div>
+                            <h2>{item.nom}</h2>
+                            <p>{item.description}</p>
+                        </div>
                     </Link>
                 </li>
             ))
@@ -122,7 +125,7 @@ export function Profile({ user }) {
                     }
                 </ul>
             </>
-        ):(<></>)}
+        ) : <></>}
 
     </>;
 }
