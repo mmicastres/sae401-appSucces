@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { User } from "./User";
 
 export function Profile({ user }) {
+    const { id } = useParams();
+    const [profile, setProfile] = useState();
     const [joueur, setJoueur] = useState([]);
     const [success, setSuccess] = useState([]);
     const [friends, setFriends] = useState([]);
@@ -12,17 +14,31 @@ export function Profile({ user }) {
 
 
     useEffect(() => {
-        if (!user || !user.id) return;
-        console.log("USER ID", user["id"])
-        axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
-            setSuccess(response.data.succes);
-            setFriends(response.data.friends);
-            setFriendsRequests(response.data.friend_requests);
-            setFriendsRequestsSent(response.data.friend_requests_sent);
-            setJoueur(response.data.joueur);
+        if (id && id !== user.id) {
+            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + id).then((response) => {
+                setSuccess(response.data.succes);
+                setFriends(response.data.friends);
+                setJoueur(response.data.joueur);
+                setProfile(response.data);
 
-            console.log("response", response.data.succes);
-        });
+                console.log("response", response.data.succes);
+            });
+
+        } else {
+            if (!user || !user.id) return;
+            console.log("USER ID", user["id"])
+            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
+                setSuccess(response.data.succes);
+                setFriends(response.data.friends);
+                setFriendsRequests(response.data.friend_requests);
+                setFriendsRequestsSent(response.data.friend_requests_sent);
+                setJoueur(response.data.joueur);
+                setProfile(user);
+
+                console.log("response", response.data.succes);
+            });
+        }
+
 
     }, [user]);
 
@@ -30,8 +46,8 @@ export function Profile({ user }) {
         <Link to={"/"}>{"<"} Home</Link>
         <h1>Profile</h1>
         <h2>Informations</h2>
-        <p>Nom: {user.nom}</p>
-        <p>Email: {user.email}</p>
+        <p>Nom: {profile?.nom}</p>
+        <p>Email: {profile?.email}</p>
         <p>Jeux favoris :</p>
         <ul>
             {joueur.filter(item => item.favori === 1).map(item => (
@@ -85,23 +101,28 @@ export function Profile({ user }) {
         <h2>Friends</h2>
         <ul>
             {friends.map((item) => (
-                <User friend={true} key={item.id} user={item} />
+                <User friend={user.id == id ? true : false} key={item.id} user={item} />
             ))
             }
         </ul>
-        <h2>Friends requests</h2>
-        <ul>
-            {friendsRequests.map((item) => (
-                <User key={item.id} user={item} />
-            ))
-            }
-        </ul>
-        <h2>Friends requests sent</h2>
-        <ul>
-            {friendsRequestsSent.map((item) => (
-                <User key={item.id} user={item} />
-            ))
-            }
-        </ul>
+        {user.id == id ? (
+            <>
+                <h2>Friends requests</h2>
+                <ul>
+                    {friendsRequests.map((item) => (
+                        <User key={item.id} user={item} />
+                    ))
+                    }
+                </ul>
+                <h2>Friends requests sent</h2>
+                <ul>
+                    {friendsRequestsSent.map((item) => (
+                        <User key={item.id} user={item} />
+                    ))
+                    }
+                </ul>
+            </>
+        ):(<></>)}
+
     </>;
 }
