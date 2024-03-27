@@ -109,6 +109,9 @@ class MessageController extends Controller
     public function deleteMsg(Request $request, $id, $idmessage)
     {
         $msg = Message::with("likes")->find($idmessage);
+        $usr = Auth::user()->id;
+        if ($msg->userId != $usr) return response()->json(["status" => 0, "message" => "Erreur"], 400);
+
         $likes = $msg->likes;
         if ($likes) {
             foreach ($likes as $like) {
