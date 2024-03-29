@@ -13,4 +13,7 @@ class FriendRequest extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    protected $table = "FriendTable";
+    protected $primaryKey = "id";
 }

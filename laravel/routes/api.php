@@ -33,10 +33,6 @@ Route::get('/user/{id}', [UserController::class, 'userInfo']); // retourne aussi
 
 Route::post('/user/{id}/friend', [UserController::class, 'friendRequest']);
 
-Route::post('/user/{id}/accept', [UserController::class, 'friendAccept']);
-
-Route::post('/user/{id}/unfriend', [UserController::class, 'friendDelete']);
-
 Route::post('user/{id}/profilepicture', [UserController::class, 'profilePicture']);
 
 Route::get('/account/modifier', [ProfileController::class, 'edit']);
