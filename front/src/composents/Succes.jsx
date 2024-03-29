@@ -6,6 +6,7 @@ export function Succes({ user }) {
     let { id } = useParams();
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [] });
     const [obtenu, setObtenu] = useState()
+    const [modif, setModif] = useState(null)
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL + "/api/succes/" + id).then((response) => {
@@ -19,7 +20,6 @@ export function Succes({ user }) {
             });
         }
     }, [id]);
-    console.log(obtenu)
 
     function handleSucces(event) {
         event.preventDefault();
@@ -63,9 +63,29 @@ export function Succes({ user }) {
         });
     }
 
-    function handleModComment() {
-
+    function modComment(item) {
+        console.log(item)
+        setModif(item.idCommentaire);
     }
+
+    function handleModComment(event, idcommentaire) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+      
+        const updatedCommentaires = succes.commentaires.map((item) => {
+          if (item.idCommentaire === idcommentaire) {
+            return {
+              ...item,
+              titre: data.get("titre"),
+              content: data.get("content"),
+            };
+          }
+          return item;
+        });
+      
+        setSucces({ ...succes, commentaires: updatedCommentaires });
+        setModif(null);
+      }
 
     function handleSupComment(e) {
         console.log("sup", e.target.parentNode.id);
@@ -119,22 +139,33 @@ export function Succes({ user }) {
         <ul>
             {succes.commentaires.map((item) => (
                 <li id={item.idCommentaire} key={item.idCommentaire}>
-                    <h2>{item.titre}</h2>
-                    <p>{item.content}</p>
-                    <>
-                        <button>Up</button>
-                        <button>Down</button>
-                    </>
-                    {item.idUser === user.id ?
+                    {modif === item.idCommentaire ? (
                         <>
-                            <button idCommentaire={item.idCommentaire} onClick={handleModComment}>Modification</button>
-                            <button idCommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</button>
-                        </>
-                        : ""}
-                </li>
-            ))
+                            <form onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
+                                <input type="text" name="titre" defaultValue={item.titre} />
+                                <textarea name="content" defaultValue={item.content} />
+                                <button type="submit">Enregistrer</button>
+                            </form>
+                        </>) : (
+            <>
+                <h2>{item.titre}</h2>
+                <p>{item.content}</p>
+
+                <button>Up</button>
+                <button>Down</button>
+
+                {item.idUser === user.id ?
+                    <>
+                        <button idcommentaire={item.idCommentaire} onClick={modComment}>Modification</button>
+                        <button idcommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</button>
+                    </>
+                    : ""}
+            </>)}
+
+        </li>
+        ))
             }
-        </ul>
+    </ul >
 
     </>
 }
