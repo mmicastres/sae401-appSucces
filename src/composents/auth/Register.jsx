@@ -2,7 +2,7 @@ import axios from "axios";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-export function Login() {
+export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ export function Login() {
     setError(null);
     try {
         await axios.get( process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
-        const res = await axios.post(process.env.REACT_APP_API_URL+"/login", {
+        const res = await axios.post(process.env.REACT_APP_API_URL+"/register", {
             email: email,
             password: password,
         }, {
@@ -22,7 +22,7 @@ export function Login() {
             }
         });
         if (res.status >= 200 && res.status < 300) {
-            window.location.reload();
+            navigate("/profile");
         }
     } catch (error) {
       setError(error.message);
@@ -45,11 +45,8 @@ export function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Connexion</button>
+        <button type="submit">Crée un compte</button>
       </form>
-        <button onClick={()=>{
-            navigate("/register")
-        }}>register</button>
       {error && <p>{error}</p>}
     </div>
   );

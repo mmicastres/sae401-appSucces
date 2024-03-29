@@ -10,6 +10,7 @@ import {Logout} from "./composents/auth/Logout";
 import {Jeu} from "./composents/Jeu";
 import {Succes} from "./composents/Succes";
 import {ConvPage} from "./composents/conv/ConvPage";
+import {Register} from "./composents/auth/Register";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
@@ -18,32 +19,8 @@ function App() {
     console.log("LOCALSTORE = ", localStorage.getItem("user"))
   const [user, setUser] = useState( JSON.parse(localStorage.getItem("user")))
     const [loading,setLoading] = useState(true)
-  const onRegister = async () => {
-    await axios.get(process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
-    await axios.post(process.env.REACT_APP_API_URL+"/register", {
-      nom: "test",
-      prenom: "test",
-      pseudo:"jpm",
-      email: "test@example.com",
-      password: "password",
-        password_confirmation: "password",
-    }, {
-      headers: {
-        "Accept": "application/json",
-      }
-    })
-  }
 
 
-    const onLogout = async () => {
-        await axios.post(process.env.REACT_APP_API_URL+"/logout", {
-        }, {
-        headers: {
-            "Accept": "application/json",
-        }
-        })
-        setUser(null);
-    }
     let location = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
@@ -80,7 +57,7 @@ function App() {
                   <>
 
                       <Route path={"/login"} element={<Login/>}/>
-                      <Route path={"/register"} element={<Login/>}/>
+                      <Route path={"/register"} element={<Register/>}/>
 
                   </>:<></>}
                   <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile user={user} setUser={setUser} />}/>}/>

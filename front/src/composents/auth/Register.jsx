@@ -2,9 +2,10 @@ import axios from "axios";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-export function Login() {
+export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pseudo,setPseudo] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -13,9 +14,11 @@ export function Login() {
     setError(null);
     try {
         await axios.get( process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
-        const res = await axios.post(process.env.REACT_APP_API_URL+"/login", {
+        const res = await axios.post(process.env.REACT_APP_API_URL+"/register", {
             email: email,
             password: password,
+            password_confirmation:password,
+	        pseudo:pseudo
         }, {
             headers: {
                 "Accept": "application/json",
@@ -31,7 +34,7 @@ export function Login() {
 
   return (
     <div>
-      <h1>Connexion</h1>
+      <h1>Crée un compte</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -39,17 +42,21 @@ export function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+	<input
+	  type="text"
+	  placeholder="Pseudo"
+	  value={pseudo}
+	  onChange={(e)=>setPseudo(e.target.value)}
+	/>
         <input
           type="password"
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Connexion</button>
+        <button type="submit">Crée un compte</button>
       </form>
-        <button onClick={()=>{
-            navigate("/register")
-        }}>register</button>
+        
       {error && <p>{error}</p>}
     </div>
   );

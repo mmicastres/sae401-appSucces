@@ -14,18 +14,18 @@ export function Home({user}){
         });
     }, [search,page]);
 
-    return <div className={"flex justify-center flex-col w-fit "}>
-        <h1 className={"w-fit "}>Home page</h1>
-        <form className={"w-fit "} onSubmit={(e)=>{
+    return <div className={"flex justify-center items-center flex-col w-fit "}>
+        <h1>Home page</h1>
+        <form onSubmit={(e)=>{
             e.preventDefault()
             setSearch(e.target[0].value)
         }}>
             <input type={"search"} placeholder={"search..."} />
             <button type={"submit"}>Chercher</button>
         </form>
-        {user ? <Link className={"w-fit "} to={"/profile"}>Profile</Link> : <Link className={"w-fit "} to={"/login"}>Login</Link>}
-        <h2 className={"w-fit "}>Jeux</h2>
-        <ul className={"flex flex-wrap gap-4 w-1/3"}>
+        {user ? <Link to={"/profile"}>Profile</Link> : <Link to={"/login"}>Login</Link>}
+        <h2>Jeux</h2>
+        <ul className={"flex flex-wrap gap-4 justify-center"}>
             {jeux.map((item) => (
                 <li key={item.idJeu} className={"w-1/5"}>
                     <Link to={"/jeu/" + item.idJeu}>
@@ -41,8 +41,9 @@ export function Home({user}){
             ))
             }
         </ul>
+        
 
-        <div className={"flex w-fit"}>
+        <div className={"flex"}>
             <button onClick={()=>{
                 if (page != 1) setPage(page-1)
             }}>Prev</button>
@@ -50,7 +51,7 @@ export function Home({user}){
                 setPage(page+1)
             }}>Next</button>
         </div>
-
+        {user ? <h1>Connected as {user.nom}</h1> : <h1>Not connected</h1>}
 
     </div>
 }

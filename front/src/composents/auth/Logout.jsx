@@ -6,11 +6,19 @@ export function Logout(){
 
     const navigate = useNavigate();
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL+"/logout").then(() => {
-            window.location = "/";
-            navigate("/");
-        });
 
     }, []);
-    return <h1>Logout</h1>
+
+    function logout(){
+        // clear localStorage + sessions
+        localStorage.removeItem("user");
+        axios.post(process.env.REACT_APP_API_URL+"/logout").then(() => {
+            window.location.reload();
+        });
+        //axios.get(process.env.REACT_APP_API_URL+"/logout").then(() => {
+        //    window.location = "/";
+        //    navigate("/");
+        //});
+    }
+    return <button onClick={logout}>Logout</button>
 }

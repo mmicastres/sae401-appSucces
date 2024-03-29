@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { User } from "./User";
+import {useNavigate} from "react-router-dom";
 
 export function Profile({ user }) {
     const { id } = useParams();
@@ -11,6 +12,7 @@ export function Profile({ user }) {
     const [friends, setFriends] = useState([]);
     const [friendsRequests, setFriendsRequests] = useState([]);
     const [friendsRequestsSent, setFriendsRequestsSent] = useState([]);
+    const navigate = useNavigate()
 
 
     useEffect(() => {
@@ -85,8 +87,8 @@ export function Profile({ user }) {
                 </li>
             ))}
         </ul>
-        <h2>Success</h2>
         <p>Nombre de succès: {success.length}</p>
+        <h2>Success</h2>
         <ul>
             {success.map((item) => (
                 <li key={item.idSucces}>

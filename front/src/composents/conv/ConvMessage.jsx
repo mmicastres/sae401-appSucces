@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {SendHorizonal} from "lucide-react";
 
 export function ConvMessage({current,user}){
     const [messages, setMessages] = useState([]);
@@ -65,7 +66,7 @@ export function ConvMessage({current,user}){
             })
         }}>
             <input type="text" placeholder={"Message..."}/>
-            <button type={"submit"}>Envoyer</button>
+            <button type={"submit"}>Envoyer <SendHorizonal/></button>
         </form>
     </div>
 }
