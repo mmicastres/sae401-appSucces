@@ -37,6 +37,8 @@ Route::post('/user/{id}/accept', [UserController::class, 'friendAccept']);
 
 Route::post('/user/{id}/unfriend', [UserController::class, 'friendDelete']);
 
+Route::post('user/{id}/profilepicture', [UserController::class, 'profilePicture']);
+
 Route::get('/account/modifier', [ProfileController::class, 'edit']);
 
 Route::put('/account/modifier', [ProfileController::class, 'update']);

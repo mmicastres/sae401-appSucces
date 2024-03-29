@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { User } from "./User";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function Profile({ user }) {
     const { id } = useParams();
@@ -44,12 +44,32 @@ export function Profile({ user }) {
 
     }, [user]);
 
+    function handlePdp(event) {
+        event.preventDefault()
+        const form = event.target
+        let formData = new FormData(form);
+        
+        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/profilepicture", formData,{
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'multipart/form-data',
+            }
+        }).then((response) => {
+            console.log('test')
+        });
+    }
+
     return <>
         <Link to={"/"}>{"<"} Home</Link>
         <h1>Profile</h1>
         <h2>Informations</h2>
         <p>Nom: {profile?.nom}</p>
         <p>Email: {profile?.email}</p>
+        {profile ? (<img src={`http://localhost:8000/imgprofile/${user.picture}`} alt="Profile picture" />) : (<></>)}
+        <form method="POST" enctype="multipart/form-data" onSubmit={handlePdp}>
+            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+            <input type="submit" value="Valider" />
+        </form>
         <p>Jeux favoris :</p>
         <ul>
             {joueur.filter(item => item.favori === 1).map(item => (
@@ -88,7 +108,7 @@ export function Profile({ user }) {
             ))}
         </ul>
         <p>Nombre de succès: {success.length}</p>
-        <h2>Success</h2>
+        <h2>Succès</h2>
         <ul>
             {success.map((item) => (
                 <li key={item.idSucces}>

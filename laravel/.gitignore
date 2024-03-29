@@ -3,6 +3,8 @@
 /public/build
 /public/hot
 /public/storage
+/public/imgprofile/*
+!public/imgprofile/.htaccess
 /storage/*.key
 /vendor
 .env
