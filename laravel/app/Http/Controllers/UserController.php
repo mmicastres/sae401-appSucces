@@ -23,7 +23,7 @@ class UserController extends Controller
                 with('jeu');
             }])->find($id);
         }else{
-            
+
         $user = User::with("succes")->
         with("friends1")->
         with("friends2")->
@@ -37,15 +37,50 @@ class UserController extends Controller
         }])->find($id);
         }
         $user->friends = $user->friends1->merge($user->friends2);
+        if ($userId){
+            $user->isFriend = $user->friends->contains($userId);
+            //$user->isFriendRequest = $user->friendRequests->where("demandeur",$userId)->where("destinataire",$id)->first();
+            //$user->isFriendRequestSent = $user->friendRequestsSent->where("demandeur",$id)->where("destinataire",$userId)->first();
+            $user->isFriendRequest = $user->friendRequests->contains($userId);
+            $user->isFriendRequestSent = $user->friendRequestsSent->contains($userId);
+
+
+        }
         unset($user->friends1);unset($user->friends2);
         return $user;
     }
 
     public function friendRequest(Request $request, $id)
-    {
+    {   $user = Auth::user();
+        $friends1 = $user->friends1;
+        $friends2 = $user->friends2;
+        //$user->isFriendRequest = $user->friendRequests->where("demandeur",$userId)->where("destinataire",$id)->first();
+        //$user->isFriendRequestSent = $user->friendRequestsSent->where("demandeur",$id)->where("destinataire",$userId)->first();
+        $friendRequestsSents = FriendRequest::where("demandeur",$user->id)->where("destinataire",$id)->first();
+        $friendRequest = FriendRequest::where("demandeur",$id)->where("destinataire",$user->id)->first();
+        if ($friendRequestsSents){
+            $friendRequestsSents->delete();
+            return response()->json(["message"=>"Demande d'ami annulée"]) ;
+
+        }
+        if ($friendRequest) {
+
+            $friendRequest->accepter= 1;
+            $friendRequest->save();
+
+            return response()->json(["message" => "Demande d'ami Accepter"]);
+        }
+        $friends = $friends1->merge($friends2);
+        foreach ($friends as $friend){
+            if ($friend->id == $id){
+                $friend->delete();
+                return response()->json(["message"=>"Ami retiré"]) ;
+            }
+        }
+
         $friend = new FriendRequest;
-        $friend->demandeur = $id;
-        $friend->destinataire = $request->idDestinataire;
+        $friend->demandeur = $user->id;
+        $friend->destinataire = $id;
         $friend->accepter = 0;
         $ok = $friend->save();
         if ($ok) {
@@ -55,34 +90,4 @@ class UserController extends Controller
         }
     }
 
-    public function friendAccept(Request $request, $id)
-    {
-        $friend = DB::where('demandeur', $request->id)->where('destinataire', $id)->get();
-        $friend->accepter = 1;
-        $ok = $friend->save();
-        if ($ok) {
-            return response()->json(["status" => 1, "message" => "La demande d'ami a bien été acceptée"], 201);
-        } else {
-            return response()->json(["status" => 0, "message" => "Erreur"], 400);
-        }
-    }
-
-    public function friendDelete(Request $request, $id)
-    {
-        $valeur1 = $id;
-        $valeur2 = $request->id;
-        $friend = DB::where(function ($query) use ($valeur1, $valeur2) {
-            $query->where('demandeur', $valeur1)
-                ->where('destinataire', $valeur2);
-        })->orWhere(function ($query) use ($valeur1, $valeur2) {
-            $query->where('demandeur', $valeur2)
-                ->where('destinataire', $valeur1);
-        })->get();
-        $ok = $friend->delete();
-        if ($ok) {
-            return response()->json(["status" => 1, "message" => "Vous n'êtes plus ami avec ".$request->pseudo], 201);
-        } else {
-            return response()->json(["status" => 0, "message" => "Erreur lors de la suppression de l'ami"], 400);
-        }
-    }
 }

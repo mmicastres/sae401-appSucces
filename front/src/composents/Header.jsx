@@ -18,7 +18,8 @@ export default function Header(){
                 label: 'User',
                 icon: <UserRound />,
                 onClick:()=>{
-                    navigate("/profile")
+                        navigate("/login")
+
                 }
             }
         ])

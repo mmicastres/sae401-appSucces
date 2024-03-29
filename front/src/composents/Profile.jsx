@@ -23,7 +23,7 @@ export function Profile({ user }) {
                 setJoueur(response.data.joueur);
                 setProfile(response.data);
 
-                console.log("response", response.data.succes);
+                console.log("response", response.data);
             });
 
         } else {
@@ -44,12 +44,29 @@ export function Profile({ user }) {
 
     }, [user]);
 
+    function ajoutAmi() {
+        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend").then((response) => {
+            //navigate("/profile/" + id)
+            setProfile({...joueur,isFriendRequestSent:!joueur.isFriendRequestSent})
+        });
+    }
+
+
     return <>
         <Link to={"/"}>{"<"} Home</Link>
         <h1>Profile</h1>
         <h2>Informations</h2>
         <p>Nom: {profile?.nom}</p>
         <p>Email: {profile?.email}</p>
+        {user && profile &&
+            <button onClick={ajoutAmi}>
+                {profile.isFriendRequestSent ? "En attente d'ajout" :
+                    profile.isFriendRequest ? "Accepter la demande d'ami" :
+                        profile.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
+
+
+            </button>
+            }
         <p>Jeux favoris :</p>
         <ul>
             {joueur.filter(item => item.favori === 1).map(item => (
