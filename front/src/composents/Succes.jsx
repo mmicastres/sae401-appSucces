@@ -149,7 +149,10 @@ export function Succes({ user }) {
                             </form>
                         </>) : (
             <>
-                <h2>{item.titre}</h2>
+                <div>
+                    <h2>{item.titre}</h2>
+                    <a href={`/user/${item.user.id}`}>{item.user.pseudo}</a>
+                </div>
                 <p>{item.content}</p>
 
                 <button>Up</button>
