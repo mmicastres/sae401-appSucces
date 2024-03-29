@@ -5,11 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\FriendRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function userInfo($id)
     {
+        $userId = Auth::id();
+        if ($id && $userId !=$id){
+            $user = User::with("succes")->
+            with("friends1")->
+            with("friends2")->
+            with(["joueur" => function($query) {
+                $query->where('favori', 1)->
+                orWhere('possede', 1)->
+                orWhere('actif',1)->
+                with('jeu');
+            }])->find($id);
+        }else{
+            
         $user = User::with("succes")->
         with("friends1")->
         with("friends2")->
@@ -21,6 +35,7 @@ class UserController extends Controller
             orWhere('actif',1)->
             with('jeu');
         }])->find($id);
+        }
         $user->friends = $user->friends1->merge($user->friends2);
         unset($user->friends1);unset($user->friends2);
         return $user;

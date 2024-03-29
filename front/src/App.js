@@ -88,6 +88,7 @@ function App() {
                   <Route path={"/conv"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
                   <Route path={"/conv/:current"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
             <Route path={"/jeu/:id"} element={<Jeu user={user}/>}/>
+            <Route path={"/user/:id"} element={<Profile user={user}/>}></Route>
               <Route path={"/succes/:id"} element={<Succes user={user}/>}/>
               <Route index path="/" element={
                   <>
