@@ -14,7 +14,7 @@ export function Jeu({ user }) {
             }
             setJeu(response.data.jeu);
             setObtenu(response.data.jeu.succes);
-            console.log("response", response.data.jeu.succes[0].detenteurs);
+            //console.log("response", response.data.jeu.succes[0].detenteurs);
         });
     }, [id]);
 
