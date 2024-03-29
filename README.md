@@ -114,5 +114,5 @@ Final mock-ups
 We used the following design systems: Google's Material Design by Kilian, which is widely used and enables us to easily integrate our mock-up on mobile devices IBM's Carbon Design by Joey, with intuitive, easy-to-use components We finally chose to keep the mock-up using Material Design, which seemed more familiar to us and which we prefer to develop further.
 
 ## Links to mock-ups 
-Festa Joey mock-up (web and mobile): Joey mock-up 
-Guilloteaux Kilian mock-up (web and mobile): Kilian mock-up
+Festa Joey mock-up (web and mobile): [Joey mock-up](https://www.figma.com/file/ZqseNK5tI08sCXqz5AZhNz/(v11)-All-themes---Carbon-Design-System-(Community)?type=design&node-id=11143%3A31298&mode=design&t=gmGl48vjXtnMYzy7-1)
+Guilloteaux Kilian mock-up (web and mobile): [Kilian mock-up](https://www.figma.com/file/n3ZK4caqsjJ1KkUR9PGHNO/Application-Je-Succes?type=design&node-id=54948%3A28218&mode=design&t=lXTf5Qj0GThgu55d-1)
