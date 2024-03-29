@@ -147,7 +147,7 @@ export function Profile({ user }) {
             ))
             }
         </ul>
-        {user.id == id ? (
+        {!id || user?.id == id ? (
             <>
                 <h2>Friends requests</h2>
                 <ul>
