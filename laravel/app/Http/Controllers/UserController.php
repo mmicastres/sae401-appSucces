@@ -37,8 +37,8 @@ class UserController extends Controller
             $user->isFriend = $user->friends->contains($userId);
             //$user->isFriendRequest = $user->friendRequests->where("demandeur",$userId)->where("destinataire",$id)->first();
             //$user->isFriendRequestSent = $user->friendRequestsSent->where("demandeur",$id)->where("destinataire",$userId)->first();
-            $user->isFriendRequest = $user->friendRequests->contains($userId);
-            $user->isFriendRequestSent = $user->friendRequestsSent->contains($userId);
+            $user->isFriendRequestSent = $user->friendRequests->contains($userId);
+            $user->isFriendRequest = $user->friendRequestsSent->contains($userId);
 
 
         }
@@ -78,7 +78,7 @@ class UserController extends Controller
 
         return Response::json(['status' => 1, 'message' => 'Succès'], 200);
     }
-
+//😈
     public function friendRequest(Request $request, $id)
     {   $user = Auth::user();
         $friends1 = $user->friends1;

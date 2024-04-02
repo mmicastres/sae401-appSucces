@@ -14,10 +14,10 @@ root.render(
   <React.StrictMode>
       <BrowserRouter >
           <Header/>
-          <div className={"flex"}>
+          <div className={"flex w-full min-h-screen"}>
                 <span className={"w-20"}></span>
 
-              <div className={"flex-1 "}>
+              <div className={"flex-1 h-full"}>
                   <App />
 
               </div>

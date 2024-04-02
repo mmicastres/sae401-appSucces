@@ -17,6 +17,7 @@
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
     "sanitize-html": "^2.12.1",
+    "tailwind-material-colors": "^2.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
