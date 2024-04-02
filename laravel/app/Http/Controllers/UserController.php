@@ -48,8 +48,10 @@ class UserController extends Controller
 
     function profilePicture(Request $request, $id)
     {
+        dump($request->avatar);
+        dump($request);
         $request->validate([
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Vérifier si un fichier a été téléchargé
@@ -69,7 +71,7 @@ class UserController extends Controller
         // Modification en BD
         $userId = Auth::id();
         $user = User::find($userId);
-        $user->picture = $request->photo;
+        $user->picture = $request->avatar;
         $user->save();
 
         if (!$path) {

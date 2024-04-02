@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Button, TextField, IconButton } from 'actify'
+import { XCircle } from 'lucide-react'
 
 export function Succes({ user }) {
     let { id } = useParams();
@@ -74,19 +76,19 @@ export function Succes({ user }) {
         const data = new FormData(event.target);
 
         const updatedCommentaires = succes.commentaires.map((item) => {
-          if (item.idCommentaire === idcommentaire) {
-            return {
-              ...item,
-              titre: data.get("titre"),
-              content: data.get("content"),
-            };
-          }
-          return item;
+            if (item.idCommentaire === idcommentaire) {
+                return {
+                    ...item,
+                    titre: data.get("titre"),
+                    content: data.get("content"),
+                };
+            }
+            return item;
         });
 
         setSucces({ ...succes, commentaires: updatedCommentaires });
         setModif(null);
-      }
+    }
 
     function handleSupComment(e) {
         console.log("sup", e.target.parentNode.id);
@@ -108,68 +110,81 @@ export function Succes({ user }) {
     return <>
         <Link to={"/"}>{"<"} Home</Link>
 
-        <h1>Succes {id}</h1>
-        <h2>Informations</h2>
-        <div>
-            <p>Nom: {succes.nom}</p>
-            <p>Description: {succes.description}</p>
-            <Link to={"/jeu/" + succes.jeu.idJeu}>Jeu : {succes.jeu.nom}</Link>
-
-        </div>
-
-        <button onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</button>
-
-        <h2>Commentaires et aides</h2>
-        {user ?
-            <form onSubmit={handleSendComment}>
-                <label>
-                    Titre:
-                    <input type="text" name="titre" />
-                </label>
-                <label>
-                    Commentaire:
-                    <textarea name="commentaire" />
-                </label>
-                <input type="submit" value="Envoyer" />
-            </form> :
-            <>
-                <p>Vous devez etre authentifier pour poser un commentaire</p>
-                <Link to={"/login"}>Login</Link>
-            </>
-        }
-        <ul>
-            {succes.commentaires.map((item) => (
-                <li id={item.idCommentaire} key={item.idCommentaire}>
-                    {modif === item.idCommentaire ? (
-                        <>
-                            <form onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
-                                <input type="text" name="titre" defaultValue={item.titre} />
-                                <textarea name="content" defaultValue={item.content} />
-                                <button type="submit">Enregistrer</button>
-                            </form>
-                        </>) : (
-            <>
+        <h1 class="text-3xl">Succes {id}</h1>
+        <div class="flex justify-around">
+            <div class="flex flex-row">
                 <div>
-                    <h2>{item.titre}</h2>
-                    <a href={`/user/${item.user.id}`}>{item.user.pseudo}</a>
+                    {succes ? (<img src={"https://achievementstats.com/" + succes.iconUnlocked} alt="Icone du succès" />) : (<></>)}
                 </div>
-                <p>{item.content}</p>
+                <div class="flex flex-col">
+                    <p class="text-3xl">{succes.nom}</p>
+                    <Link to={"/jeu/" + succes.jeu.idJeu}>Jeu : {succes.jeu.nom}</Link>
+                </div>
+            </div>
+            <div>
+                <p>Amis ayant le succès :</p>
+            </div>
+        </div>
+        <p>Description: {succes.description}</p>
 
-                <button>Up</button>
-                <button>Down</button>
+        <Button variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
 
-                {item.idUser === user.id ?
-                    <>
-                        <button idcommentaire={item.idCommentaire} onClick={modComment}>Modification</button>
-                        <button idcommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</button>
-                    </>
-                    : ""}
-            </>)}
-
-        </li>
-        ))
+        <div class="flex flex-col justify-center">
+            <h2>Commentaires et aides</h2>
+            {user ?
+                <form onSubmit={handleSendComment}>
+                    <TextField label="Titre" name="titre" >
+                        <TextField.TrailingIcon>
+                            <XCircle />
+                        </TextField.TrailingIcon>
+                    </TextField>
+                    <TextField label="Commentaire" name="commentaire" >
+                        <TextField.TrailingIcon>
+                            <XCircle />
+                        </TextField.TrailingIcon>
+                    </TextField>
+                    <Button type="submit" value="Envoyer" variant="elevated" color="primary">Envoyer</Button>
+                </form> :
+                <>
+                    <p>Vous devez etre authentifié pour laisser un commentaire</p>
+                    <Link to={"/login"}>Login</Link>
+                </>
             }
-        </ul>
+
+            <ul>
+                {succes.commentaires.map((item) => (
+                    <li id={item.idCommentaire} key={item.idCommentaire}>
+                        {modif === item.idCommentaire ? (
+                            <>
+                                <form onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
+                                    <input type="text" name="titre" defaultValue={item.titre} />
+                                    <textarea name="content" defaultValue={item.content} />
+                                    <button type="submit">Enregistrer</button>
+                                </form>
+                            </>) : (
+                            <>
+                                <div>
+                                    <h2>{item.titre}</h2>
+                                    <a href={`/user/${item.user.id}`}>{item.user.pseudo}</a>
+                                </div>
+                                <p>{item.content}</p>
+
+                                <button>Up</button>
+                                <button>Down</button>
+
+                                {item.idUser === user.id ?
+                                    <>
+                                        <button idcommentaire={item.idCommentaire} onClick={modComment}>Modification</button>
+                                        <button idcommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</button>
+                                    </>
+                                    : ""}
+                            </>)}
+
+                    </li>
+                ))
+                }
+            </ul>
+        </div>
 
     </>
 }
