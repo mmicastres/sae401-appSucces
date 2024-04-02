@@ -73,9 +73,9 @@ export function Profile({ user }) {
         <h2>Informations</h2>
         <p>Nom: {profile?.nom}</p>
         <p>Email: {profile?.email}</p>
-        {profile ? (<img src={`http://localhost:8000/imgprofile/${user.picture}`} alt="Profile picture" />) : (<></>)}
+        {profile ? (<img src={`http://localhost:8000/imgprofile/${profile.picture}`} alt="Profile picture" />) : (<></>)}
         <form method="POST" enctype="multipart/form-data" onSubmit={handlePdp}>
-            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif" />
             <input type="submit" value="Valider" />
         </form>
         {user && profile &&

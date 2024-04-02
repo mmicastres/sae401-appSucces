@@ -63,7 +63,7 @@ class UserController extends Controller
             unlink($anciennepdp);
         }
         // Téléchargement de la nouvelle photo de profil
-        $path = $request->file('photo')->storeAs('public/imgprofile', $id);
+        $path = $request->file('avatar')->storeAs('public/imgprofile', $id);
 
 
         // Modification en BD
