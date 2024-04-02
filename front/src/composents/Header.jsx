@@ -57,10 +57,10 @@ export default function Header(){
         }
     }, []);
 
-    return <NavigationRail className={"fixed h-full"}>
-        <List className="py-3 w-full">
+    return <NavigationRail className={" bg-mainBg fixed h-full"}>
+        <List className="py-3 w-full bg-mainBg  ">
             {list.map((item, index) => (
-                <ListItem  onClick={item.onClick} key={index} className="pl-0 py-2 flex flex-col text-primary">
+                <ListItem  onClick={item.onClick} key={index} className="pl-0 py-2 bg-mainBg flex flex-col text-primary">
                     {item.icon}
                     <span className="text-xs font-semibold mt-1">{item.label}</span>
                 </ListItem>
