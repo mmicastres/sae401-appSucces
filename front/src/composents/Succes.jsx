@@ -1,14 +1,17 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, TextField, IconButton } from 'actify'
-import { XCircle } from 'lucide-react'
+import { Button, TextField, IconButton, useToast, ToastProvider, ToastContainer } from 'actify'
+import { XCircle, ChevronUp, ChevronDown } from 'lucide-react'
 
 export function Succes({ user }) {
     let { id } = useParams();
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [] });
     const [obtenu, setObtenu] = useState()
+    const [titre, setTitre] = useState("")
+    const [commentaire, setCommentaire] = useState("")
     const [modif, setModif] = useState(null)
+    const toast = useToast()
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL + "/api/succes/" + id).then((response) => {
@@ -34,6 +37,7 @@ export function Succes({ user }) {
                     }
                 }).then((response) => {
                     setObtenu(1)
+                    toast('success', 'Vous avez obtenu le succès !')
                 });
             } else {
                 axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
@@ -42,9 +46,30 @@ export function Succes({ user }) {
                     }
                 }).then((response) => {
                     setObtenu(0)
+                    toast('error', 'Le succès a été supprimé')
                 });
             }
         }
+    }
+
+    function changeTitre(e) {
+        if (e.target) {
+            setTitre(e.target.value)
+        }
+    }
+
+    function changeCommentaire(e) {
+        if (e.target) {
+            setCommentaire(e.target.value)
+        }
+    }
+
+    function clearTitre() {
+        setTitre('')
+    }
+
+    function clearComment() {
+        setCommentaire('')
     }
 
     function handleSendComment(event) {
@@ -91,6 +116,7 @@ export function Succes({ user }) {
     }
 
     function handleSupComment(e) {
+        if (!e || !e.target) return
         console.log("sup", e.target.parentNode.id);
         axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + e.target.parentNode.id).then((response) => {
             if (response.status >= 200 && response.status < 300) {
@@ -108,39 +134,40 @@ export function Succes({ user }) {
 
     }
     return <>
-        <Link to={"/"}>{"<"} Home</Link>
+        <h1 className="text-3xl ml-8">Succes {id}</h1>
+        <div className="flex justify-around">
+            <div className="flex flex-col">
+                <div className="flex flex-row items-center">
+                    <div>
+                        {succes ? (<img className="size-24" src={"https://achievementstats.com/" + succes.iconUnlocked} alt="Icone du succès" />) : (<></>)}
+                    </div>
+                    <div className="flex flex-col px-2.5">
+                        <p className="text-3xl">{succes.nom}</p>
+                        <Link className="underline text-violet-700" to={"/jeu/" + succes.jeu.idJeu}>Jeu : {succes.jeu.nom}</Link>
+                    </div>
+                </div>
+                <p>Description : {succes.description}</p>
+                <Button className="mt-5" variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
 
-        <h1 class="text-3xl">Succes {id}</h1>
-        <div class="flex justify-around">
-            <div class="flex flex-row">
-                <div>
-                    {succes ? (<img src={"https://achievementstats.com/" + succes.iconUnlocked} alt="Icone du succès" />) : (<></>)}
-                </div>
-                <div class="flex flex-col">
-                    <p class="text-3xl">{succes.nom}</p>
-                    <Link to={"/jeu/" + succes.jeu.idJeu}>Jeu : {succes.jeu.nom}</Link>
-                </div>
             </div>
             <div>
                 <p>Amis ayant le succès :</p>
+                <p>À venir</p>
             </div>
         </div>
-        <p>Description: {succes.description}</p>
 
-        <Button variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
-
-        <div class="flex flex-col justify-center">
-            <h2>Commentaires et aides</h2>
+        <div className="flex flex-col justify-center items-center">
+            <h2 className="text-xl text-center mb-3">Commentaires et aides</h2>
             {user ?
-                <form onSubmit={handleSendComment}>
-                    <TextField label="Titre" name="titre" >
+                <form className="size-1/2" onSubmit={handleSendComment}>
+                    <TextField className="mb-3" variant="outlined" label="Titre" name="titre" value={titre} onChange={changeTitre}>
                         <TextField.TrailingIcon>
-                            <XCircle />
+                            <XCircle onClick={() => clearTitre} />
                         </TextField.TrailingIcon>
                     </TextField>
-                    <TextField label="Commentaire" name="commentaire" >
+                    <TextField className="mb-3" variant="outlined" label="Commentaire" name="commentaire" value={commentaire} onChange={changeCommentaire}>
                         <TextField.TrailingIcon>
-                            <XCircle />
+                            <XCircle onClick={() => clearComment} />
                         </TextField.TrailingIcon>
                     </TextField>
                     <Button type="submit" value="Envoyer" variant="elevated" color="primary">Envoyer</Button>
@@ -150,41 +177,42 @@ export function Succes({ user }) {
                     <Link to={"/login"}>Login</Link>
                 </>
             }
+            <h2 className="text-xl text-center">Tous les commentaires</h2>
+            {succes.commentaires.map((item) => (
+                <div className="w-max my-5" id={item.idCommentaire} key={item.idCommentaire}>
+                    {modif === item.idCommentaire ? (
+                        <>
+                            <form onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
+                                <input type="text" name="titre" defaultValue={item.titre} />
+                                <textarea name="content" defaultValue={item.content} />
+                                <button type="submit">Enregistrer</button>
+                            </form>
+                        </>) : (
+                        <div>
+                            <div className="flex flex-row justify-end">
+                                <a className="basis-10/12" href={`/user/${item.user.id}`}>{item.user.pseudo}</a>
+                                <ChevronUp className="basis-1/12" />
+                                <ChevronDown className="basis-1/12" />
+                            </div>
+                            <h2 className="font-semibold m-3">{item.titre}</h2>
+                            <p className="m-5">{item.content}</p>
 
-            <ul>
-                {succes.commentaires.map((item) => (
-                    <li id={item.idCommentaire} key={item.idCommentaire}>
-                        {modif === item.idCommentaire ? (
-                            <>
-                                <form onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
-                                    <input type="text" name="titre" defaultValue={item.titre} />
-                                    <textarea name="content" defaultValue={item.content} />
-                                    <button type="submit">Enregistrer</button>
-                                </form>
-                            </>) : (
-                            <>
-                                <div>
-                                    <h2>{item.titre}</h2>
-                                    <a href={`/user/${item.user.id}`}>{item.user.pseudo}</a>
+                            {item.idUser === user.id ?
+                                <div className="flex flex-row flex-end">
+                                    <Button idcommentaire={item.idCommentaire} onClick={modComment}>Modification</Button>
+                                    <Button idcommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</Button>
                                 </div>
-                                <p>{item.content}</p>
+                                : ""}
 
-                                <button>Up</button>
-                                <button>Down</button>
-
-                                {item.idUser === user.id ?
-                                    <>
-                                        <button idcommentaire={item.idCommentaire} onClick={modComment}>Modification</button>
-                                        <button idcommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</button>
-                                    </>
-                                    : ""}
-                            </>)}
-
-                    </li>
-                ))
-                }
-            </ul>
-        </div>
+                        </div>
+                    )}
+                </div>
+            ))
+            }
+        </div >
+        <ToastProvider>
+            <ToastContainer />
+        </ToastProvider>
 
     </>
 }

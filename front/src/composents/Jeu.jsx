@@ -51,10 +51,10 @@ export function Jeu({ user }) {
         });
     }
     return <>
-        <Link to={"/"}>{"<"} Home</Link>
-
-        <h1>Jeu {id}</h1>
-        <h2>Informations</h2>
+        <h1 className="text-3xl ml-8">Jeu {id}</h1>
+        <div className="flex flex-column justify-center">
+            <img className="justify-center" src={jeu.image}></img>
+        </div>
         <p>Nom: {jeu.nom}</p>
         <p>Description: </p>
         <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(jeu.description) }} ></div>
@@ -107,9 +107,9 @@ export function Jeu({ user }) {
                             </>
                         ) : (
                             <>
-                            <img src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
-                            <p>Vous n'avez pas encore débloqué ce succès</p>
-                        </>
+                                <img src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
+                                <p>Vous n'avez pas encore débloqué ce succès</p>
+                            </>
                         )}
                     </li>
                 ))
