@@ -7,7 +7,7 @@ on:
     inputs:
       sync:
         description: 'sync'
-        default: delta
+        default: full
   push:
     branches:
       - main
