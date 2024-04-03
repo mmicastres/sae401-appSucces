@@ -16,7 +16,7 @@ class MessageController extends Controller
 {
     public function listConv(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if (!$user) return response()->json(["Message"=>"No !"],403);
         // get user friends
         $friends1 = $user->friends1;
