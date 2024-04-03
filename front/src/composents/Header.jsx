@@ -3,9 +3,8 @@ import React, {useEffect, useState} from "react";
 import {Camera, Home, MessageCircle, MessageCircleIcon, Settings, UserRound} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 
-export default function Header(){
+export default function Header({user,setUser}){
     const navigate = useNavigate()
-    const [user, setUser] = useState( JSON.parse(localStorage.getItem("user")))
     const [list,setList] = useState( [
             {
                 label: 'Home',
@@ -54,8 +53,25 @@ export default function Header(){
                     navigate("/logout")
                 }
             }])
+        }else{
+            setList([
+                {
+                    label: 'Home',
+                    icon: <Home />,
+                    onClick:()=>{
+                        navigate("/")
+                    }
+                },
+                {
+                    label: 'User',
+                    icon: <UserRound />,
+                    onClick:()=>{
+                        navigate("/login")
+                    }
+                }
+            ])
         }
-    }, []);
+    }, [user]);
 
     return <NavigationRail className={" bg-mainBg fixed h-full"}>
         <List className="py-3 w-full bg-mainBg  ">

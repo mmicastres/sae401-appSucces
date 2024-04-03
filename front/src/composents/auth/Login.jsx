@@ -3,8 +3,16 @@ import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {Button, TextField} from "actify";
 import {Lock, Mail} from "lucide-react";
-
-export function Login() {
+export async function  getUser(){
+    const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me")
+    if (res.status >= 200 && res.status < 300 && res.status !== 204) {
+        // store the user as json
+        localStorage.setItem("user", JSON.stringify(res.data))
+        return res.data
+    }
+    return false;
+}
+export function Login({setUser,user}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -24,7 +32,14 @@ export function Login() {
             }
         });
         if (res.status >= 200 && res.status < 300) {
-            window.location.replace("/");
+
+            console.log(res)
+            getUser().then((user)=>{
+                setUser(user)
+                if (user){
+                    navigate("/profile")
+                }
+            })
         }
     } catch (error) {
       setError(error.message);

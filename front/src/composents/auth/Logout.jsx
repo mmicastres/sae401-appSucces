@@ -2,7 +2,7 @@ import {useEffect} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
-export function Logout(){
+export function Logout({setUser}){
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -13,7 +13,8 @@ export function Logout(){
         // clear localStorage + sessions
         localStorage.removeItem("user");
         axios.post(process.env.REACT_APP_API_URL+"/logout").then(() => {
-            window.location.reload();
+            setUser(false);
+            navigate("/");
         });
         //axios.get(process.env.REACT_APP_API_URL+"/logout").then(() => {
         //    window.location = "/";
