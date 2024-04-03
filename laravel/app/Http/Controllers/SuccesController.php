@@ -77,7 +77,7 @@ class SuccesController extends Controller
         $commentaire->idUser = Auth::user()->id;
         $ok = $commentaire->save();
         // Get the id
-        $commentaire = Commentaire::where('titre', $request->titre)->where('content', $request->get('content'))->where('idSucces', $id)->where('idUser', Auth::user()->id)->first();
+        $commentaire = Commentaire::where('titre', $request->titre)->where('content', $request->get('content'))->where('idSucces', $id)->where('idUser', Auth::user()->id)->with("user")->first();
         if ($ok) {
             return response()->json(["status" => 1, "message" => "Le commentaire a été ajouté","commentaire"=>$commentaire], 201);
         } else {
@@ -85,9 +85,9 @@ class SuccesController extends Controller
         }
     }
 
-    public function modComment(Request $request, $idcomment){
+    public function modComment(Request $request,$id, $idcomment){
         $commentaire = Commentaire::find($idcomment);
-        $commentaire->titre = $request->titre;
+        $commentaire->titre = $request->get("titre");
         $commentaire->content = $request->get('content');
         $ok = $commentaire->save();
         if ($ok) {

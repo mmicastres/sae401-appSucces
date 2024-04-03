@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, TextField, IconButton, useToast, ToastProvider, ToastContainer } from 'actify'
+import {Button, TextField, IconButton, useToast, ToastProvider, ToastContainer, Card} from 'actify'
 import { XCircle, ChevronUp, ChevronDown } from 'lucide-react'
 
 export function Succes({ user }) {
@@ -9,6 +9,8 @@ export function Succes({ user }) {
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [] });
     const [obtenu, setObtenu] = useState()
     const [titre, setTitre] = useState("")
+    const [titreMod,setTitreMod] = useState("")
+    const [commentaireMod, setCommentaireMod] = useState("")
     const [commentaire, setCommentaire] = useState("")
     const [modif, setModif] = useState(null)
     const toast = useToast()
@@ -91,41 +93,51 @@ export function Succes({ user }) {
         });
     }
 
-    function modComment(item) {
-        console.log(item)
-        setModif(item.idCommentaire);
+    function modComment(event) {
+        const button  = event.currentTarget
+        const idCommentaire = button.getAttribute("idCommentaire")
+        console.log("item",idCommentaire)
+        setModif(idCommentaire);
+        const item = succes.commentaires.find((item) => item.idCommentaire === parseInt(idCommentaire));
+        setTitreMod(item.titre);
+        setCommentaireMod(item.content);
     }
 
     function handleModComment(event, idcommentaire) {
         event.preventDefault();
-        const data = new FormData(event.target);
-
-        const updatedCommentaires = succes.commentaires.map((item) => {
-            if (item.idCommentaire === idcommentaire) {
-                return {
-                    ...item,
-                    titre: data.get("titre"),
-                    content: data.get("content"),
-                };
+        console.log("mod",idcommentaire)
+        axios.put(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idcommentaire, {
+            content: commentaireMod,
+            titre: titreMod
+        }).then((res)=>{
+            console.log("res",res)
+            if (res.status >= 200 && res.status < 300) {
+                setSucces({
+                    ...succes, "commentaires": succes.commentaires.map((item) => {
+                        if (item.idCommentaire === parseInt(idcommentaire)) {
+                            return { ...item, titre: titreMod, content: commentaireMod }
+                        }
+                        return item
+                    })
+                })
             }
-            return item;
-        });
 
-        setSucces({ ...succes, commentaires: updatedCommentaires });
+        })
         setModif(null);
     }
 
     function handleSupComment(e) {
         if (!e || !e.target) return
-        console.log("sup", e.target.parentNode.id);
-        axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + e.target.parentNode.id).then((response) => {
+        const idCommentaire = e.currentTarget.getAttribute("idCommentaire")
+        console.log("SUP,", idCommentaire)
+        axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire).then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 console.log("response", response.data);
                 setSucces({
                     ...succes, "commentaires": succes.commentaires.filter((item) => {
-                        console.log(item.idCommentaire, e.target.parentNode.id)
-                        console.log(item.idCommentaire !== parseInt(e.target.parentNode.id))
-                        return item.idCommentaire !== parseInt(e.target.parentNode.id)
+                        console.log(item.idCommentaire, idCommentaire)
+                        console.log(item.idCommentaire !== parseInt(idCommentaire))
+                        return item.idCommentaire !== parseInt(idCommentaire)
                     })
                 })
             }
@@ -178,37 +190,58 @@ export function Succes({ user }) {
                 </>
             }
             <h2 className="text-xl text-center">Tous les commentaires</h2>
-            {succes.commentaires.map((item) => (
-                <div className="w-max my-5" id={item.idCommentaire} key={item.idCommentaire}>
-                    {modif === item.idCommentaire ? (
-                        <>
-                            <form onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
-                                <input type="text" name="titre" defaultValue={item.titre} />
-                                <textarea name="content" defaultValue={item.content} />
-                                <button type="submit">Enregistrer</button>
-                            </form>
-                        </>) : (
-                        <div>
-                            <div className="flex flex-row justify-end">
-                                <a className="basis-10/12" href={`/user/${item.user.id}`}>{item.user.pseudo}</a>
-                                <ChevronUp className="basis-1/12" />
-                                <ChevronDown className="basis-1/12" />
-                            </div>
-                            <h2 className="font-semibold m-3">{item.titre}</h2>
-                            <p className="m-5">{item.content}</p>
+            <ul className={"w-1/2"}>
+                {succes.commentaires.map((item) => (
+                    <li id={item.idCommentaire} key={item.idCommentaire}>
+                        <Card className="w-max my-5 p-4 w-full" >
+                            {modif == item.idCommentaire ? (
+                                <>
+                                    <form idCommentaire={item.idCommentaire} onSubmit={(event) => handleModComment(event, item.idCommentaire)}>
+                                        <TextField className="mb-3" variant="outlined" label="Titre" name="titre" value={titreMod} onChange={(e)=>{
+                                            if (!e || !e.target) return
+                                            setTitreMod(e.target.value)
+                                        }}>
+                                            <TextField.TrailingIcon>
+                                                <XCircle onClick={() => setTitreMod("")} />
+                                            </TextField.TrailingIcon>
+                                        </TextField>
+                                        <TextField className="mb-3" variant="outlined" label="Commentaire" name="commentaire" value={commentaireMod} onChange={(e)=>{
+                                            if (!e || !e.target) return
+                                            setCommentaireMod(e.target.value)
+                                        }}>
+                                            <TextField.TrailingIcon>
+                                                <XCircle onClick={() => setCommentaireMod("")} />
+                                            </TextField.TrailingIcon>
+                                        </TextField>
+                                        <Button type="submit" value="Envoyer" variant="elevated" color="primary">Envoyer</Button>
 
-                            {item.idUser === user.id ?
-                                <div className="flex flex-row flex-end">
-                                    <Button idcommentaire={item.idCommentaire} onClick={modComment}>Modification</Button>
-                                    <Button idcommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</Button>
+                                    </form>
+                                </>) : (
+                                <div>
+                                    <div className="flex flex-row justify-end">
+                                        <a className="basis-10/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
+                                        <ChevronUp className="basis-1/12" />
+                                        <ChevronDown className="basis-1/12" />
+                                    </div>
+                                    <h2 className="font-semibold m-3">{item.titre}</h2>
+                                    <p className="m-5">{item.content}</p>
+
+                                    {item.idUser === user.id ?
+                                        <div className="flex flex-row flex-end">
+                                            <Button idCommentaire={item.idCommentaire} onClick={modComment}>Modification</Button>
+                                            <Button idCommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</Button>
+                                        </div>
+                                        : ""}
+
                                 </div>
-                                : ""}
+                            )}
+                        </Card>
+                    </li>
 
-                        </div>
-                    )}
-                </div>
-            ))
-            }
+                ))
+                }
+            </ul>
+
         </div >
         <ToastProvider>
             <ToastContainer />

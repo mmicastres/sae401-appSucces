@@ -32,8 +32,6 @@ export function Login({setUser,user}) {
             }
         });
         if (res.status >= 200 && res.status < 300) {
-
-            console.log(res)
             getUser().then((user)=>{
                 setUser(user)
                 if (user){
