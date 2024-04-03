@@ -14,6 +14,7 @@ export function Profile({ user }) {
     const [friends, setFriends] = useState([]);
     const [friendsRequests, setFriendsRequests] = useState([]);
     const [friendsRequestsSent, setFriendsRequestsSent] = useState([]);
+    const [file, setFile] = useState({})
     const navigate = useNavigate()
     const toast = useToast()
 
@@ -51,34 +52,36 @@ export function Profile({ user }) {
         axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend").then((response) => {
             //navigate("/profile/" + id)
             setProfile({ ...joueur, isFriendRequestSent: !joueur.isFriendRequestSent })
-            toast("success",response.data.message,5000)
+            toast("success", response.data.message, 5000)
 
         });
     }
 
+    const handleChangeFile = (event) => {
+        setFile(event.target.files[0])
+    }
 
     function handlePdp(event) {
         event.preventDefault()
-        const form = event.target
-        let formData = new FormData(form);
-
-        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/profilepicture", formData, {
+        let formData = new FormData()
+        formData.append("avatar", file)
+        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + user.id + "/profilepicture", formData, {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'multipart/form-data',
             }
         }).then((response) => {
-            console.log('test')
+            setProfile(user)
         });
     }
 
     return <>
         <div className="m-5 flex flex-row justify-start align-baseline">
             <div className="flex flex-col align-center justify-center w-1/4 mr-5">
-                {profile ? (<img className="rounded-full size-64 mb-2" src={`http://localhost:8000/imgprofile/${profile.picture}`} alt="Profile picture" />) : (<></>)}
+                {profile ? (<img className="rounded-full size-64 mb-2" src={`http://localhost:8000/storage/imgprofile/${profile.picture}`} alt="Profile picture" />) : (<></>)}
                 {!id || user?.id == id ?
                     <form method="POST" className="flex flex-row justify-center" encType="multipart/form-data" onSubmit={handlePdp}>
-                        <Button className="mr-2" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif">Choisir un fichier</Button>
+                        <input className="mr-2" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif" onChange={handleChangeFile} />
                         <Button type="submit" value="Valider">Envoyer</Button>
                     </form> : <></>}
             </div>
