@@ -2,10 +2,12 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import * as sanitizeHtml from 'sanitize-html'
+import {useToast} from "actify";
 export function Jeu({ user }) {
     let { id } = useParams();
     const [jeu, setJeu] = useState({ succes: [], joueur: false });
     const [obtenu, setObtenu] = useState();
+    const toast = useToast();
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL + "/api/jeux/" + id).then((response) => {
@@ -47,6 +49,7 @@ export function Jeu({ user }) {
             if (response.status >= 200 && response.status < 300 && response.data.joueur) {
                 // correction du visuel
                 setJeu({ ...jeu, joueur: response.data.joueur });
+                toast("success","Changement effectué");
             }
         });
     }

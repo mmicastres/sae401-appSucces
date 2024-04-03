@@ -15,6 +15,7 @@ export function Profile({ user }) {
     const [friendsRequests, setFriendsRequests] = useState([]);
     const [friendsRequestsSent, setFriendsRequestsSent] = useState([]);
     const navigate = useNavigate()
+    const toast = useToast()
 
 
     useEffect(() => {
@@ -50,6 +51,8 @@ export function Profile({ user }) {
         axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend").then((response) => {
             //navigate("/profile/" + id)
             setProfile({ ...joueur, isFriendRequestSent: !joueur.isFriendRequestSent })
+            toast("success",response.data.message,5000)
+
         });
     }
 

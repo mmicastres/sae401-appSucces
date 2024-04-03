@@ -53,7 +53,7 @@ function App() {
                             <>
 
                                 <Route path={"/login"} element={<Login user={user} setUser={setUser}/>}/>
-                                <Route path={"/register"} element={<Register/>}/>
+                                <Route path={"/register"} element={<Register user={user} setUser={setUser}/>}/>
 
                             </>:<></>}
                         <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile user={user} setUser={setUser} />}/>}/>

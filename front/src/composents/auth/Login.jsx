@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {Button, TextField} from "actify";
+import {Button, TextField, useToast} from "actify";
 import {Lock, Mail} from "lucide-react";
 export async function  getUser(){
     const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me")
@@ -17,6 +17,7 @@ export function Login({setUser,user}) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +36,7 @@ export function Login({setUser,user}) {
             getUser().then((user)=>{
                 setUser(user)
                 if (user){
+                    toast("success","Vous êtes connecté")
                     navigate("/profile")
                 }
             })

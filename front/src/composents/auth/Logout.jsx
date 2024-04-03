@@ -1,10 +1,12 @@
 import {useEffect} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {useToast} from "actify";
 
 export function Logout({setUser}){
 
     const navigate = useNavigate();
+    const toast = useToast();
     useEffect(() => {
 
     }, []);
@@ -14,6 +16,7 @@ export function Logout({setUser}){
         localStorage.removeItem("user");
         axios.post(process.env.REACT_APP_API_URL+"/logout").then(() => {
             setUser(false);
+            toast("success","Vous êtes maintenant déconnecté")
             navigate("/");
         });
         //axios.get(process.env.REACT_APP_API_URL+"/logout").then(() => {

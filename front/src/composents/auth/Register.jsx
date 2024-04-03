@@ -1,15 +1,17 @@
 import axios from "axios";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, TextField} from "actify";
+import {Button, TextField, useToast} from "actify";
 import {Lock, Mail} from "lucide-react";
+import {getUser} from "./Login";
 
-export function Register() {
+export function Register({user,setUser}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pseudo,setPseudo] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +29,13 @@ export function Register() {
             }
         });
         if (res.status >= 200 && res.status < 300) {
-            window.location.reload();
+            getUser().then((user)=>{
+                setUser(user)
+                if (user){
+                    toast("success","Vous êtes connecté")
+                    navigate("/profile")
+                }
+            })
         }
     } catch (error) {
       setError(error.message);
