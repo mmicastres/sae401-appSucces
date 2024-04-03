@@ -18,26 +18,37 @@ class MessageController extends Controller
     {
         $user = Auth::user();
         if (!$user) return response()->json(["Message"=>"No !"],403);
+        // get user friends
+        $friends1 = $user->friends1;
+        $friends2 = $user->friends2;
+        $friends = $friends1->merge($friends2);
         $conversations = $user->conversations;
-        return response()->json(["message" => "OK", "conversations" => $conversations]);
+        return response()->json(["message" => "OK", "conversations" => $conversations,"friends"=>$friends]);
     }
 
     public function newConv(Request $request)
     {
-        $statement = DB::select('Conversation'); // à refaire
-        $id = $statement[0]->Auto_increment;
+        $userId = Auth::user()->id;
+        if (!$userId) return response()->json(["Message"=>"No !"],403);
         $conv = new Conversation;
-        $conv->idConversation = $id;
         $conv->titre = $request->titre;
-        $ok = $conv::save();
+        $ok = $conv->save();
+        $id = $conv->idConversation;
         if ($ok) {
-            foreach ($request->participants as $user) {
+            $participe = new Participe;
+            $participe->idConv = $id;
+            $participe->userId = $userId;
+            $ok = $participe->save();
+            if (!$ok) return response()->json(["status"=>0,"message"=>"Erreur lors de l'ajout d'un membre"],304);
+
+            foreach ($request->participants as $userId) {
                 $participe = new Participe;
-                $participe->idConversation = $id;
-                $participe->pseudo = $user->pseudo;
-                $participe::save();
+                $participe->idConv = $id;
+                $participe->userId = $userId;
+                $ok = $participe->save();
+                if (!$ok) return response()->json(["status"=>0,"message"=>"Erreur lors de l'ajout d'un membre"],304);
             }
-            return response()->json(["status" => 1, "message" => "La conversation a été créé"], 201);
+            return response()->json(["status" => 1,"id"=>$id, "message" => "La conversation a été créé"], 201);
         } else {
             return response()->json(["status" => 0, "message" => "Erreur"], 400);
         }
@@ -56,13 +67,13 @@ class MessageController extends Controller
         $ok = $conv->save();
         if ($ok) {
             if (!empty($request->participants)) {
-                $anciens = Participe::where('idConversation', $id)->get();
-                $anciens->delete();
-                foreach ($request->participants as $user) {
+                $anciens = Participe::where('idConv', $id)->delete();
+                foreach ($request->participants as $userId) {
                     $participe = new Participe;
-                    $participe->idConversation = $id;
-                    $participe->pseudo = $user->pseudo;
-                    $participe::save();
+                    $participe->idConv = $id;
+                    $participe->userId = $userId;
+                    $ok = $participe->save();
+                    if (!$ok) return response()->json(["status"=>0,"message"=>"Erreur lors de l'ajout d'un membre"],304);
                 }
             }
             return response()->json(["status" => 1, "message" => "La conversation a été modifié"], 201);

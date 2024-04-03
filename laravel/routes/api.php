@@ -92,7 +92,7 @@ Route::prefix("/conv")->group(function () {
 
     Route::get('/{id}', [MessageController::class, 'convContenu']);
 
-    Route::put('/{id]', [MessageController::class, 'modifConv']);
+    Route::put('/{id}', [MessageController::class, 'modifConv']);
 
     Route::delete('/{id}', [MessageController::class, 'deleteConv']);
 

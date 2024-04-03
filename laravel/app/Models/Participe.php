@@ -15,4 +15,6 @@ class Participe extends Model
         return $this->belongsTo(Conversation::class);
     }
     protected $table = 'Participe';
+    // disable date
+    public $timestamps = false;
 }

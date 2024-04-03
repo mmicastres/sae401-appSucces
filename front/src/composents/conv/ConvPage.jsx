@@ -9,17 +9,18 @@ export function ConvPage({user}){
 
     let {current} = useParams();
     let [conv, setConv] = useState([]);
+    let [friends,setFriends] = useState([])
     useEffect(() => {
         axios.get("http://localhost:8000/api/conv").then((response) => {
             console.log(response.data);
             setConv(response.data["conversations"]);
+            setFriends(response.data["friends"])
         })
     }, []);
     return <>
-        <Link to={"/"}>Back</Link>
-        <div style={{display:"flex", justifyContent:"space-evenly",gap:16}}>
-        <ConvList conv={conv}/>
-            {current && <ConvMessage current={current} user={user}/> }
+        <div className={"flex justify-evenly gap-4 h-full"} >
+        <ConvList conv={conv} friends={friends} />
+            {current ? <ConvMessage current={current} user={user}/> : <div style={{flex:1}}></div> }
 
     </div></>
 }
