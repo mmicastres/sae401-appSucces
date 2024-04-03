@@ -26,7 +26,7 @@ class JeuController extends Controller
     function jeuInfo(Request $request, $id) // testée et fonctionnelle
     {
         $jeu = Jeu::with(["succes"=>function($q){$q->with("detenteurs");}])->find($id);
-        $user = Auth::user();
+        $user = $request-user();
         if ($jeu->annee == null || $jeu->description == null){
             $url = "https://store.steampowered.com/api/appdetails?appids=";
             $url .= $jeu->steamId;
@@ -86,7 +86,7 @@ class JeuController extends Controller
 
     function jeuFavori(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = $request-user();
         if (!$user) return response()->json(["status" => 0, "message" => "Vous devez être connecté pour ajouter un jeu aux favoris"], 400);
         $joueur = Joueur::where('idJeu', $id)->where('idUser', $user->id)->first();
         if ($joueur == null) {
@@ -110,7 +110,7 @@ class JeuController extends Controller
 
     function jeuNoter(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = $request-user();
         if (!$user) return response()->json(["status" => 0, "message" => "Vous devez être connecté pour ajouter un jeu aux favoris"], 400);
         $joueur = Joueur::where('idJeu', $id)->where('idUser', $user->id)->first();
         if ($joueur == null) {
@@ -132,7 +132,7 @@ class JeuController extends Controller
 
     function jeuPossede(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = $request-user();
         if (!$user) return response()->json(["status" => 0, "message" => "Vous devez être connecté pour ajouter un jeu aux favoris"], 400);
         $joueur = Joueur::where('idJeu', $id)->where('idUser', $user->id)->first();
         if ($joueur == null) $joueur = new Joueur(["idUser" => $user->id,"idJeu" => $id,"favori" => 0,"possede" => $request->possede,"note" => null,"actif" => 0]);
@@ -149,7 +149,7 @@ class JeuController extends Controller
     function jeuActif(Request $request, $id)
     {
         $actif = $request->actif;
-        $user = Auth::user();
+        $user = $request-user();
         if (!$user) return response()->json(["status" => 0, "message" => "Vous devez être connecté pour ajouter un jeu aux favoris"], 400);
         $joueur = Joueur::where('idJeu', $id)->where('idUser', $user->id)->first();
         if ($joueur == null) {

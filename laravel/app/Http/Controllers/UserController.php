@@ -64,7 +64,7 @@ class UserController extends Controller
     //😈
     public function friendRequest(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = $request-user();
         $friends1 = $user->friends1;
         $friends2 = $user->friends2;
         //$user->isFriendRequest = $user->friendRequests->where("demandeur",$userId)->where("destinataire",$id)->first();

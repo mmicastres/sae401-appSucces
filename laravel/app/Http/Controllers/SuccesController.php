@@ -28,7 +28,7 @@ class SuccesController extends Controller
     public function succesComplete(Request $request, $id)
     {
         $obtient = new Obtient;
-        $obtient->idUser = Auth::user()->id;
+        $obtient->idUser = $request-user()->id;
         $obtient->idSucces = $id;
         $ok = $obtient->save();
         if ($ok) {
@@ -40,7 +40,7 @@ class SuccesController extends Controller
 
     public function succesUnComplete(Request $request, $id)
     {
-        $idUser = Auth::user()->id;
+        $idUser = $request-user()->id;
         $obtient = Obtient::where('idUser', $idUser)->where('idSucces', $id)->first();
         if (!$obtient) return response()->json(["Message"=>"Element non trouver", "idUser"=>$idUser, "idSucces"=>$id],404);
         //return  response()->json(["Message"=>$obtient]);
@@ -53,7 +53,7 @@ class SuccesController extends Controller
     }
     public function succesNoter(Request $request, $id)
     {
-        $pseudo = Auth::user()->pseudo;
+        $pseudo = $request-user()->pseudo;
         $noteDifficulte = NoteDifficulte::where('pseudo', $pseudo)->where('idSucces', $id)->get();
         if ($noteDifficulte == null) {
             $noteDifficulte = new NoteDifficulte;
@@ -74,10 +74,10 @@ class SuccesController extends Controller
         $commentaire->titre = $request->titre;
         $commentaire->content = $request->get('content');
         $commentaire->idSucces = $id;
-        $commentaire->idUser = Auth::user()->id;
+        $commentaire->idUser = $request-user()->id;
         $ok = $commentaire->save();
         // Get the id
-        $commentaire = Commentaire::where('titre', $request->titre)->where('content', $request->get('content'))->where('idSucces', $id)->where('idUser', Auth::user()->id)->with("user")->first();
+        $commentaire = Commentaire::where('titre', $request->titre)->where('content', $request->get('content'))->where('idSucces', $id)->where('idUser', $request-user()->id)->with("user")->first();
         if ($ok) {
             return response()->json(["status" => 1, "message" => "Le commentaire a été ajouté","commentaire"=>$commentaire], 201);
         } else {
@@ -100,7 +100,7 @@ class SuccesController extends Controller
     public function deleteComment(Request $request,$id, $idcomment){
         $commentaire = Commentaire::find($idcomment);
         if (!isset($commentaire)) return response()->json(["status" => 0, "message" => "Le commentaire n'existe pas","idCommentaire"=>$idcomment], 400);
-        if ($commentaire->idUser != Auth::user()->id) {
+        if ($commentaire->idUser != $request-user()->id) {
             return response()->json(["status" => 0, "message" => "Vous n'avez pas les droits pour supprimer ce commentaire"], 400);
         }
         $ok = $commentaire->delete();
@@ -115,7 +115,7 @@ class SuccesController extends Controller
         $vote = Vote::find($idcomment);
         if($vote == null){
             $vote = new Vote;
-            $vote->pseudo = Auth::user()->pseudo;
+            $vote->pseudo = $request-user()->pseudo;
             $vote->idCommentaire = $idcomment;
             $vote->up = 1;
         }else{

@@ -31,15 +31,15 @@ Route::get('/', [Controller::class, 'homepage']);
 
 Route::get('/user/{id}', [UserController::class, 'userInfo']); // retourne aussi les succes
 
-Route::post('/user/{id}/friend', [UserController::class, 'friendRequest']);
+Route::middleware('auth:sanctum')->post('/user/{id}/friend', [UserController::class, 'friendRequest']);
 
-Route::post('user/{id}/profilepicture', [UserController::class, 'profilePicture']);
+Route::middleware('auth:sanctum')->post('user/{id}/profilepicture', [UserController::class, 'profilePicture']);
 
-Route::get('/account/modifier', [ProfileController::class, 'edit']);
+Route::middleware('auth:sanctum')->get('/account/modifier', [ProfileController::class, 'edit']);
 
-Route::put('/account/modifier', [ProfileController::class, 'update']);
+Route::middleware('auth:sanctum')->put('/account/modifier', [ProfileController::class, 'update']);
 
-Route::delete('/account/delete', [ProfileController::class, 'destroy']);
+Route::middleware('auth:sanctum')->delete('/account/delete', [ProfileController::class, 'destroy']);
 
 // Section jeux
 
@@ -49,13 +49,13 @@ Route::prefix("/jeux")->group(function () {
 
     Route::get('/{id}', [JeuController::class, 'jeuInfo']);
 
-    Route::post('/{id}/favori', [JeuController::class, 'jeuFavori']);
+    Route::middleware('auth:sanctum')->post('/{id}/favori', [JeuController::class, 'jeuFavori']);
 
-    Route::post('/{id}/note', [JeuController::class, 'jeuNoter']);
+    Route::middleware('auth:sanctum')->post('/{id}/note', [JeuController::class, 'jeuNoter']);
 
-    Route::post('/{id}/possede', [JeuController::class, 'jeuPossede']);
+    Route::middleware('auth:sanctum')->post('/{id}/possede', [JeuController::class, 'jeuPossede']);
 
-    Route::post('/{id}/actif', [JeuController::class, 'jeuActif']);
+    Route::middleware('auth:sanctum')->post('/{id}/actif', [JeuController::class, 'jeuActif']);
 });
 
 // Section succès
@@ -64,13 +64,13 @@ Route::prefix("/succes")->group(function () {
 
     Route::get('/{id}', [SuccesController::class, 'succesInfo']);
 
-    Route::post('/{id}', [SuccesController::class, 'succesComplete']);
+    Route::middleware('auth:sanctum')->post('/{id}', [SuccesController::class, 'succesComplete']);
 
-    Route::delete('/{id}', [SuccesController::class, 'succesUncomplete']);
+    Route::middleware('auth:sanctum')->delete('/{id}', [SuccesController::class, 'succesUncomplete']);
 
-    Route::post('/{id}/note', [SuccesController::class, 'succesNoter']);
+    Route::middleware('auth:sanctum')->post('/{id}/note', [SuccesController::class, 'succesNoter']);
 
-    Route::prefix("/{id}/comment")->group(function (){
+    Route::middleware('auth:sanctum')->prefix("/{id}/comment")->group(function (){
 
         Route::post('/', [SuccesController::class,"addComment"]);
 
@@ -84,7 +84,7 @@ Route::prefix("/succes")->group(function () {
 
 // Section conversation
 
-Route::prefix("/conv")->group(function () {
+Route::middleware('auth:sanctum')->prefix("/conv")->group(function () {
 
     Route::get('/', [MessageController::class, 'listConv']);
 
