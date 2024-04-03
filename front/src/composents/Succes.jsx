@@ -22,7 +22,7 @@ export function Succes({ user }) {
         if (user && user.id) {
             axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
                 const succesObtenu = response.data.succes.find((element) => element.idSucces == id)
-                console.log("succesObtenu", succesObtenu)
+                console.log("succesObtenu", succesObtenu,succesObtenu != undefined)
                 succesObtenu != undefined ? setObtenu(1) : setObtenu(0);
             });
         }
@@ -32,6 +32,7 @@ export function Succes({ user }) {
     function handleSucces(event) {
         event.preventDefault();
         if (user && user.id) {
+
             if (obtenu == 0) {
                 axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
                     headers: {
@@ -39,7 +40,10 @@ export function Succes({ user }) {
                     }
                 }).then((response) => {
                     setObtenu(1)
-                    toast('success', 'Vous avez obtenu le succès !')
+                    toast('success', 'Vous avez obtenu le succès !',5000)
+                }).catch((e)=>{
+                    toast('error', 'Erreur lors de l\'obtention du succès',5000)
+
                 });
             } else {
                 axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
@@ -48,7 +52,10 @@ export function Succes({ user }) {
                     }
                 }).then((response) => {
                     setObtenu(0)
-                    toast('error', 'Le succès a été supprimé')
+                    toast('success', 'Le succès a été supprimé',5000)
+                }).catch((e)=>{
+                    toast('error', 'Erreur lors de la suppression du succès',5000)
+
                 });
             }
         }
@@ -89,6 +96,7 @@ export function Succes({ user }) {
             if (response.status >= 200 && response.status < 300) {
                 console.log("response", response.data);
                 setSucces({ ...succes, "commentaires": [response.data.commentaire, ...succes.commentaires] })
+                toast('success', 'Commentaire ajouté',5000)
             }
         });
     }
@@ -117,9 +125,13 @@ export function Succes({ user }) {
                         if (item.idCommentaire === parseInt(idcommentaire)) {
                             return { ...item, titre: titreMod, content: commentaireMod }
                         }
+                        toast('success', 'Modification du commentaire',5000)
+
                         return item
                     })
                 })
+            }else{
+                toast('error', 'Erreur lors de la modification du commentaire',5000)
             }
 
         })
@@ -133,6 +145,7 @@ export function Succes({ user }) {
         axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire).then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 console.log("response", response.data);
+                toast('success', 'Commentaire supprimé',5000)
                 setSucces({
                     ...succes, "commentaires": succes.commentaires.filter((item) => {
                         console.log(item.idCommentaire, idCommentaire)
@@ -243,9 +256,6 @@ export function Succes({ user }) {
             </ul>
 
         </div >
-        <ToastProvider>
-            <ToastContainer />
-        </ToastProvider>
 
     </>
 }
