@@ -87,13 +87,13 @@ export function Profile({ user }) {
             </div>
             <div className="flex flex-col justify-center w-1/4">
                 <p className="text-5xl mb-5">{profile?.pseudo}</p>
-                {user && profile &&
+                {user && profile && user.id != profile.id ?
                     <Button className="w-1/2" onClick={ajoutAmi}>
                         {profile.isFriendRequestSent ? "En attente d'ajout" :
                             profile.isFriendRequest ? "Accepter la demande d'ami" :
                                 profile.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
                     </Button>
-                }
+                :<></>}
             </div>
         </div>
         <div className="flex flex-row">

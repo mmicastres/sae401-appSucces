@@ -21,7 +21,7 @@ class SuccesController extends Controller
     public function succesInfo(Request $request, $id){
         //$succes = Succes::with("jeu")->with("commentaires")->find($id);
         // Order commentaires by date
-        $succes = Succes::with("jeu")->with(["commentaires"=>function($query){$query->with("user");}])->find($id);
+        $succes = Succes::with("jeu")->with(["commentaires"=>function($query){$query->with("user");}])->with(["detenteurs"=>function($query){$query->with("user");}])->find($id);
         $succes->commentaires = $succes->commentaires->sortByDesc('idCommentaire');
         return response()->json(["Message"=>"OK","succes" => $succes]);
     }
