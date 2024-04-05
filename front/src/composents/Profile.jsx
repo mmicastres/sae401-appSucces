@@ -26,8 +26,6 @@ export function Profile({ user }) {
                 setFriends(response.data.friends);
                 setJoueur(response.data.joueur);
                 setProfile(response.data);
-
-                console.log("response", response.data);
             });
 
         } else {
@@ -40,14 +38,13 @@ export function Profile({ user }) {
                 setFriendsRequestsSent(response.data.friend_requests_sent);
                 setJoueur(response.data.joueur);
                 setProfile(user);
-
-                console.log("response", response.data.friends);
             });
         }
 
 
     }, [user]);
-
+    console.log(friendsRequests)
+    console.log(friendsRequestsSent)
     function ajoutAmi() {
         axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend").then((response) => {
             //navigate("/profile/" + id)
@@ -93,16 +90,15 @@ export function Profile({ user }) {
                             profile.isFriendRequest ? "Accepter la demande d'ami" :
                                 profile.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
                     </Button>
-                :<></>}
+                    : <></>}
             </div>
         </div>
         <div className="flex flex-row">
             <div className="m-5 w-1/4">
-                <p>Jeux favoris :</p>
+                <p className="text-xl mb-2">Jeux favoris :</p>
                 <ul>
                     {joueur.filter(item => item.favori === 1).map(item => (
                         <li className="mb-3" key={item.idJeu}>
-                            {console.log(item)}
                             <Link to={"/jeu/" + item.idJeu}>
                                 <img src={item.jeu.capsule}
                                     alt={"couverture de " + item.jeu.nom} />
@@ -111,7 +107,7 @@ export function Profile({ user }) {
                         </li>
                     ))}
                 </ul>
-                <p>Jeux actifs :</p>
+                <p className="text-xl mb-2">Jeux actifs :</p>
                 <ul>
                     {joueur.filter(item => item.actif === 1).map(item => (
                         <li className="mb-3" key={item.idJeu}>
@@ -123,7 +119,7 @@ export function Profile({ user }) {
                         </li>
                     ))}
                 </ul>
-                <p>Jeux possédés :</p>
+                <p className="text-xl mb-2">Jeux possédés :</p>
                 <ul>
                     {joueur.filter(item => item.possede === 1).map(item => (
                         <li className="mb-3" key={item.idJeu}>
@@ -136,13 +132,13 @@ export function Profile({ user }) {
                     ))}
                 </ul>
             </div>
-            <div className="flex flex-col align-center w-3/4">
+            <div className="flex flex-col align-center w-3/4 gap-2">
                 <div>
-                    <p className="text-2xl mb-3">Nombre de succès : {success.length}</p>
+                    <h2 className="text-2xl mb-3">Nombre de succès : {success.length}</h2>
                     <ul className="flex flex-row grid grid-cols-4 gap-4">
                         {success.map((item) => (
                             <li key={item.idSucces}>
-                                <Card className="p-5">
+                                <Card className="p-5" style={{borderTopLeftRadius:0, borderTopRightRadius:0}}>
                                     <Link to={"/succes/" + item.idSucces} className={"flex justify-center"}>
                                         <img className="mr-2" src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
                                         <div>
@@ -157,7 +153,7 @@ export function Profile({ user }) {
                     </ul>
                 </div>
                 <div>
-                    <h2>Amis</h2>
+                    <h2 className="text-2xl mb-3">Amis</h2>
                     <ul>
                         {friends.map((item) => (
                             <User friend={user.id == id ? true : false} key={item.id} user={item} />
@@ -167,20 +163,26 @@ export function Profile({ user }) {
                 </div>
                 {!id || user?.id == id ? (
                     <>
-                        <h2>Friends requests</h2>
-                        <ul>
-                            {friendsRequests.map((item) => (
-                                <User key={item.id} user={item} />
-                            ))
-                            }
-                        </ul>
-                        <h2>Friends requests sent</h2>
-                        <ul>
-                            {friendsRequestsSent.map((item) => (
-                                <User key={item.id} user={item} />
-                            ))
-                            }
-                        </ul>
+                        {friendsRequests.length == 0 ? (
+                            <p className="text-2xl mb-3">Pas de demandes d'ami</p>
+                        ) : (<><h2 className="text-2xl mb-3">Demandes d'amis</h2>
+                            <ul>
+                                {friendsRequests.map((item) => (
+                                    <User key={item.id} user={item} />
+                                ))
+                                }
+                            </ul></>)}
+                        {friendsRequestsSent.length == 0 ? (
+                            <p className="text-2xl mb-3">Pas de demandes envoyées</p>
+                        ) : (<>
+                            <h2 className="text-2xl mb-3">Demandes envoyées</h2>
+                            <ul>
+                                {friendsRequestsSent.map((item) => (
+                                    <User key={item.id} user={item} />
+                                ))
+                                }
+                            </ul>
+                        </>)}
                     </>
                 ) : <></>}
             </div>

@@ -14,7 +14,6 @@ export function ConvMessage({current,user}){
 
     }, [current]);
     return <div style={{flex:1}} className={"flex flex-col h-full pb-4 justify-between"}>
-        <h2>Messages {current}</h2>
         <ul className={"flex flex-col gap-2"}>
             {messages.map((item)=>(
                 <li

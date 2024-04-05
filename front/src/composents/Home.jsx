@@ -57,12 +57,12 @@ export function Home({ user }) {
         <div className={"flex"}>
             <Button className="mr-5" onClick={() => {
                 if (page != 1) setPage(page - 1)
-            }}>Prev</Button>
+            }}>Précédent</Button>
             <Button onClick={() => {
                 setPage(page + 1)
-            }}>Next</Button>
+            }}>Suivant</Button>
         </div>
-        {user ? <h1>Connected as {user.pseudo}</h1> : <h1>Not connected</h1>}
+        {user ? <h1>Connecté en tant que {user.pseudo}</h1> : <h1>Vous n'êtes pas connecté</h1>}
 
     </div>
 }
