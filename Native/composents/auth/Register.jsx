@@ -17,7 +17,7 @@ export function Register({user,setUser}) {
     e.preventDefault();
     setError(null);
     try {
-        const res = await axios.post(process.env.REACT_APP_API_URL+"/api/register", {
+        const res = await axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/register", {
             email: email,
             password: password,
             password_confirmation:password,

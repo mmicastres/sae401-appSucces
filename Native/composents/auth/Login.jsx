@@ -1,27 +1,35 @@
 import axios from "axios";
 import {useState} from "react";
 import {Button, Text, TextInput, View} from "react-native";
-export async function  getUser(){
-    const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me")
+import {useNavigation} from "@react-navigation/native";
+export async function  getUser(token){
+    const res =await axios.get(process.env.EXPO_PUBLIC_API_URL+"/api/me",
+        {
+            headers:{
+                "Authorization" : "Bearer "+token
+            }
+        })
     if (res.status >= 200 && res.status < 300 && res.status !== 204) {
         // store the user as json
+        localStorage.setItem("token",token)
         localStorage.setItem("user", JSON.stringify(res.data))
         return res.data
     }
     return false;
 }
-export function Login({setUser,user}) {
+export function Login({setUser,user,token,setToken}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const toast = useToast();
+  const navigate = useNavigation();
+
+    console.log(process.env.EXPO_PUBLIC_API_URL)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-        const res = await axios.post(process.env.REACT_APP_API_URL+"/api/login", {
+        const res = await axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/login", {
             email: email,
             password: password,
         }, {
@@ -30,11 +38,13 @@ export function Login({setUser,user}) {
             }
         });
         if (res.status >= 200 && res.status < 300) {
-            getUser().then((user)=>{
+            console.log(res.data.accessToken)
+            setToken(res.data.accessToken)
+            getUser(res.data.accessToken).then((user)=>{
                 setUser(user)
                 if (user){
-                    toast("success","Vous êtes connecté")
-                    navigate("/profile")
+                    //toast("success","Vous êtes connecté")
+                    navigate.navigate("/profile")
                 }
             })
         }
@@ -50,7 +60,7 @@ export function Login({setUser,user}) {
         }} value={email} placeholder={"Email"} type={"email"}/>
         <TextInput onChange={(e) => {
             if (e.target) setPassword(e.target.value)
-        }} value={password} placeholder={"Password"} type={"password"}/>
+        }} value={password} placeholder={"Password"} textContentType={"password"}/>
         <Button title={"Connexion"} onPress={handleSubmit}/>
 
     </View>

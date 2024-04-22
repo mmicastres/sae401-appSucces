@@ -10,7 +10,7 @@ export function Jeu({ user }) {
     const toast = useToast();
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + "/api/jeux/" + id).then((response) => {
+        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id).then((response) => {
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
             }
@@ -37,7 +37,7 @@ export function Jeu({ user }) {
 
         setJeu({ ...jeu, joueur: joueur })
         // changement en base
-        axios.post(process.env.REACT_APP_API_URL + "/api/jeux/" + id + "/" + action, {
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id + "/" + action, {
             actif: joueur.actif,
             favori: joueur.favori,
             possede: joueur.possede

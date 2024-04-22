@@ -10,7 +10,7 @@ export function CreateConv({open,setOpen,friends}){
     const handleClick = ()=>{
         console.log(selected)
         console.log(title)
-        axios.post(process.env.REACT_APP_API_URL+"/api/conv",{
+        axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/conv",{
             titre:title,
             participants:selected.map((friend)=>friend.value)
         }).then((response)=>{

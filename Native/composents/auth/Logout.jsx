@@ -14,12 +14,12 @@ export function Logout({setUser}){
     function logout(){
         // clear localStorage + sessions
         localStorage.removeItem("user");
-        axios.post(process.env.REACT_APP_API_URL+"/api/logout").then(() => {
+        axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/logout").then(() => {
             setUser(false);
             toast("success","Vous êtes maintenant déconnecté")
             navigate("/");
         });
-        //axios.get(process.env.REACT_APP_API_URL+"/logout").then(() => {
+        //axios.get(process.env.EXPO_PUBLIC_API_URL+"/logout").then(() => {
         //    window.location = "/";
         //    navigate("/");
         //});

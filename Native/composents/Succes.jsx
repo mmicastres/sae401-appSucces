@@ -16,11 +16,11 @@ export function Succes({ user }) {
     const toast = useToast()
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + "/api/succes/" + id).then((response) => {
+        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id).then((response) => {
             setSucces(response.data.succes);
         });
         if (user && user.id) {
-            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
+            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id).then((response) => {
                 const succesObtenu = response.data.succes.find((element) => element.idSucces == id)
                 console.log("succesObtenu", succesObtenu,succesObtenu != undefined)
                 succesObtenu != undefined ? setObtenu(1) : setObtenu(0);
@@ -34,7 +34,7 @@ export function Succes({ user }) {
         if (user && user.id) {
 
             if (obtenu == 0) {
-                axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
+                axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id, {
                     headers: {
                         "Accept": "application/json",
                     }
@@ -46,7 +46,7 @@ export function Succes({ user }) {
 
                 });
             } else {
-                axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
+                axios.delete(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id, {
                     headers: {
                         "Accept": "application/json",
                     }
@@ -85,7 +85,7 @@ export function Succes({ user }) {
         event.preventDefault();
         const data = new FormData(event.target);
         setSucces({ ...succes, "commentaires": [{ "idCommentaire": "-1", "titre": data.get("titre"), "content": data.get("commentaire") }, ...succes.commentaires] });
-        axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment", {
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment", {
             content: data.get("commentaire"),
             titre: data.get("titre")
         }, {
@@ -114,7 +114,7 @@ export function Succes({ user }) {
     function handleModComment(event, idcommentaire) {
         event.preventDefault();
         console.log("mod",idcommentaire)
-        axios.put(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idcommentaire, {
+        axios.put(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idcommentaire, {
             content: commentaireMod,
             titre: titreMod
         }).then((res)=>{
@@ -142,7 +142,7 @@ export function Succes({ user }) {
         if (!e || !e.target) return
         const idCommentaire = e.currentTarget.getAttribute("idCommentaire")
         console.log("SUP,", idCommentaire)
-        axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire).then((response) => {
+        axios.delete(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire).then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 console.log("response", response.data);
                 toast('success', 'Commentaire supprimé',5000)

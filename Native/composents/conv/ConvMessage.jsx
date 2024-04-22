@@ -6,12 +6,12 @@ import io from 'socket.io-client';
 export function ConvMessage({current,user}){
     const [messages, setMessages] = useState([]);
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL+"/api/conv/"+current).then((response) => {
+        axios.get(process.env.EXPO_PUBLIC_API_URL+"/api/conv/"+current).then((response) => {
             console.log(response.data);
             setMessages(response.data["conversation"]["messages"]);
 
         })
-        const socket = io(process.env.REACT_APP_API_URL+"/api/WSmsg/"+current);
+        const socket = io(process.env.EXPO_PUBLIC_API_URL+"/api/WSmsg/"+current);
         socket.on('newMessage', (msg) => {
             console.log("newMessage",msg)
             //setMessages([...messages,msg])
@@ -32,7 +32,7 @@ export function ConvMessage({current,user}){
                         <div className={"flex gap-4"}>
                             <button idItem={item.idMessage} onClick={(e) => {
                                 const itemId = e.target.getAttribute("idItem");
-                                axios.post(process.env.REACT_APP_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
+                                axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
                                     console.log(response.data);
                                     setMessages(messages.map((message) => {
                                         if (message.idMessage == itemId) {
@@ -50,7 +50,7 @@ export function ConvMessage({current,user}){
 
                                         <button idItem={item.idMessage} onClick={(e) => {
                                             const itemId = e.target.getAttribute("idItem");
-                                            axios.delete(process.env.REACT_APP_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
+                                            axios.delete(process.env.EXPO_PUBLIC_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
                                                 console.log(response.data);
                                                 setMessages(messages.filter((message) => parseInt(message.idMessage) !== parseInt(itemId)));
                                             })
@@ -75,7 +75,7 @@ export function ConvMessage({current,user}){
         </ul>
         <form onSubmit={(e) => {
             e.preventDefault();
-            axios.post(process.env.REACT_APP_API_URL+"/api/conv/" + current, {content: e.target[0].value}).then((response) => {
+            axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/conv/" + current, {content: e.target[0].value}).then((response) => {
                 console.log(response.data);
                 setMessages([...messages, response.data["newMessage"]]);
                 e.target[0].value = "";

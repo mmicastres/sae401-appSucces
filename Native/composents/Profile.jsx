@@ -20,7 +20,7 @@ export function Profile({ user }) {
 
     useEffect(() => {
         if (id && id !== user.id) {
-            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + id).then((response) => {
+            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
                 setJoueur(response.data.joueur);
@@ -32,7 +32,7 @@ export function Profile({ user }) {
         } else {
             if (!user || !user.id) return;
             console.log("USER ID", user["id"])
-            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
+            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
                 setFriendsRequests(response.data.friend_requests);
@@ -48,7 +48,7 @@ export function Profile({ user }) {
     }, [user]);
 
     function ajoutAmi() {
-        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend").then((response) => {
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id + "/friend").then((response) => {
             //navigate("/profile/" + id)
             setProfile({ ...joueur, isFriendRequestSent: !joueur.isFriendRequestSent })
             toast("success",response.data.message,5000)
@@ -62,7 +62,7 @@ export function Profile({ user }) {
         const form = event.target
         let formData = new FormData(form);
 
-        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/profilepicture", formData, {
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id + "/profilepicture", formData, {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'multipart/form-data',

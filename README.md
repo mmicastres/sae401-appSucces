@@ -82,7 +82,7 @@ We decided to use Google's Design System because it offers many elements for bot
 ### Navigation
 The menu is visible because there are few sections to navigate through, so it doesn't detract from the site's legibility. The menu provides access to the activities page, the search page and the account page. The other pages are accessed via other elements on each page, outside the menu.
 
-### Home
+### HomeJsx
 The homepage lists the most-played games, both from this week and from the past, as well as the most successful games in general. This encourages a new user to start browsing the site by looking at games they're likely to enjoy. Games are updated weekly. The user can access a requested game or hit by clicking on it, and log in or navigate to other pages using the side menu.
 
 ### Activities
