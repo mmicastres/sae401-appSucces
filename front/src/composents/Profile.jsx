@@ -138,7 +138,7 @@ export function Profile({ user }) {
                     <ul className="flex flex-row grid grid-cols-4 gap-4">
                         {success.map((item) => (
                             <li key={item.idSucces}>
-                                <Card className="p-5" style={{borderTopLeftRadius:0, borderTopRightRadius:0}}>
+                                <Card className="p-5 succes-card">
                                     <Link to={"/succes/" + item.idSucces} className={"flex justify-center"}>
                                         <img className="mr-2" src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
                                         <div>
