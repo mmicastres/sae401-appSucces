@@ -28,7 +28,7 @@ class MessageController extends Controller
 
     public function newConv(Request $request)
     {
-        $userId = $request-user()->id;
+        $userId = $request->user()->id;
         if (!$userId) return response()->json(["Message"=>"No !"],403);
         $conv = new Conversation;
         $conv->titre = $request->titre;
@@ -107,7 +107,7 @@ class MessageController extends Controller
     {
         $msg = new Message;
         $msg->content = $request->get("content");
-        $msg->userId = $request-user()->id;
+        $msg->userId = $request->user()->id;
         $msg->idConversation = $id;
         $ok = $msg->save();
         if ($ok) {
@@ -120,7 +120,7 @@ class MessageController extends Controller
     public function deleteMsg(Request $request, $id, $idmessage)
     {
         $msg = Message::with("likes")->find($idmessage);
-        $usr = $request-user()->id;
+        $usr = $request->user()->id;
         if ($msg->userId != $usr) return response()->json(["status" => 0, "message" => "Erreur"], 400);
 
         $likes = $msg->likes;
@@ -140,7 +140,7 @@ class MessageController extends Controller
     public function likeMsg(Request $request, $id, $idmessage)
     {
         $msg = Message::find($idmessage);
-        $like = Likes::where('idMessage', $idmessage)->where('pseudo', $request-user()->pseudo)->get();
+        $like = Likes::where('idMessage', $idmessage)->where('pseudo', $request->user()->pseudo)->get();
         if($like){
             $ok = $like->delete();
             if ($ok) {
@@ -150,7 +150,7 @@ class MessageController extends Controller
             }
         }else{
             $like->idMessage = $idmessage;
-            $like->pseudo = $request-user()->pseudo;
+            $like->pseudo = $request->user()->pseudo;
             $ok = $like->save;
             if ($ok) {
                 return response()->json(["status" => 1, "message" => "Votre like a été ajouté"], 201);

@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {Button, TextField, useToast} from "actify";
+import {Button, TextField, useToast} from "react-native";
 import {Lock, Mail} from "lucide-react";
 export async function  getUser(){
     const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me")
@@ -23,8 +23,7 @@ export function Login({setUser,user}) {
     e.preventDefault();
     setError(null);
     try {
-        await axios.get( process.env.REACT_APP_API_URL+"/sanctum/csrf-cookie");
-        const res = await axios.post(process.env.REACT_APP_API_URL+"/login", {
+        const res = await axios.post(process.env.REACT_APP_API_URL+"/api/login", {
             email: email,
             password: password,
         }, {

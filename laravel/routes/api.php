@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JeuController;
 use App\Http\Controllers\SuccesController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +25,16 @@ use App\Http\Controllers\ProfileController;
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('/login',[UserController::class, 'login']);
+
+Route::post("/logout",function (Request $request){
+    Auth::logout();
+    return response()->json(["status" => 1, "message" => "Vous avez été déconnecté"], 204);
+});
+
+Route::post("/register", [UserController::class, 'register']);
 
 // Route de base
 
@@ -102,3 +115,4 @@ Route::middleware('auth:sanctum')->prefix("/conv")->group(function () {
 
     Route::post('/{id}/{idmessage}', [MessageController::class, 'likeMsg']);
 });
+

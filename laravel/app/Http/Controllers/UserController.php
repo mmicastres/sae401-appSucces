@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Models\FriendRequest;
 use Illuminate\Http\Request;
@@ -21,8 +22,8 @@ class UserController extends Controller
         } else {
 
             $user = User::with("succes")->with("friends1")->with("friends2")->with("friendRequests")->with("friendRequestsSent")->with(["joueur" => function ($query) {
-                    $query->where('favori', 1)->orWhere('possede', 1)->orWhere('actif', 1)->with('jeu');
-                }])->find($id);
+                $query->where('favori', 1)->orWhere('possede', 1)->orWhere('actif', 1)->with('jeu');
+            }])->find($id);
         }
         $user->friends = $user->friends1->merge($user->friends2);
         if ($userId) {
@@ -42,11 +43,11 @@ class UserController extends Controller
         $file = $request->file('avatar');
         if ($file) {
             $user = User::find($id);
-            if($user->picture != null){
+            if ($user->picture != null) {
                 $anciennepdp = $user->picture;
-                unlink(storage_path('/app/public/imgprofile/'.$anciennepdp));
+                unlink(storage_path('/app/public/imgprofile/' . $anciennepdp));
             }
-            $imageName = $id.'.'.$file->extension();
+            $imageName = $id . '.' . $file->extension();
             $imagePath = storage_path() . '/app/public/imgprofile';
             $file->move($imagePath, $imageName);
         }
@@ -61,10 +62,11 @@ class UserController extends Controller
             return response()->json(["status" => 0, "message" => "Erreur"], 400);
         }
     }
+
     //😈
     public function friendRequest(Request $request, $id)
     {
-        $user = $request-user();
+        $user = $request->user();
         $friends1 = $user->friends1;
         $friends2 = $user->friends2;
         //$user->isFriendRequest = $user->friendRequests->where("demandeur",$userId)->where("destinataire",$id)->first();
@@ -100,5 +102,48 @@ class UserController extends Controller
         } else {
             return response()->json(["status" => 0, "message" => "Erreur"], 400);
         }
+    }
+
+
+    public function login(LoginRequest $request)
+    {
+// -- LoginRequest a verifié que les email et password étaient présents
+// -- il faut maintenant vérifier que les identifiants sont corrects
+        $credentials = request(['email', 'password']);
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Utilisateur inexistant ou identifiants incorreccts'
+            ], 401);
+        }
+// tout est ok, on peut générer le token
+        $user = $request->user();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->plainTextToken;
+        return response()->json([
+            'status' => 1,
+            'accessToken' => $token,
+            'token_type' => 'Bearer',
+            'user_id' => $user->id
+        ]);
+    }
+
+
+    public function register()
+    {
+        $data = request()->validate([
+            'pseudo' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+        $data['password'] = bcrypt($data['password']);
+        $user = User::create($data);
+        $token = $user->createToken('Personal Access Token')->plainTextToken;
+        return response()->json([
+            'status' => 1,
+            'accessToken' => $token,
+            'token_type' => 'Bearer',
+            'user_id' => $user->id
+        ]);
     }
 }
