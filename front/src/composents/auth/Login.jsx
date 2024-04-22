@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {Button, TextField, useToast} from "react-native";
+import {Button, TextField, useToast} from "actify"; 
 import {Lock, Mail} from "lucide-react";
 export async function  getUser(){
     const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me")
@@ -74,7 +74,7 @@ export function Login({setUser,user}) {
             <div className={"flex gap-4"}>
                 <Button variant={"outlined"} className={"flex-1"} onClick={() => {
                     navigate("/register")
-                }}>register
+                }}>S'inscrire
                 </Button>
                 <Button color={"primary"} className={"flex-1"} type={"submit"} variant={"filled"}>Connexion</Button>
             </div>

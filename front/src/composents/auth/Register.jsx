@@ -43,7 +43,7 @@ export function Register({user,setUser}) {
 
   return (
       <div className={"w-full h-full flex flex-col justify-center items-center gap-4"}>
-          <h1>Crée un compte</h1>
+          <h1>Créer un compte</h1>
           <form onSubmit={handleSubmit} className={"gap-4 flex flex-col"}>
               <TextField label="Email" variant={"outlined"} value={email} color={"primary"} defaultValue={"fdksifsj"}
                          type={"email"} onChange={(e) => {
@@ -77,9 +77,9 @@ export function Register({user,setUser}) {
               <div className={"flex gap-4"}>
                   <Button variant={"outlined"} className={"flex-1"} onClick={() => {
                       navigate("/login")
-                  }}>se connecter
+                  }}>Se connecter
                   </Button>
-                  <Button color={"primary"} className={"flex-1"} type={"submit"} variant={"filled"}>Crée un compte</Button>
+                  <Button color={"primary"} className={"flex-1"} type={"submit"} variant={"filled"}>Créer un compte</Button>
               </div>
           </form>
 

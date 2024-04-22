@@ -2,7 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import * as sanitizeHtml from 'sanitize-html'
-import {useToast} from "actify";
+import { useToast, Button, Card } from "actify";
+
 export function Jeu({ user }) {
     let { id } = useParams();
     const [jeu, setJeu] = useState({ succes: [], joueur: false });
@@ -16,7 +17,6 @@ export function Jeu({ user }) {
             }
             setJeu(response.data.jeu);
             setObtenu(response.data.jeu.succes);
-            //console.log("response", response.data.jeu.succes[0].detenteurs);
         });
     }, [id]);
 
@@ -49,74 +49,74 @@ export function Jeu({ user }) {
             if (response.status >= 200 && response.status < 300 && response.data.joueur) {
                 // correction du visuel
                 setJeu({ ...jeu, joueur: response.data.joueur });
-                toast("success","Changement effectué");
+                toast("success", "Changement effectué");
             }
         });
     }
     return <>
-        <h1 className="text-3xl ml-8">Jeu {id}</h1>
+        <h2 className="text-3xl mt-3 mb-3 flex justify-center">{jeu.nom}</h2>
         <div className="flex flex-column justify-center">
             <img className="justify-center" src={jeu.image}></img>
         </div>
-        <p>Nom: {jeu.nom}</p>
-        <p>Description: </p>
-        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(jeu.description) }} ></div>
-        <p>Nombre de succès: {jeu.succes.length}</p>
-        {jeu.joueur != false ? <div style={{ backgroundColor: "lightgray" }}>
-            <h2>Informations joueur</h2>
-            <div>
-                <p>Actif: {jeu.joueur.actif == 1 ? "Oui" : "Non"}</p>
-                <button onClick={() => {
-                    handleClick("actif")
-                }}>Changer</button>
-            </div>
-            <div>
-                <p>Favori: {jeu.joueur.favori == 1 ? "Oui" : "Non"} </p>
-                <button onClick={() => {
-                    handleClick("favori")
-                }}>Changer</button>
-            </div>
-            <div>
-                <p>Possédé: {jeu.joueur.possede == 1 ? "Oui" : "Non"} </p>
-                <button onClick={() => {
-                    handleClick("possede")
-                }}>Changer</button>
-            </div>
+        <div className="ml-3">
+            <p className="mb-2 text-xl">Description :</p>
+            <div id="description" dangerouslySetInnerHTML={{ __html: sanitizeHtml(jeu.description) }} ></div>
+            <p>Nombre de succès : {jeu.succes.length}</p>
+            {jeu.joueur != false ?
+                <div className="mb-3 flex flex-col justify-center content-center">
+                    <h2 className="text-xl mt-3 mb-3">Informations joueur</h2>
+                    <div className="flex flex-row gap-4">
+                        <div className="flex flex-row items-center gap-2">
+                            <p>Actif :</p>
+                            <Button onClick={() => {
+                                handleClick("actif")
+                            }}>{jeu.joueur.actif == 1 ? "Oui" : "Non"}</Button>
+                        </div>
+                        <div className="flex flex-row items-center gap-2">
+                            <p>Favori :</p>
+                            <Button onClick={() => {
+                                handleClick("favori")
+                            }}>{jeu.joueur.favori == 1 ? "Oui" : "Non"}</Button>
+                        </div>
+                        <div className="flex flex-row items-center gap-2">
+                            <p>Possédé :</p>
+                            <Button onClick={() => {
+                                handleClick("possede")
+                            }}>{jeu.joueur.possede == 1 ? "Oui" : "Non"}</Button>
+                        </div>
+                    </div>
+                </div>
 
 
-            {/*  <p>Favorie: {jeu.joueur.favorie == 1 ? "Oui" : "Non"} </p>
-                <p>Note: {jeu.joueur.note ?? 0}</p>
-                <p>Possede: {jeu.joueur.possede == 1 ? "Oui" : "Non"} </p>
-            */}
+                : <p>Vous devez être connecté pour enregistrer votre progression</p>}
+            <h2 className="text-xl mb-3">Tous les succès</h2>
+            {jeu.noSuccess ? <h3>Pas de succès</h3> :
+                <ul className="flex flex-row grid grid-cols-4 gap-4">
+                    {jeu.succes.map((item) => (
+                        <li key={item.idSucces}>
+                            <Link to={"/succes/" + item.idSucces} className={"flex"}>
+                                <Card className="p-5">
+                                    <div>
+                                        <h2>{item.nom}</h2>
+                                        <p>{item.description}</p>
+                                    </div>
+                                    {item.detenteurs.some((item2) => item2.idUser === user.id) ? (
+                                        <>
+                                            <img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
+                                            <p>Vous avez débloqué ce succès !</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
+                                            <p>Vous n'avez pas encore débloqué ce succès</p>
+                                        </>
+                                    )}
+                                </Card>
+                            </Link>
+                        </li>
+                    ))
+                    }
+                </ul>}
         </div>
-
-
-            : <></>}
-        <h2>Succès</h2>
-        {jeu.noSuccess ? <h3>Pas de succès</h3> :
-            <ul>
-                {jeu.succes.map((item) => (
-                    <li key={item.idSucces}>
-                        <Link to={"/succes/" + item.idSucces} className={"flex"}>
-                            <div>
-                                <h2>{item.nom}</h2>
-                                <p>{item.description}</p>
-                            </div>
-                        </Link>
-                        {item.detenteurs.some((item2) => item2.idUser === user.id) ? (
-                            <>
-                                <img src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
-                                <p>Vous avez débloqué ce succès !</p>
-                            </>
-                        ) : (
-                            <>
-                                <img src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
-                                <p>Vous n'avez pas encore débloqué ce succès</p>
-                            </>
-                        )}
-                    </li>
-                ))
-                }
-            </ul>}
     </>
 }
