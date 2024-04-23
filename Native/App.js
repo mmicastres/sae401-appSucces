@@ -4,7 +4,7 @@ import {NavigationContainer, useNavigation} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useEffect, useState} from "react";
 import {getUser, Login} from "./composents/auth/Login";
-import {Home} from "./composents/Home";
+import {BottomNav, Home} from "./composents/BottomNav";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -24,9 +24,9 @@ export default function App() {
           {
             user !==false ?
                 <>
-                  <Stack.Screen name={"Profile"} component={Home}/>
+                  <Stack.Screen name={"Profile"} component={BottomNav}/>
                   <Stack.Screen name={"Jeu"} children={({navigation,route})=>{
-                      const id = route.params.id
+                      const id = route.params.idJeu
                       return <><Text>Jeu {id} s</Text><Button onPress={()=>{
                           navigation.push("Succes")
                       }} title={"Push"}/> </>
