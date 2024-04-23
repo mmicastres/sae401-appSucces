@@ -3,17 +3,21 @@ import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export function Jeu ({ user,navigation,route }) {
-    let id = route.params.idJeu
+export function Jeu ({ user,token,navigation,route }) {
+    let id = route.params.idJeu;
     const [jeu, setJeu] = useState({succes: [], joueur: false});
     const [obtenu, setObtenu] = useState();
+    console.log("token",token)
 
     useEffect(() => {
-        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id).then((response) => {
+        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id,{headers:{
+                "Authorization": "Bearer "+token,
+            }}).then((response) => {
+            console.log("response",response.data.jeu)
+
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
             }
-            console.log("response",response.data.jeu)
             setJeu(response.data.jeu);
             setObtenu(response.data.jeu.succes);
         });
@@ -46,6 +50,8 @@ export function Jeu ({ user,navigation,route }) {
         }, {
             headers: {
                 "Accept": "application/json",
+                "Authorization": "Bearer " + token,
+
             }
         }).then((response) => {
             if (response.status >= 200 && response.status < 300 && response.data.joueur) {
@@ -56,6 +62,7 @@ export function Jeu ({ user,navigation,route }) {
         });
     }
 
+    console.log(jeu.joueur)
 
     return <View style={styles.container}>
             <Text style={styles.title}>Jeu {id}</Text>
@@ -68,6 +75,7 @@ export function Jeu ({ user,navigation,route }) {
                 source={{ html: jeu.description }}
             />
             <Text>Nombre de succès: {jeu.succes.length}</Text>
+            <Text>Joueur ? {jeu.joueur !== false ? "true" : "false"}</Text>
             {jeu.joueur !== false && (
                 <View style={styles.playerInfoContainer}>
                     <Text>Actif: {jeu.joueur.actif === 1 ? 'Oui' : 'Non'}</Text>

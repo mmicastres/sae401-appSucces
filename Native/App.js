@@ -30,7 +30,7 @@ export default function App() {
             user !==false ?
                 <>
                   <Stack.Screen name={"Profile"} component={BottomNav}/>
-                  <Stack.Screen name={"Jeu"} component={Jeu}/>
+                  <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
                     <Stack.Screen name={"Succes"} children={()=>{<Text>Suces</Text>}}/>
                     </>
                 :
