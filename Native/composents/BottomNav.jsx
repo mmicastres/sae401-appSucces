@@ -1,6 +1,6 @@
 import {Button, Text} from "react-native";
 import {BottomNavigation} from "react-native-paper";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Home} from "./Home";
 
 export function BottomNav({navigation}) {
@@ -15,6 +15,7 @@ export function BottomNav({navigation}) {
         profile: ()=><Text>Profile</Text>,
         message: ()=><Text>Message</Text>
     })
+
 
     return <><Text>Profile</Text><Button onPress={()=>{
     navigation.push("Jeu",{idJeu:"1"})

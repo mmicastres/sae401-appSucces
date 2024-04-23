@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, Linking, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const Jeu = ({ user,navigation,route })=> {
-    const id = route.params.idJeu
-    const [jeu, setJeu] = useState({ succes: [], joueur: false });
+export function Jeu ({ user,navigation,route }) {
+    let id = route.params.idJeu
+    const [jeu, setJeu] = useState({succes: [], joueur: false});
     const [obtenu, setObtenu] = useState();
 
     useEffect(() => {
@@ -13,13 +13,14 @@ const Jeu = ({ user,navigation,route })=> {
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
             }
+            console.log("response",response.data.jeu)
             setJeu(response.data.jeu);
             setObtenu(response.data.jeu.succes);
-            //console.log("response", response.data.jeu.succes[0].detenteurs);
         });
-    }, [id]);
+    }, []);
 
     function handleClick(action) {
+        return
         // changement du visuel
         let joueur = jeu.joueur;
         switch (action) {
@@ -35,6 +36,8 @@ const Jeu = ({ user,navigation,route })=> {
         }
 
         setJeu({ ...jeu, joueur: joueur })
+
+
         // changement en base
         axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id + "/" + action, {
             actif: joueur.actif,
@@ -53,16 +56,16 @@ const Jeu = ({ user,navigation,route })=> {
         });
     }
 
-    return (
-        <View style={styles.container}>
+
+    return <View style={styles.container}>
             <Text style={styles.title}>Jeu {id}</Text>
             <Image source={{ uri: jeu.image }} style={styles.image} />
             <Text>Nom: {jeu.nom}</Text>
             <Text>Description:</Text>
             <WebView
-                originWhitelist={['*']}
-                source={{ html: `<html><body>${jeu.description}</body></html>` }}
                 style={styles.webview}
+                originWhitelist={['*']}
+                source={{ html: jeu.description }}
             />
             <Text>Nombre de succès: {jeu.succes.length}</Text>
             {jeu.joueur !== false && (
@@ -91,7 +94,7 @@ const Jeu = ({ user,navigation,route })=> {
                 keyExtractor={(item) => item.idSucces.toString()}
             />
         </View>
-    );
+
 };
 
 const styles = StyleSheet.create({
@@ -114,6 +117,7 @@ const styles = StyleSheet.create({
     webview: {
         width: '100%',
         height: 200,
+        padding: "50%",
         marginBottom: 10,
     },
     playerInfoContainer: {
@@ -123,4 +127,3 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Jeu;

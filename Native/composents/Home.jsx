@@ -32,7 +32,7 @@ export function Home({user,navigation}) {
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Home page</Text>
+            <Text>Home page {page}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
                 <TextInput
                     style={{ flex: 1, borderWidth: 1, padding: 8 }}

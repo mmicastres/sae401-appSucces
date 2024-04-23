@@ -50,7 +50,7 @@ export function Login({setUser,user,token,setToken}) {
                 setUser(user)
                 if (user){
                     //toast("success","Vous êtes connecté")
-                    navigate.navigate("/profile")
+                    navigate.navigate("profile")
                 }
             })
         }else{
