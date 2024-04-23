@@ -32,9 +32,10 @@ export function Home({ user, navigation }) {
 
     return (
         <View style={{ flex: 1, alignItems: "center" }}>
+            <Text variant="headlineLarge">Jeux</Text>
             <TextInput
                 mode="outlined"
-                style={{ width: '80%', marginBottom: 20 }}
+                style={{ width: '80%', marginBottom: 20, marginTop: 10 }}
                 placeholder="Rechercher un jeu"
                 onChangeText={(text) => setSearch(text)}
             />
@@ -44,7 +45,6 @@ export function Home({ user, navigation }) {
             ) : (
                 <Button style={styles.button} mode={"outlined"} onPress={() => navigation.navigate('Login')} >Se connecter</Button>
             )}
-            <Text variant="headlineLarge">Jeux</Text>
             <FlatList
                 data={jeux}
                 renderItem={renderItem}

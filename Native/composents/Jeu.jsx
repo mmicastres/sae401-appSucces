@@ -1,19 +1,24 @@
-import { View, Text, Image, TouchableOpacity, FlatList, Linking, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity, FlatList, Linking, StyleSheet, useWindowDimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { TextInput, Text, Card, Title, Button } from 'react-native-paper';
+import RenderHtml from 'react-native-render-html';
 
-export function Jeu ({ user,token,navigation,route }) {
+export function Jeu({ user, token, navigation, route }) {
     let id = route.params.idJeu;
-    const [jeu, setJeu] = useState({succes: [], joueur: false});
+    const [jeu, setJeu] = useState({ succes: [], joueur: false });
     const [obtenu, setObtenu] = useState();
-    console.log("token",token)
+    const { height, width } = useWindowDimensions();
+    console.log("token", token)
 
     useEffect(() => {
-        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id,{headers:{
-                "Authorization": "Bearer "+token,
-            }}).then((response) => {
-            console.log("response",response.data.jeu)
+        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id, {
+            headers: {
+                "Authorization": "Bearer " + token,
+            }
+        }).then((response) => {
+            console.log("response", response.data.jeu)
 
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
@@ -24,7 +29,6 @@ export function Jeu ({ user,token,navigation,route }) {
     }, []);
 
     function handleClick(action) {
-        return
         // changement du visuel
         let joueur = jeu.joueur;
         switch (action) {
@@ -57,7 +61,7 @@ export function Jeu ({ user,token,navigation,route }) {
             if (response.status >= 200 && response.status < 300 && response.data.joueur) {
                 // correction du visuel
                 setJeu({ ...jeu, joueur: response.data.joueur });
-                toast("success","Changement effectué");
+                toast("success", "Changement effectué");
             }
         });
     }
@@ -65,43 +69,37 @@ export function Jeu ({ user,token,navigation,route }) {
     console.log(jeu.joueur)
 
     return <View style={styles.container}>
-            <Text style={styles.title}>Jeu {id}</Text>
-            <Image source={{ uri: jeu.image }} style={styles.image} />
-            <Text>Nom: {jeu.nom}</Text>
-            <Text>Description:</Text>
-            <WebView
-                style={styles.webview}
-                originWhitelist={['*']}
-                source={{ html: jeu.description }}
-            />
-            <Text>Nombre de succès: {jeu.succes.length}</Text>
-            <Text>Joueur ? {jeu.joueur !== false ? "true" : "false"}</Text>
-            {jeu.joueur !== false && (
-                <View style={styles.playerInfoContainer}>
-                    <Text>Actif: {jeu.joueur.actif === 1 ? 'Oui' : 'Non'}</Text>
-                    <TouchableOpacity onPress={() => handleClick('actif')}>
-                        <Text>Changer</Text>
+        <Text style={styles.title}>{jeu.nom}</Text>
+        <Image source={{ uri: jeu.image }} style={styles.image} />
+        <RenderHtml source={{ html: jeu.description }} />
+        <Text>Nombre de succès : {jeu.succes.length}</Text>
+        <Text>Joueur ? {jeu.joueur !== false ? "true" : "false"}</Text>
+        {jeu.joueur !== false && (
+            <View style={styles.playerInfoContainer}>
+                <Text>Actif: {jeu.joueur.actif === 1 ? 'Oui' : 'Non'}</Text>
+                <TouchableOpacity onPress={() => handleClick('actif')}>
+                    <Text>Changer</Text>
+                </TouchableOpacity>
+                {/* Render other player info and buttons similarly */}
+            </View>
+        )}
+        <Text>Succès</Text>
+        <FlatList
+            data={jeu.succes}
+            renderItem={({ item }) => (
+                <View>
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(`https://achievementstats.com/${item.iconUnlocked}`)}
+                    >
+                        <Image source={{ uri: "https://achievementstats.com/" + item.iconLocked }} />
+                        <Text>{item.nom}</Text>
+                        <Text>{item.description}</Text>
                     </TouchableOpacity>
-                    {/* Render other player info and buttons similarly */}
                 </View>
             )}
-            <Text>Succès</Text>
-            <FlatList
-                data={jeu.succes}
-                renderItem={({ item }) => (
-                    <View>
-                        <TouchableOpacity
-                            onPress={() => Linking.openURL(`https://achievementstats.com/${item.iconUnlocked}`)}
-                        >
-                            <Image source={{ uri: `https://achievementstats.com/${item.iconUnlocked}` }} />
-                            <Text>{item.nom}</Text>
-                            <Text>{item.description}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-                keyExtractor={(item) => item.idSucces.toString()}
-            />
-        </View>
+            keyExtractor={(item) => item.idSucces.toString()}
+        />
+    </View>
 
 };
 
@@ -118,14 +116,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     image: {
-        width: 200,
-        height: 200,
-        marginBottom: 10,
-    },
-    webview: {
-        width: '100%',
-        height: 200,
-        padding: "50%",
+        width: 350,
+        height: 150,
         marginBottom: 10,
     },
     playerInfoContainer: {
