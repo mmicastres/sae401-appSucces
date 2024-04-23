@@ -31,7 +31,7 @@ export default function App() {
                 <>
                   <Stack.Screen name={"Profile"} component={BottomNav}/>
                   <Stack.Screen name={"Jeu"} component={Jeu}/>
-                    <Stack.Screen name={"Succes"} children={()=>{<Text>Suces</Text>}}/>
+                    <Stack.Screen name={"Succes"} children={()=>{<Text>Succes</Text>}}/>
                     </>
                 :
                 <>
