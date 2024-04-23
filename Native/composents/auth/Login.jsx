@@ -2,6 +2,8 @@ import axios from "axios";
 import {useState} from "react";
 import {Button, Text, TextInput, View} from "react-native";
 import {useNavigation} from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export async function  getUser(token){
     const res =await axios.get(process.env.EXPO_PUBLIC_API_URL+"/api/me",
         {
@@ -11,8 +13,8 @@ export async function  getUser(token){
         })
     if (res.status >= 200 && res.status < 300 && res.status !== 204) {
         // store the user as json
-        localStorage.setItem("token",token)
-        localStorage.setItem("user", JSON.stringify(res.data))
+        await AsyncStorage.setItem("token",token)
+        await AsyncStorage.setItem("user", JSON.stringify(res.data))
         return res.data
     }
     return false;
@@ -29,14 +31,18 @@ export function Login({setUser,user,token,setToken}) {
     e.preventDefault();
     setError(null);
     try {
-        const res = await axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/login", {
+
+        const res = await axios.post(process.env.EXPO_PUBLIC_API_URL+`/api/login`,{
             email: email,
-            password: password,
+            password: password
         }, {
             headers: {
                 "Accept": "application/json",
             }
         });
+
+        console.log("login")
+        console.log(res)
         if (res.status >= 200 && res.status < 300) {
             console.log(res.data.accessToken)
             setToken(res.data.accessToken)
@@ -47,22 +53,25 @@ export function Login({setUser,user,token,setToken}) {
                     navigate.navigate("/profile")
                 }
             })
+        }else{
+            console.log(res.toJSON())
+            console.log(res.status)
         }
     } catch (error) {
+        console.log(error.response.data)
       setError(error.message);
     }
   };
 
     return <View>
         <Text>Connexion</Text>
-        <TextInput onChange={(e) => {
-            if (e.target) setEmail(e.target.value)
+        <TextInput onChangeText={(e) => {
+            setEmail(e)
         }} value={email} placeholder={"Email"} type={"email"}/>
-        <TextInput onChange={(e) => {
-            if (e.target) setPassword(e.target.value)
+        <TextInput onChangeText={(e) => {
+            setPassword(e)
         }} value={password} placeholder={"Password"} textContentType={"password"}/>
         <Button title={"Connexion"} onPress={handleSubmit}/>
-
     </View>
   /*
   return (

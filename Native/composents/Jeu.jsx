@@ -1,13 +1,12 @@
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import * as sanitizeHtml from 'sanitize-html'
-import {useToast} from "actify";
-export function Jeu({ user }) {
-    let { id } = useParams();
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, FlatList, Linking, StyleSheet } from 'react-native';
+import { WebView } from 'react-native-webview';
+import axios from 'axios';
+
+const Jeu = ({ user,navigation,route })=> {
+    const id = route.params.idJeu
     const [jeu, setJeu] = useState({ succes: [], joueur: false });
     const [obtenu, setObtenu] = useState();
-    const toast = useToast();
 
     useEffect(() => {
         axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/jeux/" + id).then((response) => {
@@ -53,70 +52,75 @@ export function Jeu({ user }) {
             }
         });
     }
-    return <>
-        <h1 className="text-3xl ml-8">Jeu {id}</h1>
-        <div className="flex flex-column justify-center">
-            <img className="justify-center" src={jeu.image}></img>
-        </div>
-        <p>Nom: {jeu.nom}</p>
-        <p>Description: </p>
-        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(jeu.description) }} ></div>
-        <p>Nombre de succès: {jeu.succes.length}</p>
-        {jeu.joueur != false ? <div style={{ backgroundColor: "lightgray" }}>
-            <h2>Informations joueur</h2>
-            <div>
-                <p>Actif: {jeu.joueur.actif == 1 ? "Oui" : "Non"}</p>
-                <button onClick={() => {
-                    handleClick("actif")
-                }}>Changer</button>
-            </div>
-            <div>
-                <p>Favori: {jeu.joueur.favori == 1 ? "Oui" : "Non"} </p>
-                <button onClick={() => {
-                    handleClick("favori")
-                }}>Changer</button>
-            </div>
-            <div>
-                <p>Possédé: {jeu.joueur.possede == 1 ? "Oui" : "Non"} </p>
-                <button onClick={() => {
-                    handleClick("possede")
-                }}>Changer</button>
-            </div>
 
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Jeu {id}</Text>
+            <Image source={{ uri: jeu.image }} style={styles.image} />
+            <Text>Nom: {jeu.nom}</Text>
+            <Text>Description:</Text>
+            <WebView
+                originWhitelist={['*']}
+                source={{ html: `<html><body>${jeu.description}</body></html>` }}
+                style={styles.webview}
+            />
+            <Text>Nombre de succès: {jeu.succes.length}</Text>
+            {jeu.joueur !== false && (
+                <View style={styles.playerInfoContainer}>
+                    <Text>Actif: {jeu.joueur.actif === 1 ? 'Oui' : 'Non'}</Text>
+                    <TouchableOpacity onPress={() => handleClick('actif')}>
+                        <Text>Changer</Text>
+                    </TouchableOpacity>
+                    {/* Render other player info and buttons similarly */}
+                </View>
+            )}
+            <Text>Succès</Text>
+            <FlatList
+                data={jeu.succes}
+                renderItem={({ item }) => (
+                    <View>
+                        <TouchableOpacity
+                            onPress={() => Linking.openURL(`https://achievementstats.com/${item.iconUnlocked}`)}
+                        >
+                            <Image source={{ uri: `https://achievementstats.com/${item.iconUnlocked}` }} />
+                            <Text>{item.nom}</Text>
+                            <Text>{item.description}</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+                keyExtractor={(item) => item.idSucces.toString()}
+            />
+        </View>
+    );
+};
 
-            {/*  <p>Favorie: {jeu.joueur.favorie == 1 ? "Oui" : "Non"} </p>
-                <p>Note: {jeu.joueur.note ?? 0}</p>
-                <p>Possede: {jeu.joueur.possede == 1 ? "Oui" : "Non"} </p>
-            */}
-        </div>
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: 10,
+    },
+    webview: {
+        width: '100%',
+        height: 200,
+        marginBottom: 10,
+    },
+    playerInfoContainer: {
+        backgroundColor: 'lightgray',
+        padding: 10,
+        marginBottom: 10,
+    },
+});
 
-
-            : <></>}
-        <h2>Succès</h2>
-        {jeu.noSuccess ? <h3>Pas de succès</h3> :
-            <ul>
-                {jeu.succes.map((item) => (
-                    <li key={item.idSucces}>
-                        <Link to={"/succes/" + item.idSucces} className={"flex"}>
-                            <div>
-                                <h2>{item.nom}</h2>
-                                <p>{item.description}</p>
-                            </div>
-                        </Link>
-                        {item.detenteurs.some((item2) => item2.idUser === user.id) ? (
-                            <>
-                                <img src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
-                                <p>Vous avez débloqué ce succès !</p>
-                            </>
-                        ) : (
-                            <>
-                                <img src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
-                                <p>Vous n'avez pas encore débloqué ce succès</p>
-                            </>
-                        )}
-                    </li>
-                ))
-                }
-            </ul>}
-    </>
-}
+export default Jeu;

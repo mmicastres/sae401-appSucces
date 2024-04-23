@@ -5,6 +5,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useEffect, useState} from "react";
 import {getUser, Login} from "./composents/auth/Login";
 import {BottomNav, Home} from "./composents/BottomNav";
+import Jeu from "./composents/Jeu";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -12,11 +15,13 @@ export default function App() {
   const [token,setToken] = useState(null)
 
     useEffect(() => {
-        const localtoken = localStorage.getItem("token");
-        if (localtoken){
-            setUser(getUser(localtoken))
-            setToken(localtoken)
-        }
+        AsyncStorage.getItem("token").then((localtoken)=>{
+            console.log(localtoken)
+            if (localtoken){
+                setUser(getUser(localtoken))
+                setToken(localtoken)
+            }
+        })
     }, []);
   return (
       <NavigationContainer>
@@ -25,12 +30,7 @@ export default function App() {
             user !==false ?
                 <>
                   <Stack.Screen name={"Profile"} component={BottomNav}/>
-                  <Stack.Screen name={"Jeu"} children={({navigation,route})=>{
-                      const id = route.params.idJeu
-                      return <><Text>Jeu {id} s</Text><Button onPress={()=>{
-                          navigation.push("Succes")
-                      }} title={"Push"}/> </>
-                  }}/>
+                  <Stack.Screen name={"Jeu"} children={Jeu}/>
                     <Stack.Screen name={"Succes"} children={()=>{<Text>Suces</Text>}}/>
                     </>
                 :
