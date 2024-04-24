@@ -90,7 +90,7 @@ export function Profile({ navigation,token,user,route="" }) {
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', width: '25%' }}>
                 <Text style={{ fontSize: 24, marginBottom: 10 }}>{profile?.pseudo}</Text>
-                {user && profile && (
+                {id !== "" && id !== user.id && (
                     <Button mode="contained" style={{ width: '50%' }} onPress={ajoutAmi} >
                         {profile.isFriendRequestSent ? "En attente d'ajout" :
                             profile.isFriendRequest ? "Accepter la demande d'ami" :
