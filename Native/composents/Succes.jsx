@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Button, TextInput, Card } from 'react-native-paper';
+import {useWebViewLogic} from "react-native-webview/lib/WebViewShared";
 
-export function Succes({ user,route,navigation }) {
-    console.log(route.params)
+export function Succes({ user,route,navigation,token }) {
+    console.log("user", user)
     let id  = route.params.idSucces;
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [] });
     const [obtenu, setObtenu] = useState()
@@ -15,11 +16,18 @@ export function Succes({ user,route,navigation }) {
     const [modif, setModif] = useState(null)
 
     useEffect(() => {
-        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id).then((response) => {
+        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id,{
+            headers: {
+                "Authorization": "Bearer " + token,
+            }
+        }).then((response) => {
             setSucces(response.data.succes);
         });
         if (user && user.id) {
-            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id).then((response) => {
+            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id,{
+                headers: {
+                    "Authorization": "Bearer " + token,
+                }}).then((response) => {
                 const succesObtenu = response.data.succes.find((element) => element.idSucces == id)
                 console.log("succesObtenu", succesObtenu,succesObtenu != undefined)
                 succesObtenu != undefined ? setObtenu(1) : setObtenu(0);
@@ -30,12 +38,15 @@ export function Succes({ user,route,navigation }) {
 
     function handleSucces(event) {
         event.preventDefault();
+        console.log("HandleSuccess", user, user.id)
         if (user && user.id) {
 
             if (obtenu == 0) {
-                axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id, {
+                console.log("Authenticated request to add success", token)
+                axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id, {},{
                     headers: {
                         "Accept": "application/json",
+                        "Authorization": "Bearer " + token,
                     }
                 }).then((response) => {
                     setObtenu(1)
@@ -48,6 +59,7 @@ export function Succes({ user,route,navigation }) {
                 axios.delete(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id, {
                     headers: {
                         "Accept": "application/json",
+                        "Authorization": "Bearer " + token,
                     }
                 }).then((response) => {
                     setObtenu(0)
@@ -61,14 +73,14 @@ export function Succes({ user,route,navigation }) {
     }
 
     function changeTitre(e) {
-        if (e.target) {
-            setTitre(e.target.value)
+        if (e) {
+            setTitre(e)
         }
     }
 
     function changeCommentaire(e) {
-        if (e.target) {
-            setCommentaire(e.target.value)
+        if (e) {
+            setCommentaire(e)
         }
     }
 
@@ -82,7 +94,10 @@ export function Succes({ user,route,navigation }) {
 
     function handleSendComment(event) {
         event.preventDefault();
-        const data = new FormData(event.target);
+        //const data = new FormData(event.target);
+        const data = new FormData();
+        data.append("titre", titre);
+        data.append("commentaire", commentaire);
         setSucces({ ...succes, "commentaires": [{ "idCommentaire": "-1", "titre": data.get("titre"), "content": data.get("commentaire") }, ...succes.commentaires] });
         axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment", {
             content: data.get("commentaire"),
@@ -90,6 +105,7 @@ export function Succes({ user,route,navigation }) {
         }, {
             headers: {
                 "Accept": "application/json",
+                "Authorization": "Bearer " + token,
             }
         }).then((response) => {
             if (response.status >= 200 && response.status < 300) {
@@ -100,12 +116,12 @@ export function Succes({ user,route,navigation }) {
         });
     }
 
-    function modComment(event) {
-        const button  = event.currentTarget
-        const idCommentaire = button.getAttribute("idCommentaire")
+    function modComment(idCommentaire) {
         console.log("item",idCommentaire)
         setModif(idCommentaire);
-        const item = succes.commentaires.find((item) => item.idCommentaire === parseInt(idCommentaire));
+        console.log(succes.commentaires)
+        const item = succes.commentaires.find((item) => parseInt(item.idCommentaire) === parseInt(idCommentaire));
+        console.log("ITEM",item)
         setTitreMod(item.titre);
         setCommentaireMod(item.content);
     }
@@ -115,7 +131,12 @@ export function Succes({ user,route,navigation }) {
         console.log("mod",idcommentaire)
         axios.put(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idcommentaire, {
             content: commentaireMod,
-            titre: titreMod
+            titre: titreMod,
+        }, {
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token,
+            }
         }).then((res)=>{
             console.log("res",res)
             if (res.status >= 200 && res.status < 300) {
@@ -137,11 +158,12 @@ export function Succes({ user,route,navigation }) {
         setModif(null);
     }
 
-    function handleSupComment(e) {
-        if (!e || !e.target) return
-        const idCommentaire = e.currentTarget.getAttribute("idCommentaire")
+    function handleSupComment(idCommentaire) {
         console.log("SUP,", idCommentaire)
-        axios.delete(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire).then((response) => {
+        axios.delete(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire,{
+            headers: {
+                "Authorization": "Bearer " + token,
+            }}).then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 console.log("response", response.data);
                 //toast('success', 'Commentaire supprimé',5000)
@@ -159,6 +181,7 @@ export function Succes({ user,route,navigation }) {
     }
 
     console.log(id)
+    console.log(titre)
 
     return        <ScrollView>
         <Text style={{ fontSize: 24, marginLeft: 16 }}>Succes {id}</Text>
@@ -171,7 +194,7 @@ export function Succes({ user,route,navigation }) {
                     <View style={{ paddingHorizontal: 10 }}>
                         <Text style={{ fontSize: 24 }}>{succes?.nom}</Text>
                         <Text>
-                            Jeu : <Text style={{ color: 'violet', textDecorationLine: 'underline' }}>{succes?.jeu?.nom}</Text>
+                            Jeu : <Text onPress={()=>navigation.goBack()} style={{ color: 'violet', textDecorationLine: 'underline' }}>{succes?.jeu?.nom}</Text>
                         </Text>
                     </View>
                 </View>
@@ -258,7 +281,7 @@ export function Succes({ user,route,navigation }) {
                                 <Text style={{ margin: 5 }}>{item.content}</Text>
                                 {item.idUser === user.id ? (
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                        <Button onPress={() => modComment(item.idCommentaire)}>Modification</Button>
+                                        <Button onPress={() => modComment(item.idCommentaire)}>Modification {item.idCommentaire}</Button>
                                         <Button onPress={() => handleSupComment(item.idCommentaire)}>Suppression</Button>
                                     </View>
                                 ) : null}
@@ -283,7 +306,7 @@ export function Succes({ user,route,navigation }) {
                     </div>
                 </div>
                 <p>Description : {succes.description}</p>
-                <Button className="mt-5" variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
+                <Button className="mt-5" variant="elevated" color="primary" onPress={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
 
             </div>
             <div>
@@ -352,8 +375,8 @@ export function Succes({ user,route,navigation }) {
 
                                     {item.idUser === user.id ?
                                         <div className="flex flex-row flex-end">
-                                            <Button idCommentaire={item.idCommentaire} onClick={modComment}>Modification</Button>
-                                            <Button idCommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</Button>
+                                            <Button idCommentaire={item.idCommentaire} onPress={()=>modComment(item.idCommentaire)}>Modification</Button>
+                                            <Button idCommentaire={item.idCommentaire} onPress={()=>handleSupComment(item.idCommentaire)}>Suppression</Button>
                                         </div>
                                         : ""}
 

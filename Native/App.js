@@ -14,12 +14,14 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [user,setUser] = useState(false);
   const [token,setToken] = useState(null)
-
+    console.log("Hey ! i'm a user, here is my state : ",user)
     useEffect(() => {
         AsyncStorage.getItem("token").then((localtoken)=>{
             console.log(localtoken)
             if (localtoken){
-                setUser(getUser(localtoken))
+                getUser(localtoken).then((data)=>{
+                    setUser(data)
+                })
                 setToken(localtoken)
             }
         })
@@ -32,7 +34,7 @@ export default function App() {
                 <>
                   <Stack.Screen name={"Profile"} component={BottomNav}/>
                   <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
-                    <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} />}/>
+                    <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
                     </>
                 :
                 <>
