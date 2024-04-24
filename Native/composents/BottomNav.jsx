@@ -2,8 +2,9 @@ import {Button, Text} from "react-native";
 import {BottomNavigation} from "react-native-paper";
 import {useEffect, useState} from "react";
 import {Home} from "./Home";
+import {Profile} from "./Profile";
 
-export function BottomNav({navigation}) {
+export function BottomNav({navigation,token,user}) {
     const [index,setIndex] = useState(0)
     const [routes,setRoutes] = useState([
         {key: 'home', title: 'Home',focusedIcon:"home", unfocusedIcon:"home-outline"},
@@ -12,14 +13,12 @@ export function BottomNav({navigation}) {
     ])
     const renderScene = BottomNavigation.SceneMap({
         home: ()=><Home navigation={navigation}/>,
-        profile: ()=><Text>Profile</Text>,
+        profile: ()=><Profile navigation={navigation} token={token} user={user}/>,
         message: ()=><Text>Message</Text>
     })
 
 
-    return <><Text>Profile</Text><Button onPress={()=>{
-    navigation.push("Jeu",{idJeu:"1"})
-}} title={"Jeu"}/>
+    return <>
         <BottomNavigation navigationState={{index,routes}} onIndexChange={setIndex} renderScene={renderScene}/>
     </>
 

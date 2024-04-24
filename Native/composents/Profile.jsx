@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
 import { User } from "./User";
-import { useNavigate } from "react-router-dom";
-import { Button, TextField, IconButton, useToast, ToastProvider, ToastContainer, Card } from 'actify'
-import { XCircle, ChevronUp, ChevronDown, Plus, Minus, Loader, Check } from 'lucide-react'
+import { View, Text,  Image, StyleSheet } from 'react-native';
+import { TextInput, IconButton, Card, Avatar,Button } from 'react-native-paper';
 
-export function Profile({ user }) {
-    const { id } = useParams();
+export function Profile({ navigation,token,user,route="" }) {
+    let id =  "";
+    if (route !== ""){
+        id = route.params.id;
+    }
     const [profile, setProfile] = useState();
     const [joueur, setJoueur] = useState([]);
     const [success, setSuccess] = useState([]);
     const [friends, setFriends] = useState([]);
     const [friendsRequests, setFriendsRequests] = useState([]);
     const [friendsRequestsSent, setFriendsRequestsSent] = useState([]);
-    const navigate = useNavigate()
-    const toast = useToast()
 
 
     useEffect(() => {
-        if (id && id !== user.id) {
+        if (id !== "" && id !== user.id) {
             axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
@@ -32,7 +31,11 @@ export function Profile({ user }) {
         } else {
             if (!user || !user.id) return;
             console.log("USER ID", user["id"])
-            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id).then((response) => {
+            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id,{
+                headers: {
+                    "Authorization": "Bearer " + token,
+                }
+            }).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
                 setFriendsRequests(response.data.friend_requests);
@@ -51,7 +54,7 @@ export function Profile({ user }) {
         axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id + "/friend").then((response) => {
             //navigate("/profile/" + id)
             setProfile({ ...joueur, isFriendRequestSent: !joueur.isFriendRequestSent })
-            toast("success",response.data.message,5000)
+            //toast("success",response.data.message,5000)
 
         });
     }
@@ -72,115 +75,127 @@ export function Profile({ user }) {
         });
     }
 
-    return <>
-        <div className="m-5 flex flex-row justify-start align-baseline">
-            <div className="flex flex-col align-center justify-center w-1/4 mr-5">
-                {profile ? (<img className="rounded-full size-64 mb-2" src={`http://localhost:8000/imgprofile/${profile.picture}`} alt="Profile picture" />) : (<></>)}
-                {!id || user?.id == id ?
-                    <form method="POST" className="flex flex-row justify-center" encType="multipart/form-data" onSubmit={handlePdp}>
-                        <Button className="mr-2" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif">Choisir un fichier</Button>
-                        <Button type="submit" value="Valider">Envoyer</Button>
-                    </form> : <></>}
-            </div>
-            <div className="flex flex-col justify-center w-1/4">
-                <p className="text-5xl mb-5">{profile?.pseudo}</p>
-                {user && profile &&
-                    <Button className="w-1/2" onClick={ajoutAmi}>
+    return (<>
+        <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'baseline' }}>
+            <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '25%', marginRight: 5 }}>
+                {profile ? (
+                    <Avatar.Image size={64} source={{ uri: `http://localhost:8000/imgprofile/${profile.picture}` }} />
+                ) : null}
+                {!id || user?.id === id ? (
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <Button mode="contained" style={{ marginRight: 10 }}>Choisir un fichier</Button>
+                        <Button mode="contained" onPress={handlePdp}>Envoyer</Button>
+                    </View>
+                ) : null}
+            </View>
+            <View style={{ flexDirection: 'column', justifyContent: 'center', width: '25%' }}>
+                <Text style={{ fontSize: 24, marginBottom: 10 }}>{profile?.pseudo}</Text>
+                {user && profile && (
+                    <Button mode="contained" style={{ width: '50%' }} onPress={ajoutAmi} >
                         {profile.isFriendRequestSent ? "En attente d'ajout" :
                             profile.isFriendRequest ? "Accepter la demande d'ami" :
                                 profile.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
                     </Button>
-                }
-            </div>
-        </div>
-        <div className="flex flex-row">
-            <div className="m-5 w-1/4">
-                <p>Jeux favoris :</p>
-                <ul>
-                    {joueur.filter(item => item.favori === 1).map(item => (
-                        <li className="mb-3" key={item.idJeu}>
-                            {console.log(item)}
-                            <Link to={"/jeu/" + item.idJeu}>
-                                <img src={item.jeu.capsule}
-                                    alt={"couverture de " + item.jeu.nom} />
-                                <h3>{item.nom}</h3>
-                            </Link>
-                        </li>
+                )}
+            </View>
+        </View>
+    <View style={{ flexDirection: 'row' }}>
+        <View style={{ margin: 5, width: '25%' }}>
+            <Text>Jeux favoris :</Text>
+            <View>
+                {joueur.filter(item => item.favori === 1).map(item => (
+                    <View style={{ marginBottom: 10 }} key={item.idJeu}>
+                        <Image source={{ uri: item.jeu.capsule }} style={{ width: 50, height: 50 }} />
+                        <Text>{item.nom}</Text>
+                    </View>
+                ))}
+            </View>
+            <Text>Jeux actifs :</Text>
+            <View>
+                {joueur.filter(item => item.actif === 1).map(item => (
+                    <View style={{ marginBottom: 10 }} key={item.idJeu}>
+                        <Image source={{ uri: item.jeu.capsule }} style={{ width: 50, height: 50 }} />
+                        <Text>{item.nom}</Text>
+                    </View>
+                ))}
+            </View>
+            <Text>Jeux possédés :</Text>
+            <View>
+                {joueur.filter(item => item.possede === 1).map(item => (
+                    <View style={{ marginBottom: 10 }} key={item.idJeu}>
+                        <Image source={{ uri: item.jeu.capsule }} style={{ width: 50, height: 50 }} />
+                        <Text>{item.nom}</Text>
+                    </View>
+                ))}
+            </View>
+        </View>
+        <View style={{ flexDirection: 'column', alignItems: 'center', width: '75%' }}>
+            <View>
+                <Text style={{ fontSize: 18, marginBottom: 10 }}>Nombre de succès : {success.length}</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                    {success.map(item => (
+                        <Card key={item.idSucces} style={{ padding: 10, marginBottom: 10 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Image source={{ uri: `https://achievementstats.com/${item.iconUnlocked}` }} style={{ marginRight: 10, width: 50, height: 50 }} />
+                                <View>
+                                    <Text>{item.nom}</Text>
+                                    <Text>{item.description}</Text>
+                                </View>
+                            </View>
+                        </Card>
                     ))}
-                </ul>
-                <p>Jeux actifs :</p>
-                <ul>
-                    {joueur.filter(item => item.actif === 1).map(item => (
-                        <li className="mb-3" key={item.idJeu}>
-                            <Link to={"/jeu/" + item.idJeu}>
-                                <img src={item.jeu.capsule}
-                                    alt={"couverture de " + item.jeu.nom} />
-                                <h3>{item.nom}</h3>
-                            </Link>
-                        </li>
+                </View>
+            </View>
+            <View>
+                <Text>Amis</Text>
+                <View>
+                    {friends.map(item => (
+                        <User friend={user.id === id} key={item.id} user={item} />
                     ))}
-                </ul>
-                <p>Jeux possédés :</p>
-                <ul>
-                    {joueur.filter(item => item.possede === 1).map(item => (
-                        <li className="mb-3" key={item.idJeu}>
-                            <Link to={"/jeu/" + item.idJeu}>
-                                <img src={item.jeu.capsule}
-                                    alt={"couverture de " + item.jeu.nom} />
-                                <h3>{item.nom}</h3>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div className="flex flex-col align-center w-3/4">
-                <div>
-                    <p className="text-2xl mb-3">Nombre de succès : {success.length}</p>
-                    <ul className="flex flex-row grid grid-cols-4 gap-4">
-                        {success.map((item) => (
-                            <li key={item.idSucces}>
-                                <Card className="p-5">
-                                    <Link to={"/succes/" + item.idSucces} className={"flex justify-center"}>
-                                        <img className="mr-2" src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
-                                        <div>
-                                            <h2>{item.nom}</h2>
-                                            <p>{item.description}</p>
-                                        </div>
-                                    </Link>
-                                </Card>
-                            </li>
-                        ))
-                        }
-                    </ul>
-                </div>
-                <div>
-                    <h2>Amis</h2>
-                    <ul>
-                        {friends.map((item) => (
-                            <User friend={user.id == id ? true : false} key={item.id} user={item} />
-                        ))
-                        }
-                    </ul>
-                </div>
-                {!id || user?.id == id ? (
-                    <>
-                        <h2>Friends requests</h2>
-                        <ul>
-                            {friendsRequests.map((item) => (
-                                <User key={item.id} user={item} />
-                            ))
-                            }
-                        </ul>
-                        <h2>Friends requests sent</h2>
-                        <ul>
-                            {friendsRequestsSent.map((item) => (
-                                <User key={item.id} user={item} />
-                            ))
-                            }
-                        </ul>
-                    </>
-                ) : <></>}
-            </div>
-        </div>
-    </>;
+                </View>
+            </View>
+            {!id || user?.id === id ? (
+                <>
+                    <Text>Friends requests</Text>
+                    <View>
+                        {friendsRequests?.map(item => (
+                            <User key={item.id} user={item} />
+                        ))}
+                    </View>
+                    <Text>Friends requests sent</Text>
+                    <View>
+                        {friendsRequestsSent?.map(item => (
+                            <User key={item.id} user={item} />
+                        ))}
+                    </View>
+                </>
+            ) : null}
+        </View>
+    </View>
+    </>
+);
+
+
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    profileContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    detailsContainer: {
+        alignItems: 'center',
+    },
+    name: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+});

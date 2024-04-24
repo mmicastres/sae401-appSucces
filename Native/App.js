@@ -32,7 +32,7 @@ export default function App() {
           {
             user !==false ?
                 <>
-                  <Stack.Screen name={"Profile"} component={BottomNav}/>
+                  <Stack.Screen name={"Profile"} children={({navigation})=><BottomNav navigation={navigation} token={token} user={user}/> }/>
                   <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
                     <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
                     </>
