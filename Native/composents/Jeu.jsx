@@ -1,8 +1,8 @@
-import { View, Image, TouchableOpacity, FlatList, Linking, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, ScrollView, Image, TouchableOpacity, FlatList, Linking, StyleSheet, useWindowDimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { TextInput, Text, Card, Title, Button } from 'react-native-paper';
+import { TextInput, Text, Card, Title, Button, Avatar } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 
 export function Jeu({ user, token, navigation, route }) {
@@ -68,39 +68,59 @@ export function Jeu({ user, token, navigation, route }) {
 
     console.log(jeu.joueur)
 
-    return <View style={styles.container}>
-        <Text style={styles.title}>{jeu.nom}</Text>
-        <Image source={{ uri: jeu.image }} style={styles.image} />
-        <RenderHtml source={{ html: jeu.description }} />
-        <Text>Nombre de succès : {jeu.succes.length}</Text>
-        <Text>Joueur ? {jeu.joueur !== false ? "true" : "false"}</Text>
-        {jeu.joueur !== false && (
-            <View style={styles.playerInfoContainer}>
-                <Text>Actif: {jeu.joueur.actif === 1 ? 'Oui' : 'Non'}</Text>
-                <TouchableOpacity onPress={() => handleClick('actif')}>
-                    <Text>Changer</Text>
-                </TouchableOpacity>
-                {/* Render other player info and buttons similarly */}
+    return (
+        <ScrollView>
+            <View style={styles.container}>
+                <Text style={styles.title}>{jeu.nom}</Text>
+                <Image source={{ uri: jeu.image }} style={styles.image} />
+                <RenderHtml source={{ html: jeu.description }} />
+                {jeu.joueur !== false ?
+                    <View>
+                        <View style={styles.playerInfoContainer}>
+                            <Text>Actif : {jeu.joueur.actif === 1 ? 'Oui' : 'Non'}</Text>
+                            <TouchableOpacity onPress={() => handleClick('actif')}>
+                                <Button>Changer</Button>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.playerInfoContainer}>
+                            <Text>Possédé : {jeu.joueur.possede === 1 ? 'Oui' : 'Non'}</Text>
+                            <TouchableOpacity onPress={() => handleClick('possede')}>
+                                <Button>Changer</Button>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.playerInfoContainer}>
+                            <Text>Favori : {jeu.joueur.favori === 1 ? 'Oui' : 'Non'}</Text>
+                            <TouchableOpacity onPress={() => handleClick('favori')}>
+                                <Button>Changer</Button>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    : <Text style={{marginVertical:5}}>Vous devez être connecté pour enregistrer ce jeu</Text>}
+                <Text>Nombre de succès : {jeu.succes.length}</Text>
+                <FlatList
+                    style={{marginTop:10}}
+                    data={jeu.succes}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => navigation.navigate('Succes', { idSucces: item.idSucces })}>
+                            <Card style={styles.card}>
+                                <Card.Title
+                                    title={item.nom}
+                                    left={() => <Avatar.Image size={48} source={{ uri: "https://achievementstats.com/" + item.iconLocked }} />}
+                                />
+                                <Card.Content>
+                                    <Text variant="bodyMedium">{item.description}</Text>
+                                </Card.Content>
+                            </Card>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item.idSucces.toString()}
+                    numColumns={1}
+                    contentContainerStyle={{ paddingHorizontal: 16 }}
+                />
             </View>
-        )}
-        <Text>Succès</Text>
-        <FlatList
-            data={jeu.succes}
-            renderItem={({ item }) => (
-                <View>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('Succes', { idSucces: item.idSucces })}
-                    >
-                        <Image source={{ uri: "https://achievementstats.com/" + item.iconLocked }} />
-                        <Text>{item.nom}</Text>
-                        <Text>{item.description}</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
-            keyExtractor={(item) => item.idSucces.toString()}
-        />
-    </View>
+        </ScrollView>
 
+    )
 };
 
 const styles = StyleSheet.create({
@@ -125,5 +145,8 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
     },
+    card: {
+        marginBottom: 5
+    }
 });
 
