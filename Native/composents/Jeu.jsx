@@ -89,7 +89,7 @@ export function Jeu({ user, token, navigation, route }) {
             renderItem={({ item }) => (
                 <View>
                     <TouchableOpacity
-                        onPress={() => Linking.openURL(`https://achievementstats.com/${item.iconUnlocked}`)}
+                        onPress={() => navigation.navigate('Succes', { idSucces: item.idSucces })}
                     >
                         <Image source={{ uri: "https://achievementstats.com/" + item.iconLocked }} />
                         <Text>{item.nom}</Text>

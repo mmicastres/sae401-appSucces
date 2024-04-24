@@ -7,6 +7,7 @@ import {getUser, Login} from "./composents/auth/Login";
 import {BottomNav, Home} from "./composents/BottomNav";
 import {Jeu} from "./composents/Jeu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Succes} from "./composents/Succes";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +32,7 @@ export default function App() {
                 <>
                   <Stack.Screen name={"Profile"} component={BottomNav}/>
                   <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
-                    <Stack.Screen name={"Succes"} children={()=>{<Text>Suces</Text>}}/>
+                    <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} />}/>
                     </>
                 :
                 <>
