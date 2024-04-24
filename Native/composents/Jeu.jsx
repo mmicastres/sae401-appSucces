@@ -146,7 +146,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     card: {
-        marginBottom: 5
+        marginBottom: 5,
+        width:340
     }
 });
 

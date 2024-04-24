@@ -10,7 +10,7 @@ export function Succes({ user,route,navigation,token }) {
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [] });
     const [obtenu, setObtenu] = useState()
     const [titre, setTitre] = useState("")
-    const [titreMod,setTitreMod] = useState("")
+    const [titreMod, setTitreMod] = useState("")
     const [commentaireMod, setCommentaireMod] = useState("")
     const [commentaire, setCommentaire] = useState("")
     const [modif, setModif] = useState(null)
@@ -29,7 +29,7 @@ export function Succes({ user,route,navigation,token }) {
                     "Authorization": "Bearer " + token,
                 }}).then((response) => {
                 const succesObtenu = response.data.succes.find((element) => element.idSucces == id)
-                console.log("succesObtenu", succesObtenu,succesObtenu != undefined)
+                console.log("succesObtenu", succesObtenu, succesObtenu != undefined)
                 succesObtenu != undefined ? setObtenu(1) : setObtenu(0);
             });
         }
@@ -51,7 +51,7 @@ export function Succes({ user,route,navigation,token }) {
                 }).then((response) => {
                     setObtenu(1)
                     //toast('success', 'Vous avez obtenu le succès !',5000)
-                }).catch((e)=>{
+                }).catch((e) => {
                     //toast('error', 'Erreur lors de l\'obtention du succès',5000)
 
                 });
@@ -64,7 +64,7 @@ export function Succes({ user,route,navigation,token }) {
                 }).then((response) => {
                     setObtenu(0)
                     //toast('success', 'Le succès a été supprimé',5000)
-                }).catch((e)=>{
+                }).catch((e) => {
                     //toast('error', 'Erreur lors de la suppression du succès',5000)
 
                 });
@@ -128,7 +128,7 @@ export function Succes({ user,route,navigation,token }) {
 
     function handleModComment(event, idcommentaire) {
         event.preventDefault();
-        console.log("mod",idcommentaire)
+        console.log("mod", idcommentaire)
         axios.put(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idcommentaire, {
             content: commentaireMod,
             titre: titreMod,
@@ -150,7 +150,7 @@ export function Succes({ user,route,navigation,token }) {
                         return item
                     })
                 })
-            }else{
+            } else {
                 //toast('error', 'Erreur lors de la modification du commentaire',5000)
             }
 
@@ -214,36 +214,36 @@ export function Succes({ user,route,navigation,token }) {
             </View>
         </View>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 18, textAlign: 'center', marginBottom: 10 }}>Commentaires et aides</Text>
-            {user ? (
-                <View style={{ width: '50%' }}>
-                    <TextInput
-                        style={{ marginBottom: 10 }}
-                        label="Titre"
-                        value={titre}
-                        onChangeText={changeTitre}
-                        right={<TextInput.Icon name="close-circle" onPress={clearTitre} />}
-                    />
-                    <TextInput
-                        style={{ marginBottom: 10 }}
-                        label="Commentaire"
-                        value={commentaire}
-                        onChangeText={changeCommentaire}
-                        right={<TextInput.Icon name="close-circle" onPress={clearComment} />}
-                    />
-                    <Button mode="contained" onPress={handleSendComment} color="blue">
-                        Envoyer
-                    </Button>
-                </View>
-            ) : (
-                <>
-                    <Text>Vous devez être authentifié pour laisser un commentaire</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                        <Text>Login</Text>
-                    </TouchableOpacity>
-                </>
-            )}
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 18, textAlign: 'center', marginBottom: 10 }}>Commentaires et aides</Text>
+                {user ? (
+                    <View style={{ width: '50%' }}>
+                        <TextInput
+                            style={{ marginBottom: 10 }}
+                            label="Titre"
+                            value={titre}
+                            onChangeText={changeTitre}
+                            right={<TextInput.Icon name="close-circle" onPress={clearTitre} />}
+                        />
+                        <TextInput
+                            style={{ marginBottom: 10 }}
+                            label="Commentaire"
+                            value={commentaire}
+                            onChangeText={changeCommentaire}
+                            right={<TextInput.Icon name="close-circle" onPress={clearComment} />}
+                        />
+                        <Button mode="contained" onPress={handleSendComment} color="blue">
+                            Envoyer
+                        </Button>
+                    </View>
+                ) : (
+                    <>
+                        <Text>Vous devez être authentifié pour laisser un commentaire</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                            <Text>Login</Text>
+                        </TouchableOpacity>
+                    </>
+                )}
 
             <Text style={{ fontSize: 18, textAlign: 'center', marginTop: 20 }}>Tous les commentaires</Text>
             <ScrollView style={{ width: '50%' }}>
