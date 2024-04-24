@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput, Text, Button } from 'react-native-paper';
@@ -24,7 +24,7 @@ export function Login({ setUser, user, token, setToken }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const navigate = useNavigation();
+    const navigation = useNavigation();
 
     console.log(process.env.EXPO_PUBLIC_API_URL)
 
@@ -67,22 +67,24 @@ export function Login({ setUser, user, token, setToken }) {
     return (
         <View style={styles.container}>
             <Text style={styles.titre}>Connexion</Text>
-            <TextInput 
-            mode="outlined"
-            style={styles.input}
-            label="Ton email"
-            onChangeText={(e) => {
-                setEmail(e)
-            }} value={email} placeholder={"Email"} type={"email"} />
-            <TextInput 
-            mode="outlined"
-            style={styles.input}
-            label="Ton mot de passe"
-            onChangeText={(e) => {
-                setPassword(e)
-            }} value={password} placeholder={"Mot de passe"} textContentType={"password"} />
+            <TextInput
+                mode="outlined"
+                style={styles.input}
+                label="Ton email"
+                onChangeText={(e) => {
+                    setEmail(e)
+                }} value={email} placeholder={"Email"} type={"email"} />
+            <TextInput
+                mode="outlined"
+                style={styles.input}
+                label="Ton mot de passe"
+                onChangeText={(e) => {
+                    setPassword(e)
+                }} value={password} placeholder={"Mot de passe"} textContentType={"password"} />
             <Button mode="contained" onPress={handleSubmit}>Connexion</Button>
-            <Text  style={styles.connexion} variant="bodyLarge" onPress={navigate.navigate("register")}>Pas encore de compte ? S'inscrire</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.connexion} variant="bodyLarge">Pas encore de compte ? S'inscrire</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
         width: '80%',
         marginBottom: 20
     },
-    connexion:{
+    connexion: {
         marginTop: 10,
         color: 'purple'
     }

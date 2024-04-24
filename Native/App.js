@@ -4,6 +4,7 @@ import {NavigationContainer, useNavigation} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useEffect, useState} from "react";
 import {getUser, Login} from "./composents/auth/Login";
+import {Register} from "./composents/auth/Register";
 import {BottomNav, Home} from "./composents/BottomNav";
 import {Jeu} from "./composents/Jeu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,12 +35,12 @@ export default function App() {
                 <>
                   <Stack.Screen name={"Profile"} children={({navigation})=><BottomNav navigation={navigation} token={token} user={user}/> }/>
                   <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
-                    <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
-                    </>
+                  <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
+                </>
                 :
                 <>
                   <Stack.Screen name={"Login"} children={()=><Login user={user} setUser={setUser} token={token} setToken={setToken} />}/>
-                  <Stack.Screen name={"Register"} children={()=><Text>Register</Text>}/>
+                  <Stack.Screen name={"Register"} children={()=><Register user={user} setUser={setUser} token={token} setToken={setToken}/>}/>
                 </>
 
           }

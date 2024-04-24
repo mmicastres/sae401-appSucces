@@ -1,17 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Text, TextField } from "react-native-paper";
-import { Lock, Mail } from "lucide-react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Button, Text, TextInput } from "react-native-paper";
 import { getUser } from "./Login";
 
-export function Register({ user, setUser, navigate }) {
+export function Register({ user, setUser }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [pseudo, setPseudo] = useState("");
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const toast = useToast();
+    const navigate = useNavigation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,33 +40,54 @@ export function Register({ user, setUser, navigate }) {
     };
 
     return (
-        <View>
-            <Text>Crée un compte</Text>
-            <TextField
+        <View style={styles.container}>
+            <Text style={styles.titre}>Créer un compte</Text>
+            <TextInput
                 mode="outlined"
                 style={styles.input}
-                label="Ton email"
+                label="Email"
                 onChangeText={(e) => {
                     setEmail(e)
                 }} value={email} placeholder={"Email"} type={"email"} />
             <TextInput
                 mode="outlined"
                 style={styles.input}
-                label="Ton mot de passe"
+                label="Mot de passe"
                 onChangeText={(e) => {
                     setPassword(e)
                 }} value={password} placeholder={"Mot de passe"} textContentType={"password"} />
             <TextInput
                 mode="outlined"
                 style={styles.input}
-                label="Ton pseudo"
+                label="Pseudo"
                 onChangeText={(e) => {
                     setPseudo(e)
                 }} value={pseudo} placeholder={"Pseudo"} />
-            <Button mode="contained" onPress={navigate}>Se connecter</Button>
-            <Button mode="contained" onPress={handleSubmit}>Créer un compte</Button>
+            <Button style={styles.button} mode="contained" onPress={handleSubmit}>Créer un compte</Button>
+            <Button style={styles.button} mode="outlined" onPress={navigate}>Se connecter</Button>
 
             {error && <p>{error}</p>}
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        marginTop: 50,
+        flex: 1,
+        alignItems: 'center'
+    },
+    titre: {
+        fontSize: 30,
+        textAlign: 'center',
+        marginBottom: 30
+    },
+    input: {
+        width: '80%',
+        marginBottom: 20
+    },
+    button: {
+        marginBottom: 10,
+        width: '40%'
+    }
+});
