@@ -21,7 +21,7 @@ export function Home({ user, navigation }) {
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => navigation.navigate('Jeu', { idJeu: item.idJeu })}>
-            <Card style={{ margin: 8 }}>
+            <Card style={styles.card}>
                 <Card.Cover source={{ uri: `https://cdn.cloudflare.steamstatic.com/steam/apps/${item.steamId}/header.jpg` }} />
                 <Card.Content style={{ alignItems: "center" }}>
                     <Title>{item.nom}</Title>
@@ -47,7 +47,6 @@ export function Home({ user, navigation }) {
                     renderItem={renderItem}
                     keyExtractor={(item) => item.idJeu.toString()}
                     numColumns={1}
-                    contentContainerStyle={{ paddingHorizontal: 16 }}
                 />
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <Button
@@ -71,5 +70,9 @@ const styles = StyleSheet.create({
     button: {
         marginBottom: 10,
         width: '40%'
+    },
+    card: {
+        marginBottom: 10,
+        width: 340
     }
 });
