@@ -89,7 +89,7 @@ export function Profile({ user }) {
     return <>
         <div className="m-5 flex flex-row justify-start align-baseline">
             <div className="flex flex-col align-center justify-center w-1/4 mr-5">
-                {profile ? (<img className="rounded-full object-cover size-64 w-64 mb-2" src={`http://localhost:8000/storage/imgprofile/${profile.picture}`} alt="Profile picture" />) : (<></>)}
+                {profile ? (<img className="rounded-full object-cover size-64 w-64 mb-2" src={`${process.env.REACT_APP_API_URL}/storage/imgprofile/${profile.picture}`} alt="Profile picture" />) : (<></>)}
                 {!id || user?.id == id ?
                     <form method="POST" className="flex flex-row justify-center" encType="multipart/form-data" onSubmit={handlePdp}>
                         <input className="mr-2" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif" onChange={handleChangeFile} />

@@ -17,4 +17,5 @@ class Likes extends Model
     }
     protected $primaryKey = "idMessage";
     protected $table = 'LikeMsg';
+    public $timestamps = false;
 }

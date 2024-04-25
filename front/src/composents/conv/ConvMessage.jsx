@@ -20,7 +20,30 @@ export function ConvMessage({current,user}){
 
 
 
+
+
     }, [current]);
+
+    function likeMsg(itemId) {
+        axios.post(process.env.REACT_APP_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
+            console.log(response.data);
+            setMessages(messages.map((message) => {
+                if (message.idMessage == itemId) {
+                    return {...message, likes_count: message.likes_count + response.data.status}
+                }else{
+                    return message
+                }
+            }));
+        })
+    }
+
+    function deleteMsg(itemId) {
+        axios.delete(process.env.REACT_APP_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
+            console.log(response.data);
+            setMessages(messages.filter((message) => parseInt(message.idMessage) !== parseInt(itemId)));
+        })
+    }
+
     return <div style={{flex:1}} className={"flex flex-col h-full pb-4 justify-between"}>
         <ul className={"flex flex-col gap-2"}>
             {messages.map((item)=>(
@@ -29,44 +52,23 @@ export function ConvMessage({current,user}){
                     <Card className={"p-4 "+(item.userId == user.id ? " bg-primary": "bg-secondary")}>
                         <p>{item.content}</p>
                         <div className={"flex gap-4"}>
-                            <button idItem={item.idMessage} onClick={(e) => {
-                                const itemId = e.target.getAttribute("idItem");
-                                axios.post(process.env.REACT_APP_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
-                                    console.log(response.data);
-                                    setMessages(messages.map((message) => {
-                                        if (message.idMessage == itemId) {
-                                            return {...message, likes: message.likes + 1}
-                                        }else{
-                                            return message
-                                        }
-                                    }));
-                                })
-                            }}>Like
-                            </button>
+                            <Button variant={"elevated"} className={"p-2 px-4"} onClick={()=>likeMsg(item.idMessage)}>Like
+                            </Button>
                             {item.userId == user.id ? (
                                     <>
-                                        <p>Vous</p>
+                                        <Button variant={"elevated"} className={"p-2 px-4"}  onClick={()=>{
+                                            deleteMsg(item.idMessage)
 
-                                        <button idItem={item.idMessage} onClick={(e) => {
-                                            const itemId = e.target.getAttribute("idItem");
-                                            axios.delete(process.env.REACT_APP_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
-                                                console.log(response.data);
-                                                setMessages(messages.filter((message) => parseInt(message.idMessage) !== parseInt(itemId)));
-                                            })
                                         }}>Suppr
-                                        </button>
+                                        </Button>
                                     </>
                                 )
                                 :
-                                (
-                                    <>
-                                        <p>Autre</p>
-
-                                    </>
-                                )}
+                                ( <></> )}
                         </div>
-
-
+                        {
+                            item.likes_count > 0 ? <p>{item.likes_count} ❤️</p> : <></>
+                        }
                     </Card>
 
                 </li>

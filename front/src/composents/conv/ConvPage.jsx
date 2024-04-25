@@ -11,7 +11,11 @@ export function ConvPage({user}){
     let [conv, setConv] = useState([]);
     let [friends,setFriends] = useState([])
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + "/api/conv").then((response) => {
+        axios.get(process.env.REACT_APP_API_URL + "/api/conv",{
+            headers:{
+                "Authorization": "Bearer " + user.token,
+            }
+        }).then((response) => {
             console.log(response.data);
             setConv(response.data["conversations"]);
             setFriends(response.data["friends"])

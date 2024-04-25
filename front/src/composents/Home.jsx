@@ -14,6 +14,7 @@ export function Home({ user }) {
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_URL + "/api/jeux?page=" + page + (search !== "" ? "&search=" + search : "")).then((response) => {
             setJeux(response.data.jeux);
+            setUsers(response.data.users);
             console.log("response", response.data);
         });
     }, [search, page]);
@@ -41,6 +42,33 @@ export function Home({ user }) {
             </div> : <></>}
 
         </form>
+
+
+
+        {users.length > 0 ? <>
+            <h2 className="text-2xl mb-3">Utilisateurs</h2>
+            <ul className={"flex gap-4 justify-center overflow-scroll"}>
+                {users.map((item) => (
+                    <li key={item.id} className={"w-32 h-32"}>
+                        <Link to={"/user/" + item.id}>
+                            <Card className={"relative  rounded-xl"}>
+                                <img
+                                    className={"w-32 h-32"}
+                                    src={`${process.env.REACT_APP_API_URL}/storage/imgprofile/${item.picture}`}
+                                    alt={"pdp de " + item.pseudo}/>
+                                <div className={"p-2 flex items-end text-white absolute bottom-0 left-0 h-full w-full bg-gradient-to-t from-black bg-opacity-50 to-100% to-transparent"}>
+                                    <h3>{item.pseudo}</h3>
+                                </div>
+                            </Card>
+                        </Link>
+                    </li>
+                ))
+                }
+            </ul>
+        </> : <></>}
+
+
+        {jeux.length > 0 ? <>
         <h2 className="text-2xl mb-3">Jeux</h2>
         <ul className={"flex flex-wrap gap-4 justify-center"}>
             {jeux.map((item) => (
@@ -61,6 +89,7 @@ export function Home({ user }) {
         </ul>
 
 
+
         <div className={"flex"}>
             <Button className="mr-5" onClick={() => {
                 if (page != 1) setPage(page - 1)
@@ -69,7 +98,7 @@ export function Home({ user }) {
                 setPage(page + 1)
             }}>Suivant</Button>
         </div>
-        {user ? <h1>Connecté en tant que {user.pseudo}</h1> : <h1>Vous n'êtes pas connecté</h1>}
+            </> : <h3>Aucun jeu trouvé</h3>}
 
     </div>
 }

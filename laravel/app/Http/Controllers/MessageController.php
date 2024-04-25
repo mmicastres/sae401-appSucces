@@ -56,7 +56,9 @@ class MessageController extends Controller
 
     public function convContenu(Request $request, $id)
     {
-        $conversation = Conversation::with('messages')->find($id);
+        $conversation = Conversation::with(['messages'=>function($query){
+            $query->withCount('likes');
+        }])->find($id);
         return response()->json(["message" => "OK", "conversation" => $conversation]);
     }
 
@@ -140,18 +142,20 @@ class MessageController extends Controller
     public function likeMsg(Request $request, $id, $idmessage)
     {
         $msg = Message::find($idmessage);
-        $like = Likes::where('idMessage', $idmessage)->where('pseudo', $request->user()->pseudo)->get();
+        $user = auth("sanctum")->user();
+        $like = Likes::where('idMessage', $idmessage)->where('idUser', $user->id)->first();
         if($like){
             $ok = $like->delete();
             if ($ok) {
-                return response()->json(["status" => 1, "message" => "Votre like a été supprimé"], 201);
+                return response()->json(["status" => -1, "message" => "Votre like a été supprimé"], 201);
             } else {
                 return response()->json(["status" => 0, "message" => "Erreur"], 400);
             }
         }else{
+            $like = new Likes;
             $like->idMessage = $idmessage;
-            $like->pseudo = $request->user()->pseudo;
-            $ok = $like->save;
+            $like->idUser = $request->user()->id;
+            $ok = $like->save();
             if ($ok) {
                 return response()->json(["status" => 1, "message" => "Votre like a été ajouté"], 201);
             } else {
