@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\FriendRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
@@ -14,8 +15,9 @@ class UserController extends Controller
 {
     public function userInfo(Request $request,$id)
     {
-        $userId = strval($request->user()->id);
-        if ($id && $userId != $id) {
+        // get user authenticated from Token
+        $user = auth('sanctum')->user();
+        if (($user && $id) && ($user->id != $id)) {
             $user = User::with("succes")->with("friends1")->with("friends2")->with(["joueur" => function ($query) {
                 $query->where('favori', 1)->orWhere('possede', 1)->orWhere('actif', 1)->with('jeu');
             }])->find($id);
@@ -26,12 +28,12 @@ class UserController extends Controller
             }])->find($id);
         }
         $user->friends = $user->friends1->merge($user->friends2);
-        if ($userId) {
-            $user->isFriend = $user->friends->contains($userId);
+        if ($user) {
+            $user->isFriend = $user->friends->contains($user->id);
             //$user->isFriendRequest = $user->friendRequests->where("demandeur",$userId)->where("destinataire",$id)->first();
             //$user->isFriendRequestSent = $user->friendRequestsSent->where("demandeur",$id)->where("destinataire",$userId)->first();
-            $user->isFriendRequestSent = $user->friendRequests->contains($userId);
-            $user->isFriendRequest = $user->friendRequestsSent->contains($userId);
+            $user->isFriendRequestSent = $user->friendRequests->contains($user->id);
+            $user->isFriendRequest = $user->friendRequestsSent->contains($user->id);
         }
         unset($user->friends1);
         unset($user->friends2);

@@ -244,7 +244,7 @@ export function Succes({ user }) {
                                     <h2 className="font-semibold m-3">{item.titre}</h2>
                                     <p className="m-5">{item.content}</p>
 
-                                    {item.idUser === user.id ?
+                                    {item.idUser === user?.id ?
                                         <div className="flex flex-row flex-end">
                                             <Button idCommentaire={item.idCommentaire} onClick={modComment}>Modification</Button>
                                             <Button idCommentaire={item.idCommentaire} onClick={handleSupComment}>Suppression</Button>

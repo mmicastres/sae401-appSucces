@@ -20,7 +20,7 @@ export function Profile({ user }) {
 
 
     useEffect(() => {
-        if (id && id !== user.id) {
+        if ((user && id) && (id !== user.id)) {
             axios.get(process.env.REACT_APP_API_URL + "/api/user/" + id,
                 {headers: {
                     "Authorization": "Bearer " + user.token,
@@ -98,13 +98,13 @@ export function Profile({ user }) {
             </div>
             <div className="flex flex-col justify-center w-1/4">
                 <p className="text-5xl mb-5">{profile?.pseudo}</p>
-                {user && profile && user.id != profile.id ?
+                {user ? (profile && user.id != profile.id ?
                     <Button className="w-1/2" onClick={ajoutAmi}>
                         {profile?.isFriendRequestSent ? "En attente d'ajout" :
                             profile?.isFriendRequest ? "Accepter la demande d'ami" :
                                 profile?.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
                     </Button>
-                    : <></>}
+                    : <></>) : <><Button className="w-1/2" onClick={()=>{navigate("/login")}}>Login to add Friend</Button></>}
             </div>
         </div>
         <div className="flex flex-row">
@@ -170,7 +170,7 @@ export function Profile({ user }) {
                     <h2 className="text-2xl mb-3">Amis</h2>
                     <ul>
                         {friends.map((item) => (
-                            <User friend={user.id == id ? true : false} key={item.id} user={item} />
+                            <User friend={user?.id == id ? true : false} key={item.id} user={item} />
                         ))
                         }
                     </ul>

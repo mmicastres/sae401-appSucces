@@ -29,6 +29,7 @@ export function Login({setUser,user,token,setToken}) {
     e.preventDefault();
     setError(null);
     try {
+
         const res = await axios.post(process.env.REACT_APP_API_URL+"/api/login", {
             email: email,
             password: password,
