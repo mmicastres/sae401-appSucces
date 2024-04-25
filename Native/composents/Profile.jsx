@@ -196,9 +196,9 @@ export function Profile({ navigation, token, user, route = "" }) {
                 </FlatList>
             </View>
             {!id || user?.id === id ? (
-                <>
+                <View style={styles.container}>
                     {friendsRequests.length != 0 ? (
-                        <View style={styles.container}>
+                        <View>
                             <Text>Demandes d'amis reçues</Text>
                             {friendsRequests?.map(item => (
                                 <User key={item.id} user={item} />
@@ -206,14 +206,14 @@ export function Profile({ navigation, token, user, route = "" }) {
                         </View>
                     ) : <Text>Pas de demandes d'amis en attente</Text>}
                     {friendsRequestsSent.length != 0 ? (
-                        <View style={styles.container}>
+                        <View>
                             <Text>Demandes d'amis envoyées</Text>
                             {friendsRequestsSent?.map(item => (
                                 <User key={item.id} user={item} />
                             ))}
                         </View>
                     ) : <Text>Pas de demandes d'amis envoyées</Text>}
-                </>
+                </View>
             ) : null}
         </View>
     </ScrollView>

@@ -130,10 +130,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
+    titre: {
+        fontSize: 30,
+        textAlign: 'center',
+        marginBottom: 30
     },
     image: {
         width: 350,

@@ -67,7 +67,7 @@ export function Register({ user, setUser }) {
                 }} value={pseudo} placeholder={"Pseudo"} />
             <Button style={styles.button} mode="contained" onPress={handleSubmit}>Créer un compte</Button>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.connexion} variant="bodyLarge">Déja inscript ? Se connecter</Text>
+                <Text style={styles.connexion} variant="bodyLarge">Déjà inscrit ? Se connecter</Text>
             </TouchableOpacity>
 
             {error && <p>{error}</p>}
@@ -93,5 +93,9 @@ const styles = StyleSheet.create({
     button: {
         marginBottom: 10,
         width: '40%'
+    },
+    connexion: {
+        marginTop: 10,
+        color: 'purple'
     }
 });
