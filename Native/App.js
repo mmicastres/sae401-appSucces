@@ -10,6 +10,7 @@ import {Jeu} from "./composents/Jeu";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Succes} from "./composents/Succes";
 import {Profile} from "./composents/Profile";
+import {ConvMessage} from "./composents/conv/ConvMessage";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,7 +39,9 @@ export default function App() {
                   <Stack.Screen name={"Home"} children={({navigation})=><BottomNav navigation={navigation} token={token} user={user}/> }/>
                     <Stack.Screen name={"Profile"} children={({navigation,route})=><Profile route={route} user={user} navigation={navigation} token={token}/>}/>
                   <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
-                  <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
+                    <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
+                    <Stack.Screen name={"CreateConv"} children={({route,navigation})=><Text>Create conv</Text>}/>
+                    <Stack.Screen name={"Conv"} children={({route,navigation})=><ConvMessage route={route} user={user} token={token} />}/>
                 </>
                 :
                 <>

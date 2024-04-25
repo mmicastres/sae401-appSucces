@@ -66,7 +66,7 @@ export function Jeu({ user, token, navigation, route }) {
         });
     }
 
-    console.log(jeu.joueur)
+    console.log("JOUEUR : ",jeu.joueur)
 
     return (
         <ScrollView>

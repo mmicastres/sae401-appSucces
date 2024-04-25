@@ -3,6 +3,7 @@ import {BottomNavigation} from "react-native-paper";
 import {useEffect, useState} from "react";
 import {Home} from "./Home";
 import {Profile} from "./Profile";
+import {ConvList} from "./conv/ConvList";
 
 export function BottomNav({navigation,token,user}) {
     const [index,setIndex] = useState(0)
@@ -14,7 +15,7 @@ export function BottomNav({navigation,token,user}) {
     const renderScene = BottomNavigation.SceneMap({
         home: ()=><Home navigation={navigation}/>,
         profile: ()=><Profile navigation={navigation} token={token} user={user}/>,
-        message: ()=><Text>Message</Text>
+        message: ()=><ConvList navigation={navigation} token={token} user={user} />
     })
 
 

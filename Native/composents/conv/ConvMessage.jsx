@@ -1,90 +1,113 @@
-import {useEffect, useState} from "react";
-import axios from "axios";
-import {SendHorizonal} from "lucide-react";
-import {Button, Card, TextField} from "actify";
-import io from 'socket.io-client';
-export function ConvMessage({current,user}){
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TextInput } from 'react-native';
+import { Button, Card } from 'react-native-paper';
+import axios from 'axios';
+
+export function ConvMessage({ user, token, route }) {
     const [messages, setMessages] = useState([]);
+    const [content, setContent] = useState('');
+    const current = route.params.convId;
+
     useEffect(() => {
-        axios.get(process.env.EXPO_PUBLIC_API_URL+"/api/conv/"+current).then((response) => {
-            console.log(response.data);
-            setMessages(response.data["conversation"]["messages"]);
+        const fetchMessages = async () => {
+            try {
+                const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/api/conv/${current}`,{
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                    }
+                });
+                setMessages(response.data?.conversation?.messages || []);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        };
 
-        })
-        const socket = io(process.env.EXPO_PUBLIC_API_URL+"/api/WSmsg/"+current);
-        socket.on('newMessage', (msg) => {
-            console.log("newMessage",msg)
-            //setMessages([...messages,msg])
-        });
-
-
+        fetchMessages();
 
 
     }, [current]);
-    return <div style={{flex:1}} className={"flex flex-col h-full pb-4 justify-between"}>
-        <h2>Messages {current}</h2>
-        <ul className={"flex flex-col gap-2"}>
-            {messages.map((item)=>(
-                <li
-                    style={item.userId == user.id ? {alignSelf: "end"} : {alignSelf: "start"}}>
-                    <Card className={"p-4 "+(item.userId == user.id ? " bg-primary": "bg-secondary")}>
-                        <p>{item.content}</p>
-                        <div className={"flex gap-4"}>
-                            <button idItem={item.idMessage} onClick={(e) => {
-                                const itemId = e.target.getAttribute("idItem");
-                                axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
-                                    console.log(response.data);
-                                    setMessages(messages.map((message) => {
-                                        if (message.idMessage == itemId) {
-                                            return {...message, likes: message.likes + 1}
-                                        }else{
-                                            return message
-                                        }
-                                    }));
-                                })
-                            }}>Like
-                            </button>
-                            {item.userId == user.id ? (
-                                    <>
-                                        <p>Vous</p>
 
-                                        <button idItem={item.idMessage} onClick={(e) => {
-                                            const itemId = e.target.getAttribute("idItem");
-                                            axios.delete(process.env.EXPO_PUBLIC_API_URL+"/api/conv/" + current + "/" + itemId).then((response) => {
-                                                console.log(response.data);
-                                                setMessages(messages.filter((message) => parseInt(message.idMessage) !== parseInt(itemId)));
-                                            })
-                                        }}>Suppr
-                                        </button>
-                                    </>
-                                )
-                                :
-                                (
-                                    <>
-                                        <p>Autre</p>
+    const handleLikeMessage = async (itemId) => {
+        try {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/conv/${current}/${itemId}`,{},{
+                headers: {
+                "Authorization": "Bearer " + token,
+                }
+            });
+            const updatedMessages = messages.map((message) =>
+                message.idMessage === itemId ? { ...message, likes: message.likes + 1 } : message
+            );
+            setMessages(updatedMessages);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error liking message:', error);
+        }
+    };
 
-                                    </>
-                                )}
-                        </div>
+    const handleDeleteMessage = async (itemId) => {
+        try {
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/api/conv/${current}/${itemId}`,{
+                headers: {
+                    "Authorization": "Bearer " + token,
+                }
+            });
+            const updatedMessages = messages.filter((message) => message.idMessage !== itemId);
+            setMessages(updatedMessages);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error deleting message:', error);
+        }
+    };
 
+    const handleSendMessage = async (content) => {
+        try {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/conv/${current}`, { content:content },{
+                headers: {
+                    "Authorization": "Bearer " + token,
+                }
+            });
+            setMessages([...messages, response.data?.newMessage]);
+            console.log(response.data);
+            setContent("")
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    };
 
+    return (
+        <View style={{ flex: 1 }}>
+            <Text>Messages {current}</Text>
+            <ScrollView style={{ flex: 1 }}>
+                {messages.map((item) => (
+                    <Card
+                        key={item.idMessage}
+                        style={{
+                            padding: 10,
+                            backgroundColor: item.userId === user.id ? '#007bff' : '#6c757d',
+                            alignSelf: item.userId === user.id ? 'flex-end' : 'flex-start',
+                            marginBottom: 10,
+                        }}>
+                        <Text>{item.content}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                            <Button onPress={() => handleLikeMessage(item.idMessage)}>Like</Button>
+                            <Text>{item.userId === user.id ? 'Vous' : 'Autre'}</Text>
+                            {item.userId === user.id && (
+                                <Button onPress={() => handleDeleteMessage(item.idMessage)}>Suppr</Button>
+                            )}
+                        </View>
                     </Card>
-
-                </li>
-            ))}
-        </ul>
-        <form onSubmit={(e) => {
-            e.preventDefault();
-            axios.post(process.env.EXPO_PUBLIC_API_URL+"/api/conv/" + current, {content: e.target[0].value}).then((response) => {
-                console.log(response.data);
-                setMessages([...messages, response.data["newMessage"]]);
-                e.target[0].value = "";
-            })
-        }}
-        className={"flex gap-4 items-center "}
-        >
-            <TextField className={"flex-1"} placeholder={"message"} variant={"outlined"}/>
-            <Button type={"submit"}>Envoyer <SendHorizonal/></Button>
-        </form>
-    </div>
+                ))}
+            </ScrollView>
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                <TextInput
+                    style={{ flex: 1, marginRight: 10, borderWidth: 1, borderColor: '#ccc', padding: 5 }}
+                    placeholder="Message"
+                    onChangeText={(text) => setContent(text)}
+                />
+                <Button onPress={() => handleSendMessage(content)} mode="contained">
+                    Envoyer
+                </Button>
+            </View>
+        </View>
+    );
 }
