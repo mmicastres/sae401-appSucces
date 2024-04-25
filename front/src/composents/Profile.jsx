@@ -21,7 +21,12 @@ export function Profile({ user }) {
 
     useEffect(() => {
         if (id && id !== user.id) {
-            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + id).then((response) => {
+            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + id,
+                {headers: {
+                    "Authorization": "Bearer " + user.token,
+                    }
+                    }
+                ).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
                 setJoueur(response.data.joueur);
@@ -31,7 +36,11 @@ export function Profile({ user }) {
         } else {
             if (!user || !user.id) return;
             console.log("USER ID", user["id"])
-            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id).then((response) => {
+            axios.get(process.env.REACT_APP_API_URL + "/api/user/" + user.id,{
+                headers: {
+                    "Authorization": "Bearer " + user.token,
+                }
+            }).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
                 setFriendsRequests(response.data.friend_requests);
@@ -46,7 +55,11 @@ export function Profile({ user }) {
     console.log(friendsRequests)
     console.log(friendsRequestsSent)
     function ajoutAmi() {
-        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend").then((response) => {
+        axios.post(process.env.REACT_APP_API_URL + "/api/user/" + id + "/friend",{},{
+            headers: {
+                "Authorization": "Bearer " + user.token,
+            }
+        }).then((response) => {
             //navigate("/profile/" + id)
             setProfile({ ...joueur, isFriendRequestSent: !joueur.isFriendRequestSent })
             toast("success", response.data.message, 5000)
@@ -66,6 +79,7 @@ export function Profile({ user }) {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'multipart/form-data',
+                "Authorization": "Bearer " + user.token,
             }
         }).then((response) => {
             setProfile(user)
@@ -86,9 +100,9 @@ export function Profile({ user }) {
                 <p className="text-5xl mb-5">{profile?.pseudo}</p>
                 {user && profile && user.id != profile.id ?
                     <Button className="w-1/2" onClick={ajoutAmi}>
-                        {profile.isFriendRequestSent ? "En attente d'ajout" :
-                            profile.isFriendRequest ? "Accepter la demande d'ami" :
-                                profile.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
+                        {profile?.isFriendRequestSent ? "En attente d'ajout" :
+                            profile?.isFriendRequest ? "Accepter la demande d'ami" :
+                                profile?.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
                     </Button>
                     : <></>}
             </div>
@@ -163,21 +177,21 @@ export function Profile({ user }) {
                 </div>
                 {!id || user?.id == id ? (
                     <>
-                        {friendsRequests.length == 0 ? (
+                        { (friendsRequests != undefined && friendsRequests?.length == 0) ? (
                             <p className="text-2xl mb-3">Pas de demandes d'ami</p>
                         ) : (<><h2 className="text-2xl mb-3">Demandes d'amis</h2>
                             <ul>
-                                {friendsRequests.map((item) => (
+                                {friendsRequests?.map((item) => (
                                     <User key={item.id} user={item} />
                                 ))
                                 }
                             </ul></>)}
-                        {friendsRequestsSent.length == 0 ? (
+                        {(friendsRequestsSent && friendsRequestsSent?.length == 0) ? (
                             <p className="text-2xl mb-3">Pas de demandes envoyées</p>
                         ) : (<>
                             <h2 className="text-2xl mb-3">Demandes envoyées</h2>
                             <ul>
-                                {friendsRequestsSent.map((item) => (
+                                {friendsRequestsSent?.map((item) => (
                                     <User key={item.id} user={item} />
                                 ))
                                 }

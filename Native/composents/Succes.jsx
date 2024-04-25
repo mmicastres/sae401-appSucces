@@ -275,7 +275,7 @@ export function Succes({ user, route, navigation, token }) {
                             ) : (
                                 <View>
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                        <Text style={{ flex: 1 }} onPress={() => navigation.navigate(`/user/${item?.user?.id}`)}>
+                                        <Text style={{ flex: 1 }} onPress={() => navigation.navigate(`Profile`,{id:item?.user?.id})}>
                                             {item?.user?.pseudo}
                                         </Text>
                                         {/* Upvote and Downvote buttons */}

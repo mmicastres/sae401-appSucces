@@ -19,6 +19,7 @@ function App() {
 
     console.log("LOCALSTORE = ", localStorage.getItem("user"))
   const [user, setUser] = useState( JSON.parse(localStorage.getItem("user")))
+    const [token,setToken] = useState(localStorage.getItem("token"))
     const [loading,setLoading] = useState(true)
 
 
@@ -27,7 +28,7 @@ function App() {
     useEffect(() => {
 
 
-        getUser().then((user)=>{
+        getUser(token).then((user)=>{
             setUser(user)
         }).catch((e)=>{
            if (e.response && e.response.status === 401){
@@ -52,17 +53,17 @@ function App() {
 
                             <>
 
-                                <Route path={"/login"} element={<Login user={user} setUser={setUser}/>}/>
-                                <Route path={"/register"} element={<Register user={user} setUser={setUser}/>}/>
+                                <Route path={"/login"} element={<Login token={token} setToken={setToken} user={user} setUser={setUser}/>}/>
+                                <Route path={"/register"} element={<Register token={token} setToken={setToken} user={user} setUser={setUser}/>}/>
 
                             </>:<></>}
-                        <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile user={user} setUser={setUser} />}/>}/>
-                        <Route path={"/logout"} element={<AuthVerif user={user} elem={<Logout user={user} setUser={setUser}/>}/>}/>
-                        <Route path={"/conv"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
-                        <Route path={"/conv/:current"} element={<AuthVerif user={user} elem={<ConvPage user={user}/>}/>}/>
-                        <Route path={"/jeu/:id"} element={<Jeu user={user}/>}/>
-                        <Route path={"/user/:id"} element={<Profile user={user}/>}></Route>
-                        <Route path={"/succes/:id"} element={<Succes user={user}/>}/>
+                        <Route path={"/profile"} element={<AuthVerif user={user} elem={<Profile token={token} setToken={setToken} user={user} setUser={setUser} />}/>}/>
+                        <Route path={"/logout"} element={<AuthVerif user={user} elem={<Logout token={token} setToken={setToken} user={user} setUser={setUser}/>}/>}/>
+                        <Route path={"/conv"} element={<AuthVerif user={user} elem={<ConvPage token={token} setToken={setToken} user={user}/>}/>}/>
+                        <Route path={"/conv/:current"} element={<AuthVerif user={user} elem={<ConvPage token={token} setToken={setToken} user={user}/>}/>}/>
+                        <Route path={"/jeu/:id"} element={<Jeu token={token} setToken={setToken} user={user}/>}/>
+                        <Route path={"/user/:id"} element={<Profile token={token} setToken={setToken} user={user}/>}></Route>
+                        <Route path={"/succes/:id"} element={<Succes token={token} setToken={setToken} user={user}/>}/>
                         <Route index path="/" element={
                             <>
                                 <Home user={user}/>

@@ -9,6 +9,7 @@ export function Profile({ navigation,token,user,route="" }) {
     if (route !== ""){
         id = route.params.id;
     }
+    console.log("id",id)
     const [profile, setProfile] = useState();
     const [joueur, setJoueur] = useState([]);
     const [success, setSuccess] = useState([]);
@@ -19,7 +20,10 @@ export function Profile({ navigation,token,user,route="" }) {
 
     useEffect(() => {
         if (id !== "" && id !== user.id) {
-            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id).then((response) => {
+            console.log("NOT ME")
+            axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id,{headers: {
+                "Authorization": "Bearer " + token,
+            }}).then((response) => {
                 setSuccess(response.data.succes);
                 setFriends(response.data.friends);
                 setJoueur(response.data.joueur);
@@ -30,6 +34,7 @@ export function Profile({ navigation,token,user,route="" }) {
 
         } else {
             if (!user || !user.id) return;
+            console.log("ME")
             console.log("USER ID", user["id"])
             axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + user.id,{
                 headers: {
@@ -51,7 +56,11 @@ export function Profile({ navigation,token,user,route="" }) {
     }, [user]);
 
     function ajoutAmi() {
-        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id + "/friend").then((response) => {
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/user/" + id + "/friend",{},{
+            headers: {
+                "Authorization": "Bearer " + token,
+            }
+        }).then((response) => {
             //navigate("/profile/" + id)
             setProfile({ ...joueur, isFriendRequestSent: !joueur.isFriendRequestSent })
             //toast("success",response.data.message,5000)
@@ -69,6 +78,7 @@ export function Profile({ navigation,token,user,route="" }) {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'multipart/form-data',
+                "Authorization": "Bearer " + token,
             }
         }).then((response) => {
             console.log('test')
@@ -92,9 +102,9 @@ export function Profile({ navigation,token,user,route="" }) {
                 <Text style={{ fontSize: 24, marginBottom: 10 }}>{profile?.pseudo}</Text>
                 {id !== "" && id !== user.id && (
                     <Button mode="contained" style={{ width: '50%' }} onPress={ajoutAmi} >
-                        {profile.isFriendRequestSent ? "En attente d'ajout" :
-                            profile.isFriendRequest ? "Accepter la demande d'ami" :
-                                profile.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
+                        {profile?.isFriendRequestSent ? "En attente d'ajout" :
+                            profile?.isFriendRequest ? "Accepter la demande d'ami" :
+                                profile?.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
                     </Button>
                 )}
             </View>

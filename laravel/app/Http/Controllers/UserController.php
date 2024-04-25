@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Response;
 
 class UserController extends Controller
 {
-    public function userInfo($id)
+    public function userInfo(Request $request,$id)
     {
-        $userId = Auth::id();
+        $userId = $request->user()->id;
         if ($id && $userId != $id) {
             $user = User::with("succes")->with("friends1")->with("friends2")->with(["joueur" => function ($query) {
                 $query->where('favori', 1)->orWhere('possede', 1)->orWhere('actif', 1)->with('jeu');

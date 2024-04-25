@@ -3,16 +3,22 @@ import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {Button, TextField, useToast} from "actify"; 
 import {Lock, Mail} from "lucide-react";
-export async function  getUser(){
-    const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me")
+export async function  getUser(token){
+    if (!token) return;
+    const res =await axios.get(process.env.REACT_APP_API_URL+"/api/me",{
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
     if (res.status >= 200 && res.status < 300 && res.status !== 204) {
         // store the user as json
         localStorage.setItem("user", JSON.stringify(res.data))
+        res.data.token = token
         return res.data
     }
     return false;
 }
-export function Login({setUser,user}) {
+export function Login({setUser,user,token,setToken}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -32,7 +38,10 @@ export function Login({setUser,user}) {
             }
         });
         if (res.status >= 200 && res.status < 300) {
-            getUser().then((user)=>{
+            localStorage.setItem("token", res.data.accessToken)
+            setToken(res.data.accessToken)
+            getUser(token).then((user)=>{
+                user.token = token
                 setUser(user)
                 if (user){
                     toast("success","Vous êtes connecté")

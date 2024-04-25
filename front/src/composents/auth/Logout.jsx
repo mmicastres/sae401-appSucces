@@ -14,6 +14,7 @@ export function Logout({setUser}){
     function logout(){
         // clear localStorage + sessions
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
         axios.post(process.env.REACT_APP_API_URL+"/api/logout").then(() => {
             setUser(false);
             toast("success","Vous êtes maintenant déconnecté")
