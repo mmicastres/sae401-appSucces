@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, LogBox, StyleSheet, Text, View} from 'react-native';
 import {NavigationContainer, useNavigation} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useEffect, useState} from "react";
@@ -11,8 +11,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Succes} from "./composents/Succes";
 import {Profile} from "./composents/Profile";
 import {ConvMessage} from "./composents/conv/ConvMessage";
+import {Logout} from "./composents/auth/Logout";
 
 const Stack = createNativeStackNavigator();
+
+//LogBox.ignoreAllLogs();
 
 export default function App() {
   const [user,setUser] = useState(false);
@@ -21,6 +24,7 @@ export default function App() {
     useEffect(() => {
         AsyncStorage.getItem("token").then((localtoken)=>{
             console.log(localtoken)
+
             if (localtoken){
                 getUser(localtoken).then((data)=>{
                     setUser(data)
@@ -42,10 +46,12 @@ export default function App() {
                     <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
                     <Stack.Screen name={"CreateConv"} children={({route,navigation})=><Text>Create conv</Text>}/>
                     <Stack.Screen name={"Conv"} children={({route,navigation})=><ConvMessage route={route} user={user} token={token} />}/>
+                    <Stack.Screen name={"Logout"} children={()=><Logout user={user} setUser={setUser} token={token} setToken={setToken} />}/>
+
                 </>
                 :
                 <>
-                  <Stack.Screen name={"Login"} children={()=><Login user={user} setUser={setUser} token={token} setToken={setToken} />}/>
+                    <Stack.Screen name={"Login"} children={()=><Login user={user} setUser={setUser} token={token} setToken={setToken} />}/>
                   <Stack.Screen name={"Register"} children={()=><Register user={user} setUser={setUser} token={token} setToken={setToken}/>}/>
                 </>
 

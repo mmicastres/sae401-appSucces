@@ -71,6 +71,8 @@ export function Login({ setUser, user, token, setToken }) {
                 mode="outlined"
                 style={styles.input}
                 label="Ton email"
+                textContentType={"emailAddress"}
+                keyboardType={"email-address"}
                 onChangeText={(e) => {
                     setEmail(e)
                 }} value={email} placeholder={"Email"} type={"email"} />
@@ -78,6 +80,7 @@ export function Login({ setUser, user, token, setToken }) {
                 mode="outlined"
                 style={styles.input}
                 label="Ton mot de passe"
+                secureTextEntry
                 onChangeText={(e) => {
                     setPassword(e)
                 }} value={password} placeholder={"Mot de passe"} textContentType={"password"} />

@@ -9,8 +9,8 @@ export function Register({ user, setUser }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [pseudo, setPseudo] = useState("");
+    const navigation = useNavigation();
     const [error, setError] = useState(null);
-    const navigate = useNavigation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,6 +46,7 @@ export function Register({ user, setUser }) {
                 mode="outlined"
                 style={styles.input}
                 label="Email"
+                keyboardType={"email-address"}
                 onChangeText={(e) => {
                     setEmail(e)
                 }} value={email} placeholder={"Email"} type={"email"} />
@@ -53,6 +54,7 @@ export function Register({ user, setUser }) {
                 mode="outlined"
                 style={styles.input}
                 label="Mot de passe"
+                secureTextEntry
                 onChangeText={(e) => {
                     setPassword(e)
                 }} value={password} placeholder={"Mot de passe"} textContentType={"password"} />
@@ -64,7 +66,9 @@ export function Register({ user, setUser }) {
                     setPseudo(e)
                 }} value={pseudo} placeholder={"Pseudo"} />
             <Button style={styles.button} mode="contained" onPress={handleSubmit}>Créer un compte</Button>
-            <Button style={styles.button} mode="outlined" onPress={navigate}>Se connecter</Button>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.connexion} variant="bodyLarge">Déja inscript ? Se connecter</Text>
+            </TouchableOpacity>
 
             {error && <p>{error}</p>}
         </View>

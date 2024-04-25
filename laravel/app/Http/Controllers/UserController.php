@@ -47,10 +47,14 @@ class UserController extends Controller
             $user = User::find($id);
             if ($user->picture != null) {
                 $anciennepdp = $user->picture;
-                unlink(storage_path('/app/public/imgprofile/' . $anciennepdp));
+                // test if the file exist
+                if (file_exists(public_path() . '/storage/imgprofile/' . $anciennepdp)) {
+                    // delete the file
+                    unlink(public_path() . '/storage/imgprofile/' . $anciennepdp);
+                }
             }
             $imageName = $id . '.' . $file->extension();
-            $imagePath = storage_path() . '/app/public/imgprofile';
+            $imagePath = public_path() . '/storage/imgprofile/';
             $file->move($imagePath, $imageName);
         }
 

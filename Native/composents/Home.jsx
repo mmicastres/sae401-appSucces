@@ -33,6 +33,7 @@ export function Home({ user, navigation }) {
     return (
         <ScrollView>
             <View style={{ flex: 1, alignItems: "center" }}>
+                <Button onPress={()=>navigation.navigate("Logout")}>Logout</Button>
                 <Text variant="headlineLarge">Jeux</Text>
                 <TextInput
                     mode="outlined"
@@ -41,11 +42,6 @@ export function Home({ user, navigation }) {
                     onChangeText={(text) => setSearch(text)}
                 />
                 <Button style={styles.button} mode={"contained"} onPress={handleSearch} >Rechercher</Button>
-                {user ? (
-                    <Button style={styles.button} mode={"outlined"} onPress={() => navigation.navigate('Profile')} >Profile</Button>
-                ) : (
-                    <Button style={styles.button} mode={"outlined"} onPress={() => navigation.navigate('Login')} >Se connecter</Button>
-                )}
                 <FlatList
                     data={jeux}
                     renderItem={renderItem}

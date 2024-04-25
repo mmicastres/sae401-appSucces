@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import * as sanitizeHtml from 'sanitize-html'
-import { useToast, Button, Card } from "actify";
+import {useToast, Button, Card, LinearProgress} from "actify";
 
 export function Jeu({ user }) {
     let { id } = useParams();
@@ -15,6 +15,8 @@ export function Jeu({ user }) {
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
             }
+            response.data.jeu.nbObtenues = response.data.jeu.succes.filter((item) => item.detenteurs.some((item2) => item2.idUser === user.id)).length;
+            response.data.jeu.nbSuccess = response.data.jeu.succes.length;
             setJeu(response.data.jeu);
             setObtenu(response.data.jeu.succes);
         });
@@ -53,11 +55,20 @@ export function Jeu({ user }) {
             }
         });
     }
+
+    console.log("Jeu : ",jeu)
     return <>
-        <h2 className="text-3xl mt-3 mb-3 flex justify-center">{jeu.nom}</h2>
-        <div className="flex flex-column justify-center">
-            <img className="justify-center" src={jeu.image}></img>
+        <div className={"flex justify-evenly items-center"}>
+            <h2 className="text-3xl mt-3 mb-3 flex justify-center">{jeu.nom}</h2>
+            {jeu.joueur != false ?
+                <div className={"flex items-center gap-4 "}>
+                    <progress className={"h-8 w-64 rounded-2xl border border-black border-2"} max={100} value={(jeu.nbObtenues / jeu.nbSuccess) * 100}/>
+                    Completed {jeu.nbObtenues} / {jeu.nbSuccess}</div> : <></>}
         </div>
+        <div className="flex flex-col w-2/3 m-auto justify-center">
+        <img className="justify-center" src={jeu.image}></img>
+
+                </div>
         <div className="ml-3">
             <p className="mb-2 text-xl">Description :</p>
             <div id="description" dangerouslySetInnerHTML={{ __html: sanitizeHtml(jeu.description) }} ></div>

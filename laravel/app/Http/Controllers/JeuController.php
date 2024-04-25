@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Jeu;
 use App\Models\Joueur;
 use App\Models\Succes;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+//Ɏ ʬ Δ
+// GaƔmma
 class JeuController extends Controller
 {
 
@@ -20,7 +22,10 @@ class JeuController extends Controller
         $page = $request->page-1 || 0;
         $step= 20;
         $jeux = Jeu::where("nom","like","%".$search."%")->skip($step*$page)->take($step)->orderByRaw('ISNULL(mostPlayed), mostPlayed ASC')->get();
-        return response()->json(["message" => "OK", "jeux" => $jeux]);
+        $users = [];
+
+        if ($search != "") $users = User::where("pseudo","like","%".$search."%")->get();
+        return response()->json(["message" => "OK", "jeux" => $jeux,"users"=>$users]);
     }
 
     function jeuInfo(Request $request, $id) // testée et fonctionnelle
