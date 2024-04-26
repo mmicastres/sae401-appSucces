@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { StyleSheet, Image, View, TouchableOpacity, ScrollView, FlatList } from 'react-native';
-import { Button, TextInput, Card, Text, Surface, Avatar } from 'react-native-paper';
+import {Button, TextInput, Card, Text, Surface, Avatar, Icon, MD3Colors} from 'react-native-paper';
 import { useWebViewLogic } from "react-native-webview/lib/WebViewShared";
 
 export function Succes({ user, route, navigation, token }) {
@@ -298,18 +298,18 @@ export function Succes({ user, route, navigation, token }) {
                                 </Button>
                             </View>
                         ) : (
-                            <View>
-                                <View style={{display:"flex",justifyContent:"space-between"}}>
-                                    <Text variant="bodyLarge" style={{marginTop:20, marginLeft:25}}onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
+                            <View style={{padding:8}}>
+                                <View style={{display:"flex",flexDirection:"row", alignItems:"center",justifyContent:"space-between"}}>
+                                    <Text variant="bodyLarge" onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
                                         {item?.user?.pseudo}
                                     </Text>
-                                    <View style={{display:"flex",flexDirection:"row",gap:"4"}}>
+                                    <View style={{display:"flex",flexDirection:"row",alignItems:"center", gap:8}}>
                                         <Text>{item.vote_sum_up}</Text>
                                         <TouchableOpacity onPress={() => vote(1,item.idCommentaire)}>
-                                            <Text>👍</Text>
+                                            <Icon source={"chevron-up"} size={20} color={"black"} />
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => vote(0,item.idCommentaire)}>
-                                            <Text>👎</Text>
+                                            <Icon source={"chevron-down"} size={20} color={"black"} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
