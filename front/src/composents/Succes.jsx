@@ -40,7 +40,6 @@ export function Succes({ user, token}) {
                 axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
                     headers: {
                         "Accept": "application/json",
-                        "Authorization": "Bearer " + token
                     }
                 }).then((response) => {
                     setObtenu(1)
@@ -195,7 +194,9 @@ export function Succes({ user, token}) {
                     </div>
                 </div>
                 <p>Description : {succes.description}</p>
-                <Button className="mt-5" variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
+                {user ? (
+                    <Button className="mt-5" variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
+                ) : <></>}
 
             </div>
             <div>
@@ -229,8 +230,10 @@ export function Succes({ user, token}) {
                     <Button type="submit" value="Envoyer" variant="elevated" color="primary">Envoyer</Button>
                 </form></> :
                 <>
-                    <p>Vous devez etre authentifié pour laisser un commentaire</p>
-                    <Link to={"/login"}>Login</Link>
+                    <p>Vous devez etre connecté pour laisser un commentaire</p>
+                    <Link to="/login">
+                        <Button className="mt-5" variant="elevated" color="primary">Se connecter</Button>
+                    </Link>
                 </>
             }
             <h2 className="text-xl text-center">Commentaires et Aides</h2>
@@ -263,10 +266,15 @@ export function Succes({ user, token}) {
                                 </>) : (
                                 <div>
                                     <div className="flex flex-row justify-end">
-                                        <a className="basis-9/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
-                                        <p className="basis-1/12">{item.vote_sum_up}</p>
-                                        <ChevronUp color={ item.isLiked==1 ? "green" : "black"} onClick={()=>vote(1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
-                                        <ChevronDown  color={ item.isLiked==-1 ? "red" : "black"}  onClick={()=>vote(-1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        {user ? (<>
+                                            <a className="basis-9/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
+                                            <p className="basis-1/12">{item.vote_sum_up}</p>
+                                            <ChevronUp color={ item.isLiked==1 ? "green" : "black"} onClick={()=>vote(1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                            <ChevronDown  color={ item.isLiked==-1 ? "red" : "black"}  onClick={()=>vote(-1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        </>) : <>
+                                            <a className="basis-11/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
+                                            <p className="basis-1/12">{item.vote_sum_up}</p>
+                                        </>}
                                     </div>
                                     <h2 className="font-semibold m-3">{item.titre}</h2>
                                     <p className="m-5">{item.content}</p>
