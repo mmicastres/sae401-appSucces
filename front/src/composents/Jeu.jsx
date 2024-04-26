@@ -4,14 +4,19 @@ import axios from "axios";
 import * as sanitizeHtml from 'sanitize-html'
 import { useToast, Button, Card, LinearProgress } from "actify";
 
-export function Jeu({ user }) {
+export function Jeu({ user,token }) {
     let { id } = useParams();
     const [jeu, setJeu] = useState({ succes: [], joueur: false });
     const [obtenu, setObtenu] = useState();
     const toast = useToast();
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + "/api/jeux/" + id).then((response) => {
+        axios.get(process.env.REACT_APP_API_URL + "/api/jeux/" + id,{
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        }).then((response) => {
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
             }
@@ -46,6 +51,7 @@ export function Jeu({ user }) {
         }, {
             headers: {
                 "Accept": "application/json",
+                "Authorization": "Bearer " + token,
             }
         }).then((response) => {
             if (response.status >= 200 && response.status < 300 && response.data.joueur) {

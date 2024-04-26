@@ -37,9 +37,10 @@ export function Succes({ user, token}) {
         if (user && user.id) {
 
             if (obtenu == 0) {
-                axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
+                axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id, {},{
                     headers: {
                         "Accept": "application/json",
+                        "Authorization": "Bearer " + token,
                     }
                 }).then((response) => {
                     setObtenu(1)
@@ -52,6 +53,7 @@ export function Succes({ user, token}) {
                 axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
                     headers: {
                         "Accept": "application/json",
+                        "Authorization": "Bearer " + token,
                     }
                 }).then((response) => {
                     setObtenu(0)
@@ -94,6 +96,7 @@ export function Succes({ user, token}) {
         }, {
             headers: {
                 "Accept": "application/json",
+                "Authorization": "Bearer " + token,
             }
         }).then((response) => {
             if (response.status >= 200 && response.status < 300) {
@@ -120,6 +123,11 @@ export function Succes({ user, token}) {
         axios.put(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idcommentaire, {
             content: commentaireMod,
             titre: titreMod
+        },{
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token,
+            }
         }).then((res) => {
             console.log("res", res)
             if (res.status >= 200 && res.status < 300) {
@@ -145,7 +153,12 @@ export function Succes({ user, token}) {
         if (!e || !e.target) return
         const idCommentaire = e.currentTarget.getAttribute("idCommentaire")
         console.log("SUP,", idCommentaire)
-        axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire).then((response) => {
+        axios.delete(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire,{
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token,
+            }
+        }).then((response) => {
             if (response.status >= 200 && response.status < 300) {
                 console.log("response", response.data);
                 toast('success', 'Commentaire supprimé', 5000)

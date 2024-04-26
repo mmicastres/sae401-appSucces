@@ -92,7 +92,7 @@ export function Profile({ navigation, token, user, route = "" }) {
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
                 {profile ? (
-                    <Avatar.Image size={128} source={{ uri: `http://localhost:8000/imgprofile/${profile.picture}` }} />
+                    <Avatar.Image size={128} source={{ uri: `${process.env.EXPO_PUBLIC_API_URL}/storage/imgprofile/${profile?.picture}` }} />
                 ) : null}
                 <Text style={{marginLeft:10}} variant="displayMedium">{profile?.pseudo}</Text>
             </View>
@@ -222,7 +222,6 @@ export function Profile({ navigation, token, user, route = "" }) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'column',
         padding: 20,
         justifyContent: 'center',
