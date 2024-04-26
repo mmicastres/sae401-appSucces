@@ -89,22 +89,20 @@ export function Profile({ navigation, token, user, route = "" }) {
     }
 
     return (<ScrollView>
-        <View style={{ margin: 5, }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+        <View style={styles.container}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
                 {profile ? (
                     <Avatar.Image size={128} source={{ uri: `http://localhost:8000/imgprofile/${profile.picture}` }} />
                 ) : null}
-                <Text variant="displayMedium">{profile?.pseudo}</Text>
+                <Text style={{marginLeft:10}} variant="displayMedium">{profile?.pseudo}</Text>
             </View>
-            <View style={{ flexDirection: 'column', justifyContent: 'center', width: '25%' }}>
-                {id !== "" && id !== user.id ? (
-                    <Button mode="contained" style={{ width: '50%' }} onPress={ajoutAmi} >
-                        {profile?.isFriendRequestSent ? "En attente d'ajout" :
-                            profile?.isFriendRequest ? "Accepter la demande d'ami" :
-                                profile?.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
-                    </Button>
-                ) : <></>}
-            </View>
+            {id !== "" && id !== user.id ? (
+                <Button mode="contained" style={{ marginTop:10, width: '70%' }} onPress={ajoutAmi} >
+                    {profile?.isFriendRequestSent ? "En attente d'ajout" :
+                        profile?.isFriendRequest ? "Accepter la demande d'ami" :
+                            profile?.isFriend ? "Retirer l'ami" : "Ajouter l'ami"}
+                </Button>
+            ) : <></>}
         </View>
 
         <View style={{ flex: 1, margin: 5 }}>
@@ -189,7 +187,7 @@ export function Profile({ navigation, token, user, route = "" }) {
                     style={{ marginTop: 10 }}
                     data={friends}
                     renderItem={({ item }) => (
-                        <User friend={user.id === id} key={item.id} user={item} onPress={() => navigation.navigate(`Profile`, { id: item.id })} />
+                        <User friend={user.id === id} key={item.id} user={item} navigation={navigation} />
                     )}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={1}>

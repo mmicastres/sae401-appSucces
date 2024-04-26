@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import { View, Text, Button } from 'react-native';
-import { List, ListItem } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { List, ListItem, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 
-export function ConvList({token,navigation}) {
+export function ConvList({ token, navigation }) {
     const [open, setOpen] = useState(false);
     const [conv, setConv] = useState([]);
     const [friends, setFriends] = useState([]);
     useEffect(() => {
-        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/conv",{
+        axios.get(process.env.EXPO_PUBLIC_API_URL + "/api/conv", {
             headers: {
                 "Authorization": "Bearer " + token,
             }
@@ -29,13 +29,14 @@ export function ConvList({token,navigation}) {
     };
 
     return (
-        <View style={{ minWidth: '33.3%' }}>
-            <Text>Liste des conv</Text>
-            {/* Assuming CreateConv is a modal */}
-            <Button onPress={handleCreateConv} title="Create conv" />
+        <View style={styles.container}>
+            <Text style={styles.titre}>Liste des conversations</Text>
+
+                <Button mode="contained" style={styles.button} onPress={handleCreateConv}>Nouvelle conversation</Button>
             <List.Section>
                 {conv.map((item) => (
                     <List.Item
+
                         key={item.idConversation}
                         title={item.titre}
                         onPress={() => handleListItemPress(item.idConversation)}
@@ -45,3 +46,21 @@ export function ConvList({token,navigation}) {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    button: {
+        marginBottom: 10,
+        width: '60%',
+        alignItems: "center"
+    },
+    container: {
+        flex: 1,
+        alignItems: 'center'
+    },
+    titre: {
+        marginTop: 10,
+        fontSize: 30,
+        textAlign: 'center',
+        marginBottom: 20
+    }
+});

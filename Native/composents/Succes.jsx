@@ -188,7 +188,7 @@ export function Succes({ user, route, navigation, token }) {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text style={styles.title}>{succes?.nom}</Text>
+                <Text style={styles.titre}>{succes?.nom}</Text>
                 {succes && succes.iconUnlocked ? (
                     <Image style={{ width: 128, height: 128 }} source={{ uri: `https://achievementstats.com/${succes.iconUnlocked}` }} />
                 ) : <Image style={{ width: 128, height: 128 }} source={{ uri: `https://achievementstats.com/${succes.iconLocked}` }} />}
@@ -211,32 +211,32 @@ export function Succes({ user, route, navigation, token }) {
                     data={succes.detenteurs}
                     renderItem={({ item }) => (
                         <TouchableOpacity onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
-                            <Avatar.Image size={24} style={{marginHorizontal:5}} source={`http://localhost:8000/storage/imgprofile/${item.user.picture}`} />
+                            {item.user.picture ? (
+                                <Avatar.Image size={24} style={{ marginHorizontal: 5 }} source={`http://localhost:8000/storage/imgprofile/${item.user.picture}`} />
+                            ) : <Text variant="bodyLarge" onPress={() => navigation.navigate(`Profile`, { id: item.user.id })} >{item.user.pseudo}</Text>}
                         </TouchableOpacity>
                     )}
-                    keyExtractor={(item) => item.idSucces.toString()}
+                    keyExtractor={(item) => item.user.id.toString()}
                     numColumns={3}
                     contentContainerStyle={{ paddingHorizontal: 16 }}>
                 </FlatList>
-                
-                <Text style={styles.title}>Commentaires et aides</Text>
+
+                <Text style={styles.titre}>Commentaires et aides</Text>
                 {user ? (
-                    <View style={{ width: '100%', alignItems:"center" }}>
+                    <View style={{ width: '100%', alignItems: "center" }}>
                         <TextInput
                             mode="outlined"
-                            style={{ marginBottom: 20, marginTop: 10 }}
+                            style={{ marginBottom: 20, marginTop: 10, width: '80%' }}
                             label="Titre"
                             value={titre}
                             onChangeText={changeTitre}
-                            right={<TextInput.Icon name="close-circle" onPress={clearTitre} />}
                         />
                         <TextInput
                             mode="outlined"
-                            style={{ marginBottom: 20, marginTop: 10 }}
+                            style={{ marginBottom: 20, marginTop: 10, width: '80%' }}
                             label="Commentaire"
                             value={commentaire}
                             onChangeText={changeCommentaire}
-                            right={<TextInput.Icon name="close-circle" onPress={clearComment} />}
                         />
                         <Button mode="contained" onPress={handleSendComment} style={styles.button}>
                             Envoyer
@@ -244,14 +244,14 @@ export function Succes({ user, route, navigation, token }) {
                     </View>
                 ) : (
                     <>
-                        <Text>Vous devez être authentifié pour laisser un commentaire</Text>
+                        <Text>Vous devez être connecté pour laisser un commentaire</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                             <Button style={styles.button}>Login</Button>
                         </TouchableOpacity>
                     </>
                 )}
 
-                <Text style={styles.title}>Tous les commentaires</Text>
+                <Text style={styles.titre}>Tous les commentaires</Text>
                 {succes?.commentaires.map((item) => (
                     <Surface key={item.idCommentaire} style={styles.card}>
                         {modif === item.idCommentaire ? (
@@ -276,16 +276,13 @@ export function Succes({ user, route, navigation, token }) {
                             </View>
                         ) : (
                             <View>
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                    <Text style={{ flex: 1 }} onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
-                                        {item?.user?.pseudo}
-                                    </Text>
-                                    {/* Upvote and Downvote buttons */}
-                                </View>
-                                <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>{item.titre}</Text>
-                                <Text style={{ margin: 5 }}>{item.content}</Text>
+                                <Text variant="bodyLarge" style={{marginTop:20, marginLeft:25}}onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
+                                    {item?.user?.pseudo}
+                                </Text>
+                                <Text style={{ fontWeight: 'bold', marginVertical: 10, marginLeft:25 }}>{item.titre}</Text>
+                                <Text style={{ marginLeft: 15, marginBottom:10 }}>{item.content}</Text>
                                 {item.idUser === user.id ? (
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                                         <Button style={styles.button} onPress={() => modComment(item.idCommentaire)}>Modification</Button>
                                         <Button style={styles.button} onPress={() => handleSupComment(item.idCommentaire)}>Suppression</Button>
                                     </View>
@@ -317,7 +314,7 @@ const styles = StyleSheet.create({
     titre: {
         fontSize: 30,
         textAlign: 'center',
-        marginBottom: 30
+        marginBottom: 20
     },
     image: {
         width: 350,
