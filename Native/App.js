@@ -16,7 +16,7 @@ import {CreateConv} from "./composents/conv/CreateConv";
 
 const Stack = createNativeStackNavigator();
 
-//LogBox.ignoreAllLogs();
+LogBox.ignoreAllLogs();
 
 export default function App() {
   const [user,setUser] = useState(false);
