@@ -15,6 +15,11 @@ class Commentaire extends Model
     public function succes(){
         return $this->belongsTo(Succes::class);
     }
+
+    public function vote(){
+        return $this->hasMany(Vote::class,"idCommentaire","idCommentaire");
+    }
+
     protected $table = 'Commentaire';
 
     protected $primaryKey = 'idCommentaire';

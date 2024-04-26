@@ -15,6 +15,9 @@ import Header from "./composents/Header";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
+
+
+
 function App() {
 
     console.log("LOCALSTORE = ", localStorage.getItem("user"))

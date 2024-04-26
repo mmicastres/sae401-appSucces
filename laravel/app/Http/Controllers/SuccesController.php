@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\VoteRequest;
 use Illuminate\Http\Request;
 use App\Models\Obtient;
 use App\Models\Succes;
@@ -21,7 +22,7 @@ class SuccesController extends Controller
     public function succesInfo(Request $request, $id){
         //$succes = Succes::with("jeu")->with("commentaires")->find($id);
         // Order commentaires by date
-        $succes = Succes::with("jeu")->with(["commentaires"=>function($query){$query->with("user");}])->with(["detenteurs"=>function($query){$query->with("user");}])->find($id);
+        $succes = Succes::with("jeu")->with(["commentaires"=>function($query){$query->with("user")->withSum("vote","up")->orderBy("vote_sum_up","Desc");}])->with(["detenteurs"=>function($query){$query->with("user");}])->find($id);
         $succes->commentaires = $succes->commentaires->sortByDesc('idCommentaire');
         return response()->json(["Message"=>"OK","succes" => $succes]);
     }
@@ -111,21 +112,27 @@ class SuccesController extends Controller
         }
     }
 
-    public function likeComment(Request $request, $idcomment){
-        $vote = Vote::find($idcomment);
+    public function likeComment(Request $request, $id,$idcomment){
+        $up = $request->get("up");
+        $user = auth("sanctum")->user();
+        $vote = Vote::where("userId", $user->id)->where("idCommentaire", $idcomment)->first();
         if($vote == null){
             $vote = new Vote;
-            $vote->pseudo = $request->user()->pseudo;
+            $vote->userId = $user->id;
             $vote->idCommentaire = $idcomment;
-            $vote->up = 1;
-        }else{
-            $vote->up == 0 ? $vote->up == 1 : $vote->up == 0;
-        }
-        $ok = $vote->save();
-        if ($ok) {
+            $vote->up = $up;
+            $vote->save();
             return response()->json(["status" => 1, "message" => "Vote ajouté"], 201);
-        } else {
-            return response()->json(["status" => 0, "message" => "pb lors de la modification"], 400);
+
+        }else{
+            if ($vote->up == $up) {
+                $vote->delete();
+            }else{
+                $vote->up = $up;
+                $vote->save();
+                return response()->json(["status" => 1, "message" => "Vote modifié"], 201);
+            }
         }
+
     }
 }

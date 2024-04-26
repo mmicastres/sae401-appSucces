@@ -91,7 +91,7 @@ Route::prefix("/succes")->group(function () {
 
         Route::delete('/{idcomment}', [SuccesController::class,"deleteComment"]);
 
-        Route::put('{idcomment}/like', [SuccesController::class,"likeComment"]);
+        Route::post('/{idcomment}/vote', [SuccesController::class,"likeComment"]);
     });
 });
 

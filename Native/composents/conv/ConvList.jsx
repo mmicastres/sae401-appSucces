@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, Button } from 'react-native';
-import { List, ListItem } from 'react-native-paper';
+import { View, Text  } from 'react-native';
+import { List, ListItem ,Button} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 
@@ -32,7 +32,7 @@ export function ConvList({token,navigation}) {
         <View style={{ minWidth: '33.3%' }}>
             <Text>Liste des conv</Text>
             {/* Assuming CreateConv is a modal */}
-            <Button onPress={handleCreateConv} title="Create conv" />
+            <Button onPress={handleCreateConv} mode={"contained"}>Create conv</Button>
             <List.Section>
                 {conv.map((item) => (
                     <List.Item

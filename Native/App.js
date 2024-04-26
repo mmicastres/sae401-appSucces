@@ -12,6 +12,7 @@ import {Succes} from "./composents/Succes";
 import {Profile} from "./composents/Profile";
 import {ConvMessage} from "./composents/conv/ConvMessage";
 import {Logout} from "./composents/auth/Logout";
+import {CreateConv} from "./composents/conv/CreateConv";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,7 +45,7 @@ export default function App() {
                     <Stack.Screen name={"Profile"} children={({navigation,route})=><Profile route={route} user={user} navigation={navigation} token={token}/>}/>
                   <Stack.Screen name={"Jeu"} children={({route,navigation})=><Jeu route={route} navigation={navigation} token={token}/>}/>
                     <Stack.Screen name={"Succes"} children={({route,navigation})=><Succes user={user} navigation={navigation} route={route} token={token} />}/>
-                    <Stack.Screen name={"CreateConv"} children={({route,navigation})=><Text>Create conv</Text>}/>
+                    <Stack.Screen name={"CreateConv"} children={({route,navigation})=><CreateConv navigation={navigation} token={token} />}/>
                     <Stack.Screen name={"Conv"} children={({route,navigation})=><ConvMessage route={route} user={user} token={token} />}/>
                     <Stack.Screen name={"Logout"} children={()=><Logout user={user} setUser={setUser} token={token} setToken={setToken} />}/>
 

@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {useToast} from "actify";
+import {Button, useToast} from "actify";
 
 export function Logout({setUser}){
 
@@ -28,5 +28,8 @@ export function Logout({setUser}){
         //    navigate("/");
         //});
     }
-    return <button onClick={logout}>Logout</button>
+    return <div className={"flex flex-col justify-center w-1/3 center h-screen m-auto  "}>
+        <h1>Voulez vous vraiment vous déconnecter ?</h1>
+        <Button variant={"filled"} onClick={logout}>Logout</Button>
+    </div>
 }
