@@ -197,7 +197,7 @@ export function Succes({ user, route, navigation, token }) {
             setSucces({
                 ...succes, "commentaires": succes.commentaires.map((item) => {
                     if (item.idCommentaire === parseInt(idCommentaire)) {
-                        return { ...item, vote_sum_up: response.data.newSum }
+                        return { ...item, vote_sum_up: response.data.newSum,isLiked:response.data.isLiked}
                     }
                     return item
                 })
@@ -306,10 +306,10 @@ export function Succes({ user, route, navigation, token }) {
                                     <View style={{display:"flex",flexDirection:"row",alignItems:"center", gap:8}}>
                                         <Text>{item.vote_sum_up}</Text>
                                         <TouchableOpacity onPress={() => vote(1,item.idCommentaire)}>
-                                            <Icon source={"chevron-up"} size={20} color={item.isDisliked ? MD3Colors.primary70 :"black"} />
+                                            <Icon source={"chevron-up"} size={20} color={item.isLiked ==1 ? MD3Colors.primary50 :"black"} />
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => vote(0,item.idCommentaire)}>
-                                            <Icon source={"chevron-down"} size={20} color={ item.isDisliked ? MD3Colors.error50 : "black"} />
+                                            <Icon source={"chevron-down"} size={20} color={ item.isLiked==-1 ==1 ? MD3Colors.error50 : "black"} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>

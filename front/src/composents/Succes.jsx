@@ -16,7 +16,12 @@ export function Succes({ user, token}) {
     const toast = useToast()
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + "/api/succes/" + id).then((response) => {
+        axios.get(process.env.REACT_APP_API_URL + "/api/succes/" + id,{
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        }).then((response) => {
             setSucces(response.data.succes);
         });
         if (user && user.id) {
@@ -35,6 +40,7 @@ export function Succes({ user, token}) {
                 axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id, {
                     headers: {
                         "Accept": "application/json",
+                        "Authorization": "Bearer " + token
                     }
                 }).then((response) => {
                     setObtenu(1)
@@ -157,7 +163,7 @@ export function Succes({ user, token}) {
 
 
     function vote(up,idCommentaire){
-        axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
             up: up
         },{
             headers: {
@@ -169,7 +175,7 @@ export function Succes({ user, token}) {
             setSucces({
                 ...succes, "commentaires": succes.commentaires.map((item) => {
                     if (item.idCommentaire === parseInt(idCommentaire)) {
-                        return { ...item, vote_sum_up: response.data.newSum }
+                        return { ...item, vote_sum_up: response.data.newSum,isLiked:response.data.isLiked}
                     }
                     return item
                 })
@@ -259,8 +265,8 @@ export function Succes({ user, token}) {
                                     <div className="flex flex-row justify-end">
                                         <a className="basis-9/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
                                         <p className="basis-1/12">{item.vote_sum_up}</p>
-                                        <ChevronUp onClick={()=>vote(1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
-                                        <ChevronDown onClick={()=>vote(-1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        <ChevronUp color={ item.isLiked==1 ? "green" : "black"} onClick={()=>vote(1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        <ChevronDown  color={ item.isLiked==-1 ? "red" : "black"}  onClick={()=>vote(-1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
                                     </div>
                                     <h2 className="font-semibold m-3">{item.titre}</h2>
                                     <p className="m-5">{item.content}</p>
