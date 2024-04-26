@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import * as sanitizeHtml from 'sanitize-html'
-import {useToast, Button, Card, LinearProgress} from "actify";
+import { useToast, Button, Card, LinearProgress } from "actify";
 
 export function Jeu({ user }) {
     let { id } = useParams();
@@ -15,7 +15,7 @@ export function Jeu({ user }) {
             if (response.data.jeu.joueur == null) {
                 response.data.jeu.joueur = false;
             }
-            response.data.jeu.nbObtenues = response.data.jeu.succes.filter((item) => item.detenteurs.some((item2) => item2.idUser === user.id)).length;
+            { user ? response.data.jeu.nbObtenues = response.data.jeu.succes.filter((item) => item.detenteurs.some((item2) => item2.idUser === user.id)).length : <></> }
             response.data.jeu.nbSuccess = response.data.jeu.succes.length;
             setJeu(response.data.jeu);
             setObtenu(response.data.jeu.succes);
@@ -56,19 +56,19 @@ export function Jeu({ user }) {
         });
     }
 
-    console.log("Jeu : ",jeu)
+    console.log("Jeu : ", jeu)
     return <>
         <div className={"flex justify-evenly items-center"}>
             <h2 className="text-3xl mt-3 mb-3 flex justify-center">{jeu.nom}</h2>
             {jeu.joueur != false ?
                 <div className={"flex items-center gap-4 "}>
-                    <progress className={"h-8 w-64 rounded-2xl border border-black border-2"} max={100} value={(jeu.nbObtenues / jeu.nbSuccess) * 100}/>
+                    <progress className={"h-8 w-64 rounded-2xl border border-black border-2"} max={100} value={(jeu.nbObtenues / jeu.nbSuccess) * 100} />
                     Completed {jeu.nbObtenues} / {jeu.nbSuccess}</div> : <></>}
         </div>
         <div className="flex flex-col w-2/3 m-auto justify-center">
-        <img className="justify-center" src={jeu.image}></img>
+            <img className="justify-center" src={jeu.image}></img>
 
-                </div>
+        </div>
         <div className="ml-3">
             <p className="mb-2 text-xl">Description :</p>
             <div id="description" dangerouslySetInnerHTML={{ __html: sanitizeHtml(jeu.description) }} ></div>
@@ -111,17 +111,22 @@ export function Jeu({ user }) {
                                         <h2>{item.nom}</h2>
                                         <p>{item.description}</p>
                                     </div>
-                                    {item.detenteurs.some((item2) => item2.idUser === user.id) ? (
+                                    {user ? (
                                         <>
-                                            <img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
-                                            <p>Vous avez débloqué ce succès !</p>
+                                            {item.detenteurs.some((item2) => item2.idUser === user.id) ? (
+                                                <>
+                                                    <img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconUnlocked} alt={item.nom} />
+                                                    <p>Vous avez débloqué ce succès !</p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
+                                                    <p>Vous n'avez pas encore débloqué ce succès</p>
+                                                </>
+                                            )}
                                         </>
-                                    ) : (
-                                        <>
-                                            <img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
-                                            <p>Vous n'avez pas encore débloqué ce succès</p>
-                                        </>
-                                    )}
+                                    ) : <><img className="pt-2 pb-2" src={"https://achievementstats.com/" + item.iconLocked} alt={item.nom} />
+                                        <p>Connectez-vous pour enregistrer ce succès</p></>}
                                 </Card>
                             </Link>
                         </li>

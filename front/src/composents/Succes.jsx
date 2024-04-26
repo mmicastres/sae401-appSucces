@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button, TextField, IconButton, useToast, ToastProvider, ToastContainer, Card } from 'actify'
 import { XCircle, ChevronUp, ChevronDown } from 'lucide-react'
 
-export function Succes({ user, token}) {
+export function Succes({ user, token }) {
     let { id } = useParams();
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [], "detenteurs": [] });
     const [obtenu, setObtenu] = useState()
@@ -156,10 +156,10 @@ export function Succes({ user, token}) {
     }
 
 
-    function vote(up,idCommentaire){
+    function vote(up, idCommentaire) {
         axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
             up: up
-        },{
+        }, {
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Bearer " + token
@@ -189,7 +189,9 @@ export function Succes({ user, token}) {
                     </div>
                 </div>
                 <p>Description : {succes.description}</p>
-                <Button className="mt-5" variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
+                {user ? (
+                    <Button className="mt-5" variant="elevated" color="primary" onClick={handleSucces}>{obtenu == 1 ? "Supprimer le succès" : "Ajouter le succès"}</Button>
+                ) : <></>}
 
             </div>
             <div>
@@ -223,8 +225,10 @@ export function Succes({ user, token}) {
                     <Button type="submit" value="Envoyer" variant="elevated" color="primary">Envoyer</Button>
                 </form></> :
                 <>
-                    <p>Vous devez etre authentifié pour laisser un commentaire</p>
-                    <Link to={"/login"}>Login</Link>
+                    <p>Vous devez etre connecté pour laisser un commentaire</p>
+                    <Link to="/login">
+                        <Button className="mt-5" variant="elevated" color="primary">Se connecter</Button>
+                    </Link>
                 </>
             }
             <h2 className="text-xl text-center">Commentaires et Aides</h2>
@@ -257,10 +261,15 @@ export function Succes({ user, token}) {
                                 </>) : (
                                 <div>
                                     <div className="flex flex-row justify-end">
-                                        <a className="basis-9/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
-                                        <p className="basis-1/12">{item.vote_sum_up}</p>
-                                        <ChevronUp onClick={()=>vote(1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
-                                        <ChevronDown onClick={()=>vote(-1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        {user ? (<>
+                                            <a className="basis-9/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
+                                            <p className="basis-1/12">{item.vote_sum_up}</p>
+                                            <ChevronUp onClick={() => vote(1, item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                            <ChevronDown onClick={() => vote(-1, item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        </>) : <>
+                                            <a className="basis-11/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
+                                            <p className="basis-1/12">{item.vote_sum_up}</p>
+                                        </>}
                                     </div>
                                     <h2 className="font-semibold m-3">{item.titre}</h2>
                                     <p className="m-5">{item.content}</p>
