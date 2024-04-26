@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { Button, TextInput, Card } from 'react-native-paper';
+import { StyleSheet, Image, View, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { Button, TextInput, Card, Text, Surface, Avatar } from 'react-native-paper';
 import { useWebViewLogic } from "react-native-webview/lib/WebViewShared";
 
 export function Succes({ user, route, navigation, token }) {
     console.log("user", user)
     let id = route.params.idSucces;
-    const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [] });
+    const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [], "detenteurs": [] });
     const [obtenu, setObtenu] = useState()
     const [titre, setTitre] = useState("")
     const [titreMod, setTitreMod] = useState("")
@@ -187,113 +187,143 @@ export function Succes({ user, route, navigation, token }) {
 
     return (
         <ScrollView>
-            <Text style={{ fontSize: 24, marginLeft: 16 }}>Succes {id}</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <View style={{ flexDirection: 'column' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {succes && succes.iconUnlocked ? (
-                            <Image style={{ width: 24, height: 24 }} source={{ uri: `https://achievementstats.com/${succes.iconUnlocked}` }} />
-                        ) : null}
-                        <View style={{ paddingHorizontal: 10 }}>
-                            <Text style={{ fontSize: 24 }}>{succes?.nom}</Text>
-                            <Text>
-                                Jeu : <Text onPress={() => navigation.goBack()} style={{ color: 'violet', textDecorationLine: 'underline' }}>{succes?.jeu?.nom}</Text>
-                            </Text>
-                        </View>
-                    </View>
-                    <Text>Description : {succes?.description}</Text>
-                    <Button
-                        style={{ marginTop: 10 }}
-                        mode="contained"
-                        color="blue"
-                        onPress={handleSucces}
-                    >
-                        {obtenu === 1 ? 'Supprimer le succès' : 'Ajouter le succès'}
-                    </Button>
+            <View style={styles.container}>
+                <Text style={styles.titre}>{succes?.nom}</Text>
+                {succes && succes.iconUnlocked ? (
+                    <Image style={{ width: 128, height: 128 }} source={{ uri: `https://achievementstats.com/${succes.iconUnlocked}` }} />
+                ) : <Image style={{ width: 128, height: 128 }} source={{ uri: `https://achievementstats.com/${succes.iconLocked}` }} />}
+                <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                    <Text variant="labelLarge">
+                        Jeu : <Text onPress={() => navigation.goBack()} style={{ color: 'violet', textDecorationLine: 'underline' }}>{succes?.jeu?.nom}</Text>
+                    </Text>
                 </View>
-                <View>
-                    <Text>Amis ayant le succès :</Text>
-                    <Text>À venir</Text>
-                </View>
-            </View>
+                <Text style={{ marginBottom: 10 }} variant="bodyMedium">Description : {succes?.description}</Text>
+                <Button
+                    style={styles.button}
+                    mode="contained"
+                    onPress={handleSucces}
+                >
+                    {obtenu === 1 ? 'Supprimer le succès' : 'Ajouter le succès'}
+                </Button>
+                <Text>Amis ayant le succès :</Text>
+                <FlatList
+                    style={{ marginVertical: 10 }}
+                    data={succes.detenteurs}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
+                            {item.user.picture ? (
+                                <Avatar.Image size={24} style={{ marginHorizontal: 5 }} source={`http://localhost:8000/storage/imgprofile/${item.user.picture}`} />
+                            ) : <Text variant="bodyLarge" onPress={() => navigation.navigate(`Profile`, { id: item.user.id })} >{item.user.pseudo}</Text>}
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item.user.id.toString()}
+                    numColumns={3}
+                    contentContainerStyle={{ paddingHorizontal: 16 }}>
+                </FlatList>
 
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, textAlign: 'center', marginBottom: 10 }}>Commentaires et aides</Text>
+                <Text style={styles.titre}>Commentaires et aides</Text>
                 {user ? (
-                    <View style={{ width: '50%' }}>
+                    <View style={{ width: '100%', alignItems: "center" }}>
                         <TextInput
-                            style={{ marginBottom: 10 }}
+                            mode="outlined"
+                            style={{ marginBottom: 20, marginTop: 10, width: '80%' }}
                             label="Titre"
                             value={titre}
                             onChangeText={changeTitre}
-                            right={<TextInput.Icon name="close-circle" onPress={clearTitre} />}
                         />
                         <TextInput
-                            style={{ marginBottom: 10 }}
+                            mode="outlined"
+                            style={{ marginBottom: 20, marginTop: 10, width: '80%' }}
                             label="Commentaire"
                             value={commentaire}
                             onChangeText={changeCommentaire}
-                            right={<TextInput.Icon name="close-circle" onPress={clearComment} />}
                         />
-                        <Button mode="contained" onPress={handleSendComment} color="blue">
+                        <Button mode="contained" onPress={handleSendComment} style={styles.button}>
                             Envoyer
                         </Button>
                     </View>
                 ) : (
                     <>
-                        <Text>Vous devez être authentifié pour laisser un commentaire</Text>
+                        <Text>Vous devez être connecté pour laisser un commentaire</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                            <Text>Login</Text>
+                            <Button style={styles.button}>Login</Button>
                         </TouchableOpacity>
                     </>
                 )}
 
-                <Text style={{ fontSize: 18, textAlign: 'center', marginTop: 20 }}>Tous les commentaires</Text>
-                <ScrollView style={{ width: '50%' }}>
-                    {succes?.commentaires.map((item) => (
-                        <Card key={item.idCommentaire} style={{ marginVertical: 10, padding: 10 }}>
-                            {modif === item.idCommentaire ? (
-                                <View>
-                                    <TextInput
-                                        style={{ marginBottom: 10 }}
-                                        label="Titre"
-                                        value={titreMod}
-                                        onChangeText={(text) => setTitreMod(text)}
-                                        right={<TextInput.Icon name="close-circle" onPress={() => setTitreMod('')} />}
-                                    />
-                                    <TextInput
-                                        style={{ marginBottom: 10 }}
-                                        label="Commentaire"
-                                        value={commentaireMod}
-                                        onChangeText={(text) => setCommentaireMod(text)}
-                                        right={<TextInput.Icon name="close-circle" onPress={() => setCommentaireMod('')} />}
-                                    />
-                                    <Button mode="contained" onPress={(event) => handleModComment(event, item.idCommentaire)} color="blue">
-                                        Envoyer
-                                    </Button>
-                                </View>
-                            ) : (
-                                <View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                        <Text style={{ flex: 1 }} onPress={() => navigation.navigate(`Profile`,{id:item?.user?.id})}>
-                                            {item?.user?.pseudo}
-                                        </Text>
-                                        {/* Upvote and Downvote buttons */}
+                <Text style={styles.titre}>Tous les commentaires</Text>
+                {succes?.commentaires.map((item) => (
+                    <Surface key={item.idCommentaire} style={styles.card}>
+                        {modif === item.idCommentaire ? (
+                            <View>
+                                <TextInput
+                                    style={{ marginBottom: 10 }}
+                                    label="Titre"
+                                    value={titreMod}
+                                    onChangeText={(text) => setTitreMod(text)}
+                                    right={<TextInput.Icon name="close-circle" onPress={() => setTitreMod('')} />}
+                                />
+                                <TextInput
+                                    style={{ marginBottom: 10 }}
+                                    label="Commentaire"
+                                    value={commentaireMod}
+                                    onChangeText={(text) => setCommentaireMod(text)}
+                                    right={<TextInput.Icon name="close-circle" onPress={() => setCommentaireMod('')} />}
+                                />
+                                <Button mode="contained" onPress={(event) => handleModComment(event, item.idCommentaire)} color="blue">
+                                    Envoyer
+                                </Button>
+                            </View>
+                        ) : (
+                            <View>
+                                <Text variant="bodyLarge" style={{marginTop:20, marginLeft:25}}onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
+                                    {item?.user?.pseudo}
+                                </Text>
+                                <Text style={{ fontWeight: 'bold', marginVertical: 10, marginLeft:25 }}>{item.titre}</Text>
+                                <Text style={{ marginLeft: 15, marginBottom:10 }}>{item.content}</Text>
+                                {item.idUser === user.id ? (
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                                        <Button style={styles.button} onPress={() => modComment(item.idCommentaire)}>Modification</Button>
+                                        <Button style={styles.button} onPress={() => handleSupComment(item.idCommentaire)}>Suppression</Button>
                                     </View>
-                                    <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>{item.titre}</Text>
-                                    <Text style={{ margin: 5 }}>{item.content}</Text>
-                                    {item.idUser === user.id ? (
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                            <Button onPress={() => modComment(item.idCommentaire)}>Modification {item.idCommentaire}</Button>
-                                            <Button onPress={() => handleSupComment(item.idCommentaire)}>Suppression</Button>
-                                        </View>
-                                    ) : null}
-                                </View>
-                            )}
-                        </Card>
-                    ))}
-                </ScrollView>
+                                ) : null}
+                            </View>
+                        )}
+                    </Surface>
+                ))}
             </View>
-        </ScrollView>
+        </ScrollView >
     );
 }
+
+const styles = StyleSheet.create({
+    button: {
+        marginBottom: 10,
+        width: '60%'
+    },
+    card: {
+        marginBottom: 10,
+        width: 340
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    titre: {
+        fontSize: 30,
+        textAlign: 'center',
+        marginBottom: 20
+    },
+    image: {
+        width: 350,
+        height: 150,
+        marginBottom: 10,
+    },
+    playerInfoContainer: {
+        backgroundColor: 'lightgray',
+        padding: 10,
+        marginBottom: 10,
+    }
+});

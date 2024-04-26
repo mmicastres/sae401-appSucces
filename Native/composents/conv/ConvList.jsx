@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import { View, Text  } from 'react-native';
-import { List, ListItem ,Button} from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { List, ListItem, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 
@@ -29,10 +29,10 @@ export function ConvList({token,navigation}) {
     };
 
     return (
-        <View style={{ minWidth: '33.3%' }}>
-            <Text>Liste des conv</Text>
-            {/* Assuming CreateConv is a modal */}
-            <Button onPress={handleCreateConv} mode={"contained"}>Create conv</Button>
+        <View style={styles.container}>
+            <Text style={styles.titre}>Liste des conversations</Text>
+
+                <Button mode="contained" style={styles.button} onPress={handleCreateConv}>Nouvelle conversation</Button>
             <List.Section>
                 {conv.map((item) => (
                     <List.Item
@@ -45,3 +45,21 @@ export function ConvList({token,navigation}) {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    button: {
+        marginBottom: 10,
+        width: '60%',
+        alignItems: "center"
+    },
+    container: {
+        flex: 1,
+        alignItems: 'center'
+    },
+    titre: {
+        marginTop: 10,
+        fontSize: 30,
+        textAlign: 'center',
+        marginBottom: 20
+    }
+});
