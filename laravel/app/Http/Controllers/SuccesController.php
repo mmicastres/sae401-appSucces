@@ -23,7 +23,7 @@ class SuccesController extends Controller
         //$succes = Succes::with("jeu")->with("commentaires")->find($id);
         // Order commentaires by date
         $succes = Succes::with("jeu")->with(["commentaires"=>function($query){$query->with("user")->withSum("vote","up")->orderBy("vote_sum_up","Desc");}])->with(["detenteurs"=>function($query){$query->with("user");}])->find($id);
-        $succes->commentaires = $succes->commentaires->sortByDesc('idCommentaire');
+        //$succes->commentaires = $succes->commentaires->sortByDesc('idCommentaire');
         return response()->json(["Message"=>"OK","succes" => $succes]);
     }
     public function succesComplete(Request $request, $id)
