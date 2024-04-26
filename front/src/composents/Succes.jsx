@@ -162,7 +162,7 @@ export function Succes({ user, token}) {
 
 
     function vote(up,idCommentaire){
-        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
+        axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
             up: up
         },{
             headers: {

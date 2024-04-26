@@ -309,7 +309,7 @@ export function Succes({ user, route, navigation, token }) {
                                             <Icon source={"chevron-up"} size={20} color={item.isLiked ==1 ? MD3Colors.primary50 :"black"} />
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => vote(0,item.idCommentaire)}>
-                                            <Icon source={"chevron-down"} size={20} color={ item.isLiked==-1 ==1 ? MD3Colors.error50 : "black"} />
+                                            <Icon source={"chevron-down"} size={20} color={ item.isLiked==-1 ? MD3Colors.error50 : "black"} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
