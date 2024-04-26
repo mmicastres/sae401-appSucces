@@ -122,15 +122,19 @@ class SuccesController extends Controller
             $vote->idCommentaire = $idcomment;
             $vote->up = $up;
             $vote->save();
-            return response()->json(["status" => 1, "message" => "Vote ajouté"], 201);
+            $sum = Vote::where("idCommentaire", $idcomment)->sum("up");
+            return response()->json(["status" => 1, "message" => "Vote ajouté","newSum"=>$sum], 201);
 
         }else{
             if ($vote->up == $up) {
                 $vote->delete();
+                $sum = Vote::where("idCommentaire", $idcomment)->sum("up");
+                return response()->json(["status" => 1, "message" => "Vote supprimé","newSum"=>$sum], 201);
             }else{
                 $vote->up = $up;
                 $vote->save();
-                return response()->json(["status" => 1, "message" => "Vote modifié"], 201);
+                $sum = Vote::where("idCommentaire", $idcomment)->sum("up");
+                return response()->json(["status" => 1, "message" => "Vote modifié","newSum"=>$sum], 201);
             }
         }
 
