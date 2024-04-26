@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button, TextField, IconButton, useToast, ToastProvider, ToastContainer, Card } from 'actify'
 import { XCircle, ChevronUp, ChevronDown } from 'lucide-react'
 
-export function Succes({ user }) {
+export function Succes({ user, token}) {
     let { id } = useParams();
     const [succes, setSucces] = useState({ "jeu": { nom: "" }, "commentaires": [], "detenteurs": [] });
     const [obtenu, setObtenu] = useState()
@@ -153,8 +153,28 @@ export function Succes({ user }) {
                 })
             }
         });
+    }
 
 
+    function vote(up,idCommentaire){
+        axios.post(process.env.REACT_APP_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
+            up: up
+        },{
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        }).then((response) => {
+            console.log("response", response.data);
+            setSucces({
+                ...succes, "commentaires": succes.commentaires.map((item) => {
+                    if (item.idCommentaire === parseInt(idCommentaire)) {
+                        return { ...item, vote_sum_up: item.vote_sum_up + up }
+                    }
+                    return item
+                })
+            })
+        });
     }
     return <>
         <div className="flex justify-around">
@@ -237,9 +257,10 @@ export function Succes({ user }) {
                                 </>) : (
                                 <div>
                                     <div className="flex flex-row justify-end">
-                                        <a className="basis-10/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
-                                        <ChevronUp className="basis-1/12" />
-                                        <ChevronDown className="basis-1/12" />
+                                        <a className="basis-9/12" href={`/user/${item?.user?.id}`}>{item?.user?.pseudo}</a>
+                                        <p className="basis-1/12">{item.vote_sum_up}</p>
+                                        <ChevronUp onClick={()=>vote(1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
+                                        <ChevronDown onClick={()=>vote(-1,item.idCommentaire)} className="basis-1/12 cursor-pointer" />
                                     </div>
                                     <h2 className="font-semibold m-3">{item.titre}</h2>
                                     <p className="m-5">{item.content}</p>

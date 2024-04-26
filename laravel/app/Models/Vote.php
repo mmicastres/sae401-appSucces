@@ -16,5 +16,6 @@ class Vote extends Model
         return $this->belongsTo(User::class);
     }
     protected $table = 'Vote';
+    protected $primaryKey = 'idVote';
     public $timestamps = false;
 }
