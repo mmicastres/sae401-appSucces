@@ -169,7 +169,7 @@ export function Succes({ user, token }) {
             setSucces({
                 ...succes, "commentaires": succes.commentaires.map((item) => {
                     if (item.idCommentaire === parseInt(idCommentaire)) {
-                        return { ...item, vote_sum_up: item.vote_sum_up + up }
+                        return { ...item, vote_sum_up: response.data.newSum }
                     }
                     return item
                 })

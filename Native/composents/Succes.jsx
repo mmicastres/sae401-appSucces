@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { StyleSheet, Image, View, TouchableOpacity, ScrollView, FlatList } from 'react-native';
-import { Button, TextInput, Card, Text, Surface, Avatar } from 'react-native-paper';
+import {Button, TextInput, Card, Text, Surface, Avatar, Icon, MD3Colors} from 'react-native-paper';
 import { useWebViewLogic } from "react-native-webview/lib/WebViewShared";
 
 export function Succes({ user, route, navigation, token }) {
@@ -182,6 +182,29 @@ export function Succes({ user, route, navigation, token }) {
 
     }
 
+
+
+    function vote(up,idCommentaire){
+        axios.post(process.env.EXPO_PUBLIC_API_URL + "/api/succes/" + id + "/comment/" + idCommentaire + "/vote", {
+            up: up
+        },{
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        }).then((response) => {
+            console.log("response", response.data);
+            setSucces({
+                ...succes, "commentaires": succes.commentaires.map((item) => {
+                    if (item.idCommentaire === parseInt(idCommentaire)) {
+                        return { ...item, vote_sum_up: response.data.newSum }
+                    }
+                    return item
+                })
+            })
+        });
+    }
+
     console.log(id)
     console.log(titre)
 
@@ -275,10 +298,21 @@ export function Succes({ user, route, navigation, token }) {
                                 </Button>
                             </View>
                         ) : (
-                            <View>
-                                <Text variant="bodyLarge" style={{marginTop:20, marginLeft:25}}onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
-                                    {item?.user?.pseudo}
-                                </Text>
+                            <View style={{padding:8}}>
+                                <View style={{display:"flex",flexDirection:"row", alignItems:"center",justifyContent:"space-between"}}>
+                                    <Text variant="bodyLarge" onPress={() => navigation.navigate(`Profile`, { id: item?.user?.id })}>
+                                        {item?.user?.pseudo}
+                                    </Text>
+                                    <View style={{display:"flex",flexDirection:"row",alignItems:"center", gap:8}}>
+                                        <Text>{item.vote_sum_up}</Text>
+                                        <TouchableOpacity onPress={() => vote(1,item.idCommentaire)}>
+                                            <Icon source={"chevron-up"} size={20} color={item.isDisliked ? MD3Colors.primary70 :"black"} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => vote(0,item.idCommentaire)}>
+                                            <Icon source={"chevron-down"} size={20} color={ item.isDisliked ? MD3Colors.error50 : "black"} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                                 <Text style={{ fontWeight: 'bold', marginVertical: 10, marginLeft:25 }}>{item.titre}</Text>
                                 <Text style={{ marginLeft: 15, marginBottom:10 }}>{item.content}</Text>
                                 {item.idUser === user.id ? (

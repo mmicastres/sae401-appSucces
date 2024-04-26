@@ -23,6 +23,19 @@ class SuccesController extends Controller
         //$succes = Succes::with("jeu")->with("commentaires")->find($id);
         // Order commentaires by date
         $succes = Succes::with("jeu")->with(["commentaires"=>function($query){$query->with("user")->withSum("vote","up")->orderBy("vote_sum_up","Desc");}])->with(["detenteurs"=>function($query){$query->with("user");}])->find($id);
+        foreach ($succes->commentaires as $commentaire) {
+            $commentaire->isLiked = false;
+            $commentaire->isDisliked = false;
+            if (auth("sanctum")->user() != null) {
+                $user = auth("sanctum")->user();
+                $vote = Vote::where("userId", $user->id)->where("idCommentaire", $commentaire->idCommentaire)->first();
+                if ($vote != null) {
+                    $commentaire->isLiked = $vote->up;
+                    $commentaire->isDisliked = !$vote->up;
+                }
+            }
+        }
+
         //$succes->commentaires = $succes->commentaires->sortByDesc('idCommentaire');
         return response()->json(["Message"=>"OK","succes" => $succes]);
     }
@@ -122,15 +135,19 @@ class SuccesController extends Controller
             $vote->idCommentaire = $idcomment;
             $vote->up = $up;
             $vote->save();
-            return response()->json(["status" => 1, "message" => "Vote ajouté"], 201);
+            $sum = Vote::where("idCommentaire", $idcomment)->sum("up");
+            return response()->json(["status" => 1, "message" => "Vote ajouté","newSum"=>$sum], 201);
 
         }else{
             if ($vote->up == $up) {
                 $vote->delete();
+                $sum = Vote::where("idCommentaire", $idcomment)->sum("up");
+                return response()->json(["status" => 1, "message" => "Vote supprimé","newSum"=>$sum], 201);
             }else{
                 $vote->up = $up;
                 $vote->save();
-                return response()->json(["status" => 1, "message" => "Vote modifié"], 201);
+                $sum = Vote::where("idCommentaire", $idcomment)->sum("up");
+                return response()->json(["status" => 1, "message" => "Vote modifié","newSum"=>$sum], 201);
             }
         }
 
